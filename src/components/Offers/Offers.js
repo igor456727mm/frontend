@@ -91,6 +91,10 @@ class _Filter extends Component {
             <h4>&nbsp;</h4>
             <Button htmlType="submit" type="primary" size="large">{t('button.show')}</Button>
           </Form.Item>
+          <Form.Item>
+            <h4>&nbsp;</h4>
+            <Link to={`/offers/new`} className="ant-btn ant-btn-lg">Создать оффер</Link>
+          </Form.Item>
         </Form>
       </div>
     )

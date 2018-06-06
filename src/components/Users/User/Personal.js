@@ -113,7 +113,7 @@ class Personal extends Component {
                 <Upload
                   onChange={this._onUpload}
                   name="image"
-                  action={`https://file.cpabro.vip/v1/uploads?access_token=${Cookies.get('access_token')}`}
+                  action={`https://file.yb.partners/v1/uploads?access_token=${Cookies.get('access_token')}`}
                   showUploadList={false}
                   listType="picture-card"
                   className="avatar-uploader"

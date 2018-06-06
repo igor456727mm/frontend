@@ -367,7 +367,7 @@ class Offer extends Component {
           }, {
             title: <Landing offer_id={id} />,
             render: (text, row) => {
-              const link = `https://webmaster-api.cpabro.vip/v1/landings/${row.id}/open`
+              const link = `https://webmaster-api.yb.partners/v1/landings/${row.id}/open`
               return (
               <div className="table__actions">
                 <span><a href={link} target="_blank">{Icons.eye}</a></span>
@@ -601,7 +601,7 @@ class Offer extends Component {
                     <Upload
                       onChange={this._onUploadLogo}
                       name="image"
-                      action={`https://file.cpabro.vip/v1/uploads?access_token=${Cookies.get('access_token')}`}
+                      action={`https://file.yb.partners/v1/uploads?access_token=${Cookies.get('access_token')}`}
                       showUploadList={false}
                       listType="picture-card"
                       className="avatar-uploader" >
