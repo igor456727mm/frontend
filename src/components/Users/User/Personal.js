@@ -1,0 +1,140 @@
+import React, { Component } from 'react'
+import { Form, Input, InputNumber, Button, Select, message, Upload, Icon } from 'antd'
+import qs from 'qs'
+import * as Cookies from 'js-cookie'
+import { connect } from 'react-redux'
+import api from '../../../common/Api'
+import Helpers, { t, pick, flatten } from '../../../common/Helpers'
+
+class Personal extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      iconLoading: false,
+      data: {
+        name: null,
+        email: null,
+        userData: {
+          contacts: {},
+        }
+      },
+      avatar_upload_image_id: null,
+      new_avatar: null,
+    }
+  }
+
+  componentDidMount = () => {
+    const { user_id } = this.props
+    api.get(`/v1/users/${user_id}?expand=userData`)
+    .then(response => {
+      this.setState({ data: response.data })
+    })
+    .catch(e => {
+      Helpers.errorHandler(e)
+    })
+  }
+
+  validator = (name, label, input, rules = []) => {
+    const { data } = this.state
+    const { getFieldDecorator } = this.props.form
+    const options = { rules: rules }
+    if(data[name]) {
+      options.initialValue = data[name]
+    } else if(name.includes('userData[contacts]')) {
+      const _name = name.split('[')[2].replace(']', '')
+      options.initialValue = data.userData.contacts[_name]
+    } else if(name == 'userData[currency_id]') {
+      options.initialValue = data.userData.currency_id
+    } else if(name == 'userData[time_offset]') {
+      options.initialValue = data.userData.time_offset
+    } else if(data && name.includes('.')) {
+      const tmp = data && flatten(data) || {}
+      options.initialValue = tmp[name]
+    }
+
+    return (
+      <Form.Item>
+        {label && <h4>{label}</h4>}
+        {getFieldDecorator(name, options)(input)}
+      </Form.Item>
+    )
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault()
+    const { data } = this.state
+    const { form } = this.props
+    form.validateFieldsAndScroll((err, values) => {
+      if (err) return
+      delete values.avatar_upload_image_id
+      if(this.state.avatar_upload_image_id) values.userData['avatar_upload_image_id'] = this.state.avatar_upload_image_id
+      this.setState({ iconLoading: true })
+      api.patch(`/v1/users/${data.id}`, qs.stringify(values))
+      .then(response => {
+        this.setState({ iconLoading: false })
+        message.success(t('message.save'))
+        //if(this.state.avatar_upload_image_id || data.userData.currency_id !== currency_id ) Helpers.checkUserData()
+        Helpers.checkUserData()
+      })
+      .catch(e => {
+        this.setState({ iconLoading: false })
+        Helpers.errorHandler(e)
+      })
+    })
+  }
+
+  _onUpload = (e) => {
+    const data = e.file.response
+    if(!data) return
+    this.setState({
+      avatar_upload_image_id: data.id,
+      new_avatar: data.server + data.patch,
+    })
+  }
+
+  render() {
+    const { iconLoading, new_avatar, data, tariffs } = this.state
+    return (
+      <div className="block profile__personal">
+        <h2>Общая информация</h2>
+        <Form onSubmit={this.handleSubmit}>
+          <div className="row">
+            <div className="col-md-4">
+              {this.validator('login', 'Логин', <Input size="large" />, [{ required: true }] )}
+              {this.validator('email', t('field.email'), <Input size="large" />, [{ required: true }] )}
+            </div>
+            <div className="col-md-4">
+              {this.validator('name', t('field.uname'), <Input size="large" /> )}
+              {this.validator('userData.contacts.phone', t('field.phone'), <Input size="large" /> )}
+            </div>
+            <div className="col-md-4">
+              {this.validator('avatar_upload_image_id', t('field.avatar'), (
+                <Upload
+                  onChange={this._onUpload}
+                  name="image"
+                  action={`https://file.cpabro.vip/v1/uploads?access_token=${Cookies.get('access_token')}`}
+                  showUploadList={false}
+                  listType="picture-card"
+                  className="avatar-uploader"
+                  >
+                  {new_avatar ? <img src={new_avatar} /> : (data.userData && data.userData.avatar_image ? <img src={data.userData.avatar_image} /> : <Icon type={'plus'} /> )}
+                </Upload>
+              ))}
+            </div>
+          </div>
+          <Form.Item className="form__item-last">
+            <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>{t('button.save')}</Button>
+          </Form.Item>
+        </Form>
+      </div>
+    )
+
+  }
+
+
+}
+
+
+
+export default connect((state) => pick(state, 'user'))(Form.create()(Personal))

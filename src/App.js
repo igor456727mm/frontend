@@ -29,6 +29,9 @@ import Platforms from './components/Platforms/Platforms'
 import Offers from './components/Offers/Offers'
 import Offer from './components/Offers/Offer'
 
+import Users from './components/Users/Users'
+import User from './components/Users/User'
+
 const NoMatch = ({ location }) => (
   <div>
     <h3>No match for <code>{location.pathname}</code></h3>
@@ -120,6 +123,15 @@ const routes = [
   {
     path: '/offers/:id',
     component: Offer,
+  },
+  {
+    path: '/users',
+    component: Users,
+    exact: true
+  },
+  {
+    path: '/users/:id',
+    component: User,
   }
 ]
 
@@ -164,10 +176,10 @@ class App extends Component {
 
   _onUserLogin = () => {
     this.setState({ isAuthorized: true })
-    Helpers.checkUserData()
-    Helpers.checkUserPlatforms()
-    Helpers.checkUserWallets()
-    Helpers.checkTicketMessages()
+    // Helpers.checkUserData()
+    //Helpers.checkUserPlatforms()
+    //Helpers.checkUserWallets()
+    //Helpers.checkTicketMessages()
   }
 
   _onChangeLang = (e) => {
@@ -261,6 +273,7 @@ class App extends Component {
                   <li><NavLink to="/offers">{icons.products} {t('menu.offers')}</NavLink></li>
                   {/* <li><NavLink to="/promo">{icons.promo} {t('menu.promo')}</NavLink></li> */}
                   {/* <li><NavLink to="/stats">{icons.stats} {t('menu.stats')}</NavLink></li> */}
+                  <li><NavLink to="/users">{icons.support} Пользователи</NavLink></li>
                   <li><NavLink to="/finance">{icons.finance} {t('menu.finance')}</NavLink></li>
                   <li><NavLink to="/tickets">{icons.support} {t('menu.support')}</NavLink></li>
                 </ul>

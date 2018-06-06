@@ -283,19 +283,15 @@ class Offer extends Component {
       data: {
         id: id,
         description: null,
-        tariff_level: 1,
         status: 'active',
-        currency_id: 1,
         visible: 1,
       },
       countries: [],
       categories: [],
       statuses: {},
-      tariffs: {},
       landings: [],
       sources: [], // global sources
       actions: [],
-      types: {},
       columns: {
         actions: [
           {
@@ -432,10 +428,6 @@ class Offer extends Component {
       this.setState({ isLoading: false })
     }
 
-    // types
-    api.get(`v1/offers/types`)
-    .then(response => this.setState({ types: response.data }))
-
     // trafficSources
     api.get(`v1/traffic-sources?fields=id,name&per-page=999`)
     .then(response => this.setState({ sources: response.data }))
@@ -443,10 +435,6 @@ class Offer extends Component {
     // countries
     api.get(`v1/countries?fields=id,name&per-page=999`)
     .then(response => this.setState({ countries: response.data }))
-
-    // tariffs
-    api.get(`v1/user-data/tariffs`)
-    .then(response => this.setState({ tariffs: response.data }))
 
     // statuses
     api.get(`v1/offers/statuses`)
@@ -588,7 +576,7 @@ class Offer extends Component {
   }
 
   render() {
-    const { isLoading, iconLoading, isNew, data, types, actions, tariffs, categories, statuses, countries, columns, landings, sources, new_logo } = this.state
+    const { isLoading, iconLoading, isNew, data, actions, categories, statuses, countries, columns, landings, sources, new_logo } = this.state
     const { currencies } = this.props.config
     return (
       <Form>
@@ -665,8 +653,6 @@ class Offer extends Component {
 
             <div className="offer__params-global">
               <h3>Параметры</h3>
-              {this.validator('tariff_level', 'Минимальный тариф', <Select size="large">{Object.keys(tariffs).map(key => <Select.Option key={key} value={parseInt(key)}>{tariffs[key]}</Select.Option>)}</Select> )}
-              {this.validator('type', 'Тип', <Select disabled={!isNew} size="large">{Object.keys(types).map(key => <Select.Option key={key} value={parseInt(key)}>{types[key]}</Select.Option>)}</Select>, [{ required: true }] )}
               {this.validator('category_ids', 'Категории', <Select mode="multiple" optionFilterProp="name" size="large">{categories.map(item => <Select.Option key={item.id} value={item.id} name={item.name}>{item.name}</Select.Option>)}</Select>)}
               {this.validator('status', 'Статус', <Select size="large">{Object.keys(statuses).map(key => <Select.Option key={key} value={key}>{statuses[key]}</Select.Option>)}</Select> )}
               {this.validator('visible', 'Видимый', <Select size="large"><Select.Option key={1} value={1}>Да</Select.Option><Select.Option key={0} value={0}>Нет</Select.Option></Select> )}

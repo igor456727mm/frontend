@@ -173,6 +173,8 @@ export const Events = {
   dispatch: (name) => window.dispatchEvent(new Event(name)),
 }
 
+export const disabledDate = (current) => current && current > moment().endOf('day')
+
 // translator
 export const t = (key) => {
   const { current, translations } = store.getState().lang
@@ -411,4 +413,19 @@ export class TreeSelectRemote extends Component {
     )
   }
 
+}
+
+
+export const flatten = (obj) => {
+ var root = {};
+ (function tree(obj, index){
+   var suffix = toString.call(obj) == "[object Array]" ? "]" : "";
+   for(var key in obj){
+    if(!obj.hasOwnProperty(key))continue;
+    root[index+key+suffix] = obj[key];
+    if( toString.call(obj[key]) == "[object Array]" )tree(obj[key],index+key+suffix+"[");
+    if( toString.call(obj[key]) == "[object Object]" )tree(obj[key],index+key+suffix+".");
+   }
+ })(obj,"");
+ return root;
 }
