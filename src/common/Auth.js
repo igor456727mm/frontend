@@ -50,7 +50,6 @@ const Auth = {
       Cookies.remove(key)
     })
     window.dispatchEvent(new Event('user.exit'))
-    if(window.location.hostname !== 'localhost') window.location = `http://${domain}`
     return false
   }
 }
