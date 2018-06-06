@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60px" height="60px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="1.55905295%" x2="50%" y2="97.783801%" id="linearGradient-1">
+            <stop stop-color="#9D90E4" offset="0%"></stop>
+            <stop stop-color="#8261E6" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="YB-screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="YB.Partners-main" transform="translate(-590.000000, -148.000000)">
+            <g id="Stats" transform="translate(241.000000, 118.000000)">
+                <g id="Stats-Widget-2" transform="translate(319.000000, 0.000000)">
+                    <g id="Icon" transform="translate(30.000000, 30.000000)">
+                        <rect id="Base" fill="url(#linearGradient-1)" x="0" y="0" width="60" height="60" rx="30"></rect>
+                        <rect id="Base" stroke="#FFFFFF" stroke-width="2" opacity="0.5" x="5" y="5" width="50" height="50" rx="25"></rect>
+                        <path d="M40,42 L20,42 C19.447,42 19,41.552 19,41 L19,21 C19,20.448 19.447,20 20,20 L25,20 L25,19 C25,18.448 25.447,18 26,18 C26.553,18 27,18.448 27,19 L27,20 L33,20 L33,19 C33,18.448 33.447,18 34,18 C34.553,18 35,18.448 35,19 L35,20 L40,20 C40.553,20 41,20.448 41,21 L41,41 C41,41.552 40.553,42 40,42 Z M39,22 L35,22 C35,22.552 34.553,23 34,23 C33.447,23 33,22.552 33,22 L27,22 C27,22.552 26.553,23 26,23 C25.447,23 25,22.552 25,22 L21,22 L21,24 L39,24 L39,22 Z M39,26 L21,26 L21,40 L39,40 L39,26 Z M30.5,34 C29.121,34 28,32.878 28,31.5 C28,30.477 28.619,29.599 29.5,29.212 L29.5,29 C29.5,28.448 29.947,28 30.5,28 C31.053,28 31.5,28.448 31.5,29 L32,29 C32.553,29 33,29.448 33,30 C33,30.552 32.553,31 32,31 L30.5,31 C30.225,31 30,31.224 30,31.5 C30,31.776 30.225,32 30.5,32 C31.879,32 33,33.122 33,34.5 C33,35.523 32.382,36.401 31.5,36.788 L31.5,37 C31.5,37.552 31.053,38 30.5,38 C29.947,38 29.5,37.552 29.5,37 L29,37 C28.447,37 28,36.552 28,36 C28,35.448 28.447,35 29,35 L30.5,35 C30.775,35 31,34.776 31,34.5 C31,34.224 30.775,34 30.5,34 Z" id="Shape" fill="#FFFFFF"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
