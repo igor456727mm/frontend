@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60px" height="60px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#39B54A" offset="0%"></stop>
+            <stop stop-color="#34AA44" offset="97.783801%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="60" height="60" rx="30"></rect>
+    </defs>
+    <g id="YB-screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="YB.Partners-main" transform="translate(-908.000000, -148.000000)">
+            <g id="Stats" transform="translate(241.000000, 118.000000)">
+                <g id="Stats-Widget-3" transform="translate(637.000000, 0.000000)">
+                    <g id="Icon" transform="translate(30.000000, 30.000000)">
+                        <g id="Base">
+                            <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"></use>
+                            <rect stroke="#249533" stroke-width="1" x="0.5" y="0.5" width="59" height="59" rx="29.5"></rect>
+                        </g>
+                        <rect id="Base" stroke="#FFFFFF" stroke-width="2" opacity="0.5" x="5" y="5" width="50" height="50" rx="25"></rect>
+                        <path d="M41,40 L19,40 C18.447,40 18,39.552 18,39 L18,26 C18,25.448 18.447,25 19,25 L41,25 C41.553,25 42,25.448 42,26 L42,39 C42,39.552 41.553,40 41,40 Z M40,27 L20,27 L20,38 L40,38 L40,27 Z M22,35 L23,35 C23.553,35 24,35.448 24,36 C24,36.552 23.553,37 23,37 L22,37 C21.447,37 21,36.552 21,36 C21,35.448 21.447,35 22,35 Z M30.0010083,28 C32.2062012,28 34,30.0185615 34,32.4995028 C34,34.9814385 32.2062012,37 30.0010083,37 C27.7958155,37 26,34.9814385 26,32.4995028 C26,30.0185615 27.7958155,28 30.0010083,28 Z M30.0010168,35 C31.1032028,35 32,33.8784399 32,32.499505 C32,31.1215601 31.1032028,30 30.0010168,30 C28.8978139,30 28,31.1215601 28,32.499505 C28,33.8784399 28.8978139,35 30.0010168,35 Z M37,28 L38,28 C38.553,28 39,28.448 39,29 C39,29.552 38.553,30 38,30 L37,30 C36.447,30 36,29.552 36,29 C36,28.448 36.447,28 37,28 Z M39,24 L21,24 C20.447,24 20,23.552 20,23 C20,22.448 20.447,22 21,22 L39,22 C39.553,22 40,22.448 40,23 C40,23.552 39.553,24 39,24 Z M37,21 L23,21 C22.447,21 22,20.552 22,20 C22,19.448 22.447,19 23,19 L37,19 C37.553,19 38,19.448 38,20 C38,20.552 37.553,21 37,21 Z" id="Shape" fill="#FFFFFF"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
