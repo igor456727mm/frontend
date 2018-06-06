@@ -23,7 +23,7 @@
     "start": "stylus -w src/styles/app.styl -o public/css/app.css | REACT_APP_VERSION=$npm_package_version react-scripts start",
     "push": "git add . && git commit -am $npm_package_version && git push origin master",
     "build": "REACT_APP_VERSION=$npm_package_version react-scripts build && rm build/service-worker.js && rm build/static/js/*.map",
-    "release": "git add ./build -f && git commit -am $npm_package_version && git push origin master"
+    "release": "npm run push && git add ./build -f && git commit -am 'RELEASE '$npm_package_version && git push origin master"
   },
   "domain": "yb.partners"
 }
