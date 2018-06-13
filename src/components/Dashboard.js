@@ -193,35 +193,7 @@ class Dashboard extends Component {
     return (
       <div className="content__wrapper">
         <div className="content__inner dashboard">
-          <div className="row">
-            <div className="col-md-4">
-              <div className="dashboard__block block flex">
-                <div className="dashboard__block-icon"><img src="img/icons/1.svg" /></div>
-                <div className="dashboard__block-info">
-                  <span>{user.default_revshare_percent * 100}%</span>
-                  <div className="c__gray2">Revenue share</div>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="dashboard__block block flex">
-                <div className="dashboard__block-icon"><img src="img/icons/2.svg" /></div>
-                <div className="dashboard__block-info">
-                  <span>${user.hold}</span>
-                  <div className="c__gray2">{t('field.hold')}</div>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="dashboard__block block flex">
-                <div className="dashboard__block-icon"><img src="img/icons/3.svg" /></div>
-                <div className="dashboard__block-info">
-                  <span>${user.balance}</span>
-                  <div className="c__gray2">{t('field.balance')}</div>
-                </div>
-              </div>
-            </div>
-          </div>
+
 
           <div className="block dashboard__stats">
             <Filter onSubmit={this.onFilter} isLoading={isLoading} />
@@ -288,7 +260,7 @@ class Dashboard extends Component {
           </div>
         </div>
         <div className="content__sidebar">
-          <Consultant />
+          
           <News />
         </div>
       </div>

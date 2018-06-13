@@ -25181,7 +25181,7 @@ th.ant-table-column-has-filters > span {
   font-size: 12px;
 }
 .dashboard__stats {
-  margin-top: 30px;
+  margin-top: 0px;
   padding: 30px;
 }
 .dashboard__stats table {

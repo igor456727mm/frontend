@@ -1,5 +1,5 @@
 const initialState = {
-  current: 'en',
+  current: 'ru',
   list: [{ name: 'en', code: 'en' }],
   translations: {
 

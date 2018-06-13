@@ -256,7 +256,7 @@ class _Action extends Component {
                 {this.validator('pay_conditions.fields.hold', 'Холд', <InputNumber min={0} size="large" /> )}
               </div>
               <div className="col-md-6">
-                {this.validator('pay_conditions.fields.post_click', 'Постклик', <InputNumber size="large" /> )}
+
               </div>
             </div>
 
@@ -329,12 +329,6 @@ class Offer extends Component {
             render: (text, row) => {
               const { fields } = row.pay_conditions
               return `до ${fields.hold} дней`
-            }
-          }, {
-            title: 'Постклик',
-            render: (text, row) => {
-              const { fields } = row.pay_conditions
-              return `${fields.post_click} дней`
             }
           }, {
             title: <Action offer_id={id} />,
