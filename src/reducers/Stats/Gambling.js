@@ -15,6 +15,7 @@ const Option = Select.Option
 const { RangePicker } = DatePicker
 
 
+
 class Stats extends Component {
 
   constructor(props) {
@@ -59,6 +60,7 @@ class Stats extends Component {
         ...filters,
         'per-page': pagination.pageSize - 1,
         currency_id: this.props.user.currency_id,
+        'q[offer_type][equal]': 2,
       }
     })
 
@@ -67,6 +69,7 @@ class Stats extends Component {
         ...filters,
         group: 'all',
         expand: false,
+        'q[offer_type][equal]': 2,
       }
     })
 
@@ -100,7 +103,7 @@ class Stats extends Component {
   }
 
   renderFirstColumn = () => {
-    const { data, filters, pagination, devices, isLoading } = this.state
+    const { data, filters, pagination, devices } = this.state
     const group = filters['group']
     const title = group.includes(`sub_id_`) && group.replace(`_key`, '') || group.replace('_id', '')
 
@@ -148,7 +151,9 @@ class Stats extends Component {
             break;
           case 'action_hour':
             const hour = row[group] < 10 ? `0${row[group]}` : row[group]
-            text = hour && `${hour}:00` || '-'
+            let nextHour = row[group] < 10 ? `0${row[group]+1}` : row[group]+1
+            if(nextHour == 24) nextHour = '00'
+            text = hour && `${hour}:00 - ${nextHour}:00` || '-'
             break;
           case 'sub_id_1_key':
           case 'sub_id_2_key':
@@ -160,22 +165,39 @@ class Stats extends Component {
             break;
         }
 
-        if(isLoading) return '...'
-
         return text
       }
     }
   }
 
-  renderCurrencyCell = (count, sum) => {
+  renderCurrencyCell = (count, sum, type, row) => {
     const tmp = []
     const keys = Object.keys(count)
     if(keys.length == 0) return `-`
     keys.forEach(currency_id => {
-      const currency = '$'
-      tmp.push(<div key={currency_id}>{count[currency_id]} / {sum[currency_id]} {currency}</div>)
+      if(count[currency_id] == 0 && sum[currency_id] == 0) return
+      const currency = Helpers.renderCurrency(currency_id)
+      tmp.push(<div className="stats__table-leads" onClick={() => this.openLeads(type, currency_id, row)} key={currency_id}>{count[currency_id]} / {sum[currency_id]} {currency}</div>)
     })
+    if(tmp.length == 0) return `-`
     return tmp
+  }
+
+  openLeads = (type, currency_id, row) => {
+    const { filters } = this.state
+    const value = row[filters.group]
+
+    window.store.dispatch({
+      type: 'STATS_LEADS_OPEN',
+      params: {
+        isVisible: true,
+        type,
+        currency_id,
+        filters,
+        'q[offer_type][equal]': 2,
+        value: value,
+      }
+    })
   }
 
   render() {
@@ -183,52 +205,64 @@ class Stats extends Component {
     const columns = [
       this.renderFirstColumn(),
       {
-        title: t('field.hit_count'),
+        title: (<div className="stats__table-th-title">Трафик  <div>Переходы / Уники</div></div>),
         dataIndex: 'hit_count',
+        render: (text, { hit_count, click_count }) =>   `${hit_count} / ${click_count}`,
+        sorter: true,
+      }, {
+        title: 'TrafBack',
+        dataIndex: 'traffic_back',
         sorter: true
       }, {
-        title: t('field.click_count'),
-        dataIndex: 'click_count',
-        sorter: true
-      }, {
-        title: t('field.reg_count'),
+        title: 'Регистрации',
         dataIndex: 'reg_count',
         sorter: true
       }, {
-        title: (<div className="stats__table-th-title">First dep<div>{t('field.count')} / {t('field.sum')}</div></div>),
+        title: (<div className="stats__table-th-title">First dep  <div>Кол-во / {t('field.sum')}</div></div>),
         dataIndex: 'first_dep_count',
-        render: (text, { first_dep_count, first_dep_sum }) => `${first_dep_count} / ${first_dep_sum}`,
+        render: (text, { first_dep_count: count, first_dep_sum: sum }) => `${count} / ${sum} $`,
         sorter: true,
       }, {
-        title: (<div className="stats__table-th-title">Dep<div>{t('field.count')} / {t('field.sum')}</div></div>),
+        title: (<div className="stats__table-th-title">Dep <div>Кол-во / {t('field.sum')}</div></div>),
         dataIndex: 'dep_count',
-        render: (text, { dep_count, dep_sum }) => `${dep_count} / ${dep_sum}`,
+        render: (text, { dep_count: count, dep_sum: sum }) => `${count} / ${sum} $`,
         sorter: true,
       }, {
-        title: t('field.player_lose'),
-        dataIndex: 'player_lose_sum',
-        sorter: true,
-      }, {
-        title: t('field.player_out'),
-        dataIndex: 'player_out_sum',
-        sorter: true,
-      }, {
-        title: t('field.player_promo'),
-        dataIndex: 'player_promo_sum',
-        sorter: true,
-      }, {
-        title: 'Net gaming',
-        dataIndex: 'net_gaming',
-        sorter: true,
-      }, {
-        title: 'CPA',
-        dataIndex: 'cpa_confirmed_income_sum',
+        title: (<div className="stats__table-th-title">CPA <div>Лиды / {t('field.sum')}</div></div>),
+        dataIndex: 'cpa_confirmed_leads_count',
+        render: (text, row) => {
+          const { cpa_confirmed_leads_count: count, cpa_confirmed_income_sum: sum } = row
+          return this.renderCurrencyCell(count, sum, 'confirmed', row)
+        },
         sorter: true,
       }, {
         title: 'Revshare',
         dataIndex: 'revshare_income',
+        render: (text, { revshare_income: count }) => {
+          const tmp = []
+          const keys = Object.keys(count)
+          if(keys.length == 0) return `-`
+          keys.forEach(currency_id => {
+            const currency = Helpers.renderCurrency(currency_id)
+            tmp.push(<div key={currency_id}>{count[currency_id]} {currency}</div>)
+          })
+          return tmp
+        },
+        sorter: true,
+      }, {
+        title: 'EPC',
+        dataIndex: 'epc',
+        render: text => {
+          const currency = Helpers.renderCurrency(this.props.user.currency_id)
+          return `${text} ${currency}`
+        },
         sorter: true
-      }
+      }, {
+        title: 'CR',
+        dataIndex: 'cpa_cr',
+        render: text => `${text}%`,
+        sorter: true
+      },
     ]
 
     return (
@@ -241,7 +275,7 @@ class Stats extends Component {
           rowKey={(item, i) => i}
           dataSource={data}
           pagination={pagination}
-          loading={isLoading}
+          loading={Helpers.spinner('table', isLoading)}
           locale={{ emptyText: Helpers.emptyText }}
           onChange={this.handleTableChange} />
       </div>
@@ -249,4 +283,4 @@ class Stats extends Component {
   }
 }
 
-export default connect((state) => pick(state, 'user', 'config'))(Form.create()(Stats))
+export default connect((state) => pick(state, 'user'))(Form.create()(Stats))

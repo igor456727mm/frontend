@@ -272,7 +272,7 @@ class App extends Component {
                   <li><NavLink to="/platforms">{icons.platforms} {t('menu.platforms')}</NavLink></li>
                   <li><NavLink to="/offers">{icons.products} {t('menu.offers')}</NavLink></li>
                   {/* <li><NavLink to="/promo">{icons.promo} {t('menu.promo')}</NavLink></li> */}
-                  {/* <li><NavLink to="/stats">{icons.stats} {t('menu.stats')}</NavLink></li> */}
+                  <li><NavLink to="/stats">{icons.stats} {t('menu.stats')}</NavLink></li> 
                   <li><NavLink to="/users">{icons.support} Пользователи</NavLink></li>
                   <li><NavLink to="/finance">{icons.finance} {t('menu.finance')}</NavLink></li>
                   <li><NavLink to="/tickets">{icons.support} {t('menu.support')}</NavLink></li>

@@ -20,6 +20,10 @@ const Helpers = {
     }
   },
 
+  getPopupContainer: () => {
+    return document.getElementById('content')
+  },
+
   checkUserData: () => {
     const user_id = Cookies.get('user_id')
     api.get(`/v1/user-data/${user_id}?expand=user,personalManager`)
@@ -222,13 +226,14 @@ export const Filters = {
   },
 
   prepare: (values, custom = {}) => {
+    const skip = ['group']
     const filters = {}
     const keys = Object.keys(values)
     if(!keys.length) return filters
     keys.forEach(key => {
       const val = values[key]
       const isArray = Array.isArray(val)
-      if(!val || isArray && !val.length) return
+      if(!val || skip.includes(key) || isArray && !val.length) return
       if(isArray) {
         if(['created_at', 'date'].includes(key)) {
           const start = val[0] && val[0].startOf('day').unix()
@@ -257,8 +262,10 @@ export const Filters = {
     return filters
   },
 
-  value: (name) => {
-    const params = queryParams()
+  value: (name, initialFilter = {}) => {
+    const _params = Filters.parse()
+    const params = Object.keys(_params).length && _params || initialFilter
+    if(name == 'group') return params[name]
     let key, value, type
     const tmp = Object.keys(params)
     tmp.forEach(tmp_k => {
@@ -283,7 +290,7 @@ export const Filters = {
     return value
   },
 
-  toUrl: (filters) => window.history.pushState('', '', `?` + qs.stringify(filters, { encode: false }))
+  toUrl: (filters) => window.history.pushState('', '', `?` + qs.stringify(filters, { encode: false })),
 
 }
 
@@ -357,8 +364,6 @@ export const TreeSelect = (props) => {
   const values = props.values && props.values.map((item, i) => <TreeNode value={item.id && item.id.toString()} title={item.name} key={i} />) || null
   return <_TreeSelect {...options}>{values}</_TreeSelect>
 }
-
-
 export class TreeSelectRemote extends Component {
 
   constructor(props) {
@@ -383,11 +388,11 @@ export class TreeSelectRemote extends Component {
     const url = filter && `v1/statistics/filters?name=${filter}` || target
     api.get(url, {
       params: {
-        'per-page': 999,
+        'per-page': 100,
       }
     })
     .then(response => {
-      if(filter == 'devices') {
+      if(!Array.isArray(response.data) && typeof response.data === 'object') {
         const tmp = Object.keys(response.data).map(key => {
           return { id: key, name: response.data[key] }
         })
