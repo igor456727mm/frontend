@@ -64,7 +64,7 @@ const icons = {
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17"><desc>  Created with Sketch.</desc><g fill="none"><g fill="#7F8FA4"><path d="M8 0.4C3.6 0.4 0 4 0 8.4 0 12.8 3.6 16.4 8 16.4 12.4 16.4 16 12.8 16 8.4 16 4 12.4 0.4 8 0.4L8 0.4ZM9.7 3.2L9.9 2.7C9.9 2.4 10.1 2.3 10.3 2.2 10.5 2.1 10.8 2.1 11 2.2 12.4 2.8 13.6 4 14.3 5.5 14.4 5.7 14.4 5.9 14.3 6.1 14.2 6.3 14 6.5 13.7 6.6L13.2 6.7C12.9 6.8 12.6 6.6 12.4 6.3 11.9 5.3 11.1 4.5 10.1 4 9.8 3.9 9.6 3.5 9.7 3.2L9.7 3.2 9.7 3.2ZM1.7 5.4C2.4 4 3.6 2.8 5 2.1 5.3 2 5.5 2 5.7 2.1 5.9 2.3 6.1 2.4 6.1 2.7L6.3 3.2C6.3 3.5 6.2 3.9 5.9 4 4.9 4.5 4.1 5.3 3.6 6.3 3.4 6.6 3.1 6.8 2.7 6.7L2.2 6.5C2 6.5 1.8 6.3 1.7 6.1 1.6 5.9 1.6 5.7 1.7 5.5L1.7 5.5 1.7 5.4ZM6.3 13.7L6.1 14.2C6.1 14.4 5.9 14.6 5.7 14.7 5.5 14.8 5.2 14.8 5 14.7 3.6 14 2.4 12.8 1.7 11.4 1.6 11.2 1.6 10.9 1.7 10.7 1.8 10.5 2 10.3 2.3 10.3L2.8 10.2C3.1 10.1 3.4 10.2 3.6 10.5 4.1 11.5 4.9 12.3 5.9 12.8 6.2 13 6.4 13.3 6.3 13.7L6.3 13.7 6.3 13.7ZM4.2 8.4C4.2 6.3 5.9 4.6 8 4.6 10.1 4.6 11.8 6.3 11.8 8.4 11.8 10.5 10.1 12.3 8 12.3 5.9 12.3 4.2 10.5 4.2 8.4L4.2 8.4 4.2 8.4ZM14.3 11.4C13.6 12.8 12.4 14 11 14.7 10.7 14.8 10.5 14.8 10.3 14.7 10.1 14.6 9.9 14.4 9.9 14.2L9.7 13.7C9.7 13.3 9.8 13 10.1 12.8 11.1 12.3 11.9 11.5 12.4 10.5 12.6 10.2 12.9 10.1 13.3 10.1L13.8 10.3C14 10.3 14.2 10.5 14.3 10.7 14.4 10.9 14.4 11.2 14.3 11.4L14.3 11.4 14.3 11.4Z"/></g></g></svg>
   ),
   platforms: (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15"><title>  Icon</title><desc>  Created with Sketch.</desc><g fill="none"><g style={{'stroke-width':2, stroke: '#7F8FA4'}}><g transform="translate(-30 -505)translate(31 506)"><rect x="3" y="3" width="11" height="10" rx="1"/><polyline points="0 6 0 0 8 0" stroke-linejoin="round"/></g></g></g></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15"><title>  Icon</title><desc>  Created with Sketch.</desc><g fill="none"><g style={{'strokeWidth':2, stroke: '#7F8FA4'}}><g transform="translate(-30 -505)translate(31 506)"><rect x="3" y="3" width="11" height="10" rx="1"/><polyline points="0 6 0 0 8 0" strokeLinejoin="round"/></g></g></g></svg>
   )
 }
 
@@ -272,7 +272,7 @@ class App extends Component {
                   <li><NavLink to="/platforms">{icons.platforms} {t('menu.platforms')}</NavLink></li>
                   <li><NavLink to="/offers">{icons.products} {t('menu.offers')}</NavLink></li>
                   {/* <li><NavLink to="/promo">{icons.promo} {t('menu.promo')}</NavLink></li> */}
-                  <li><NavLink to="/stats">{icons.stats} {t('menu.stats')}</NavLink></li> 
+                  <li><NavLink to="/stats">{icons.stats} {t('menu.stats')}</NavLink></li>
                   <li><NavLink to="/users">{icons.support} Пользователи</NavLink></li>
                   <li><NavLink to="/finance">{icons.finance} {t('menu.finance')}</NavLink></li>
                   <li><NavLink to="/tickets">{icons.support} {t('menu.support')}</NavLink></li>

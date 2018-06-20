@@ -4,24 +4,25 @@ import { Input, Button, Form, message } from 'antd'
 import axios from 'axios'
 import qs from 'qs'
 import api from './Api'
-import { domain } from '../../package.json'
+import { domain, cookie_prefix } from '../../package.json'
 import { t } from './Helpers'
 
 const Auth = {
   check: async () => {
-    const { access_token, refresh_token } = Cookies.get()
+    const access_token = Cookies.get(`${cookie_prefix}_access_token`)
+    const refresh_token = Cookies.get(`${cookie_prefix}_refresh_token`)
     if(!refresh_token) return Auth.exit('refresh_token отсутствует')
     if(!access_token) return await Auth.refreshToken()
     return true
   },
   refreshToken: async () => {
-    const { refresh_token } = Cookies.get()
+    const refresh_token = Cookies.get(`${cookie_prefix}_refresh_token`)
     if(!refresh_token) return Auth.exit('refresh_token отсутствует')
     return await axios.post(`https://${domain}/auth/?act=refreshAccessToken`, qs.stringify({ access_token: refresh_token }))
     .then(response => {
       const { access_token } = response.data
       if(!access_token) return Auth.exit('обновление токена не дало access_token')
-      Cookies.set('access_token', access_token, { expires: 1 / 24 })
+      Cookies.set(`${cookie_prefix}_access_token`, access_token, { expires: 1 / 24 })
       return access_token
     })
     .catch(() => {
@@ -33,9 +34,9 @@ const Auth = {
     .then(response => {
       const { access_token, refresh_token, user_id } = response.data
       if(!access_token || !refresh_token) return false
-      Cookies.set('access_token', access_token, { expires: 1 / 24 })
-      Cookies.set('refresh_token', refresh_token, { expires: 30 })
-      Cookies.set('user_id', user_id, { expires: 365 })
+      Cookies.set(`${cookie_prefix}_access_token`, access_token, { expires: 1 / 24 })
+      Cookies.set(`${cookie_prefix}_refresh_token`, refresh_token, { expires: 30 })
+      Cookies.set(`${cookie_prefix}_user_id`, user_id, { expires: 365 })
       return true
     })
     .catch(e => {
@@ -44,16 +45,16 @@ const Auth = {
   },
   exit: (message) => {
     console.log(message)
-    const keys = ['access_token', 'refresh_token', 'user_id']
+    const keys = [`${cookie_prefix}_access_token`, `${cookie_prefix}_refresh_token`, `${cookie_prefix}_user_id`]
     keys.forEach(key => {
       Cookies.remove(key, { domain: `.${domain}` })
       Cookies.remove(key)
     })
     window.dispatchEvent(new Event('user.exit'))
+    if(window.location.hostname !== 'localhost') window.location = `http://${domain}`
     return false
   }
 }
-
 class _AuthForm extends Component {
 
   constructor(props) {

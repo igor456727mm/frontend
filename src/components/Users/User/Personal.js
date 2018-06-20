@@ -5,6 +5,7 @@ import * as Cookies from 'js-cookie'
 import { connect } from 'react-redux'
 import api from '../../../common/Api'
 import Helpers, { t, pick, flatten } from '../../../common/Helpers'
+import { domain, cookie_prefix } from '../../../../package.json'
 
 class Personal extends Component {
 
@@ -116,7 +117,7 @@ class Personal extends Component {
                 <Upload
                   onChange={this._onUpload}
                   name="image"
-                  action={`https://file.yb.partners/v1/uploads?access_token=${Cookies.get('access_token')}`}
+                  action={`https://file.yb.partners/v1/uploads?access_token=${Cookies.get(cookie_prefix+'access_token')}`}
                   showUploadList={false}
                   listType="picture-card"
                   className="avatar-uploader"

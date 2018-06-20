@@ -10,9 +10,11 @@ import api from '../../common/Api'
 import * as Feather from 'react-feather'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import { domain, cookie_prefix } from '../../../package.json'
+
+
 
 const Icons = {}
-
 class _Landing extends Component {
 
   constructor(props) {
@@ -595,7 +597,7 @@ class Offer extends Component {
                     <Upload
                       onChange={this._onUploadLogo}
                       name="image"
-                      action={`https://file.yb.partners/v1/uploads?access_token=${Cookies.get('access_token')}`}
+                      action={`https://file.yb.partners/v1/uploads?access_token=${Cookies.get(cookie_prefix + '_access_token')}`}
                       showUploadList={false}
                       listType="picture-card"
                       className="avatar-uploader" >

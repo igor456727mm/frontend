@@ -2,6 +2,7 @@ import axios from 'axios'
 import Auth from './Auth'
 import * as Cookies from 'js-cookie'
 import moment from 'moment'
+import { domain, cookie_prefix } from '../../package.json'
 
 const api = axios.create({
   baseURL: 'https://admin-api.yb.partners',
@@ -11,7 +12,7 @@ const utcOffset = moment().utcOffset()
 
 // добавление токена при request!
 api.interceptors.request.use(config => {
-  const access_token = Cookies.get('access_token')
+  const access_token = Cookies.get(`${cookie_prefix}_access_token`)
   config.headers['Authorization'] = `Bearer ${access_token}`
   config.headers['Accept-Language'] = Cookies.get('lang')
   config.headers['Time-Offset'] = utcOffset

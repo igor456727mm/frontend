@@ -260,7 +260,7 @@ class Dashboard extends Component {
           </div>
         </div>
         <div className="content__sidebar">
-          
+
           <News />
         </div>
       </div>
