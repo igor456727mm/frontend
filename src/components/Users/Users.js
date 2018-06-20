@@ -2,11 +2,53 @@ import React, { Component } from 'react'
 import { Form, Table, Select, Input, DatePicker, Button, message } from 'antd'
 import moment from 'moment'
 import qs from 'qs'
+import * as Cookies from 'js-cookie'
 import { Link } from 'react-router-dom'
 import Helpers, { Filters, t, pick, clean, disabledDate } from '../../common/Helpers'
 import api from '../../common/Api'
+import { domain } from '../../../package.json'
 
 const Icons = {}
+
+class Login extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      isLoading: false,
+    }
+  }
+
+  _getAccess = () => {
+    const { user_id } = this.props
+    this.setState({ isLoading: true })
+    api.post(`/v1/users/${user_id}/generate-access-token`)
+    .then(response => {
+      const params = { expires: 1 / 24, domain: `.${domain}` }
+
+      Cookies.set('access_token', response.data.access_token, params)
+      Cookies.set('refresh_token', 1, params)
+      Cookies.set('user_id', user_id, params)
+      Cookies.set('isManager', 1, params)
+
+      this.setState({ isLoading: false })
+      window.open(`https://app.${domain}`, '_blank')
+    })
+    .catch(e => {
+      this.setState({ isLoading: false })
+      Helpers.errorHandler(e)
+    })
+  }
+
+  render() {
+    const { isLoading } = this.state
+    return (
+      <Button onClick={this._getAccess}>{isLoading && Helpers.spinner()} Войти</Button>
+    )
+  }
+
+}
+
 
 class _Filter extends Component {
 
@@ -90,6 +132,13 @@ class Users extends Component {
           dataIndex: 'status',
           render: text => Helpers.renderStatus(text, this.state.statuses),
           sorter: true,
+        }, {
+          render: (text, row) => (
+            <div className="table__actions">
+              <span><Link to={`/stats?group=action_day&q[webmaster_id][equal]=${row.id}`} className="ant-btn">Статистика пользователя</Link></span>
+              <span><Login user_id={row.id} /></span>
+            </div>
+          )
         }
       ]
     }

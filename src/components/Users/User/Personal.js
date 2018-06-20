@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, InputNumber, Button, Select, message, Upload, Icon } from 'antd'
+import { Form, Input, InputNumber, Button, Select, message, Checkbox, Upload, Icon } from 'antd'
 import qs from 'qs'
 import * as Cookies from 'js-cookie'
 import { connect } from 'react-redux'
@@ -17,6 +17,8 @@ class Personal extends Component {
         email: null,
         userData: {
           contacts: {},
+          confirmed: false,
+          about: null,
         }
       },
       avatar_upload_image_id: null,
@@ -75,7 +77,6 @@ class Personal extends Component {
         this.setState({ iconLoading: false })
         message.success(t('message.save'))
         //if(this.state.avatar_upload_image_id || data.userData.currency_id !== currency_id ) Helpers.checkUserData()
-        Helpers.checkUserData()
       })
       .catch(e => {
         this.setState({ iconLoading: false })
@@ -103,10 +104,12 @@ class Personal extends Component {
             <div className="col-md-4">
               {this.validator('login', 'Логин', <Input size="large" />, [{ required: true }] )}
               {this.validator('email', t('field.email'), <Input size="large" />, [{ required: true }] )}
+              {this.validator('userData.confirmed', 'Верифицирован(а)', <Checkbox size="large" /> )}
             </div>
             <div className="col-md-4">
               {this.validator('name', t('field.uname'), <Input size="large" /> )}
               {this.validator('userData.contacts.phone', t('field.phone'), <Input size="large" /> )}
+              {this.validator('userData.contacts.skype', 'Skype', <Input size="large" /> )}
             </div>
             <div className="col-md-4">
               {this.validator('avatar_upload_image_id', t('field.avatar'), (
@@ -121,6 +124,7 @@ class Personal extends Component {
                   {new_avatar ? <img src={new_avatar} /> : (data.userData && data.userData.avatar_image ? <img src={data.userData.avatar_image} /> : <Icon type={'plus'} /> )}
                 </Upload>
               ))}
+              {this.validator('userData.about', 'About', <Input.TextArea rows={5} disabled size="large" /> )}
             </div>
           </div>
           <Form.Item className="form__item-last">
