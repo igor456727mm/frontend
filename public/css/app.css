@@ -25368,3 +25368,6 @@ th.ant-table-column-has-filters > span {
 .ant-modal-body h1 {
   font-size: 20px;
 }
+body .ql-editor {
+  height: 200px;
+}

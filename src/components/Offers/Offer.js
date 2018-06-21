@@ -82,7 +82,7 @@ class _Landing extends Component {
     const { data } = this.props
     return (
       <span>
-        {isEdit && <span onClick={this._toggle}>{Icons.settings}</span> || <Button style={{ float: 'right' }} onClick={this._toggle}>Добавить</Button>}
+        {isEdit && <span onClick={this._toggle}>Изменить</span> || <Button style={{ float: 'right' }} onClick={this._toggle}>Добавить</Button>}
         <Modal
           visible={isVisible}
           footer={null}
@@ -155,7 +155,7 @@ class _Action extends Component {
         api.patch(`/v1/actions/${data.id}`, qs.stringify(values))
         .then(response => {
           this.setState({ iconLoading: false })
-          message.success(t('Цель сохранена'))
+          message.success(t('Действие сохранено'))
           window.dispatchEvent(new Event('actions.fetch'))
           this._toggle()
         })
@@ -168,7 +168,7 @@ class _Action extends Component {
         api.post(`/v1/actions`, qs.stringify(values))
         .then(response => {
           this.setState({ iconLoading: false })
-          message.success(t('Цель добавлена'))
+          message.success(t('Действие добавлено'))
           window.dispatchEvent(new Event('actions.fetch'))
           form.resetFields()
           this._toggle()
@@ -233,12 +233,12 @@ class _Action extends Component {
 
     return (
       <span>
-        {isEdit && <span onClick={this._toggle}>{Icons.settings}</span> || <Button style={{ float: 'right' }} onClick={this._toggle}>Добавить</Button>}
+        {isEdit && <span onClick={this._toggle}>Изменить</span> || <Button style={{ float: 'right' }} onClick={this._toggle}>Добавить</Button>}
         <Modal
           visible={isVisible}
           footer={null}
           onCancel={this._toggle}>
-          <h1>{isEdit ? `Цель #${data.id}` : 'Добавление цели'}</h1>
+          <h1>{isEdit ? `Действие #${data.id}` : 'Добавление действия'}</h1>
           <Form>
             {this.validator('name', t('field.name'), <Input size="large" />, [{ required: true }] )}
             {this.validator('description', 'Описание', <Input size="large" /> )}
@@ -284,7 +284,7 @@ class Offer extends Component {
       isLoading: false,
       data: {
         id: id,
-        description: null,
+        // description: null,
         status: 'active',
         visible: 1,
       },
@@ -297,7 +297,7 @@ class Offer extends Component {
       columns: {
         actions: [
           {
-            title: 'Цели',
+            title: 'Действия',
             dataIndex: 'name',
             render: (text, row) => {
               return (
@@ -339,7 +339,7 @@ class Offer extends Component {
               <div className="table__actions" style={{ textAlign: 'right' }}>
                 <Action data={row} offer_id={id} currency_id={this.props.form.getFieldValue('currency_id')} />
                 <Popconfirm title="Удалить" onConfirm={() => this._onDeleteAction(row.id)} okText="Да" cancelText="Нет">
-                  <span className="table__actions-delete">{Icons.delete}</span>
+                  <span className="table__actions-delete">Удалить</span>
                 </Popconfirm>
               </div>
             )}
@@ -366,10 +366,10 @@ class Offer extends Component {
               const link = `https://webmaster-api.yb.partners/v1/landings/${row.id}/open`
               return (
               <div className="table__actions">
-                <span><a href={link} target="_blank">{Icons.eye}</a></span>
+                {/* <span><a href={link} target="_blank">{Icons.eye}</a></span> */}
                 <Landing data={row} offer_id={id} />
                 <Popconfirm title="Удалить" onConfirm={() => this._onDeleteLanding(row.id)} okText="Да" cancelText="Нет">
-                  <span className="table__actions-delete">{Icons.delete}</span>
+                  <span className="table__actions-delete">Удалить</span>
                 </Popconfirm>
               </div>
             )}
@@ -558,7 +558,7 @@ class Offer extends Component {
     api.delete(`/v1/actions/${id}`)
     .then(response => {
       window.dispatchEvent(new Event('actions.fetch'))
-      message.success(`Цель #${id} удалена`)
+      message.success(`Действие #${id} удалена`)
     })
   }
 
@@ -609,7 +609,7 @@ class Offer extends Component {
 
               <div className="ant-row ant-form-item">
                 <h4>Описание</h4>
-                {((!isLoading && data.description) || (!isLoading && isNew)) && <ReactQuill ref="description" defaultValue={data.description} />}
+                {((!isLoading && data.hasOwnProperty('description')) || (!isLoading && isNew)) && <ReactQuill ref="description" defaultValue={data.description} />}
               </div>
             </div>
 
@@ -617,6 +617,7 @@ class Offer extends Component {
             {!isNew && (
               <Table
                 className="offer__actions"
+                style={{ margin: '30px 0'}}
                 columns={columns.actions}
                 rowKey={item => item.id}
                 dataSource={actions}
