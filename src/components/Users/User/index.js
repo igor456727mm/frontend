@@ -7,7 +7,7 @@ import Helpers, { Filters, t, pick, clean, disabledDate } from '../../../common/
 import api from '../../../common/Api'
 
 import Personal from './Personal'
-import Bills from './Bills'
+// import Bills from './Bills'
 
 const Icons = {}
 
@@ -33,7 +33,7 @@ class User extends Component {
     return (
       <div>
         <Personal user_id={id} />
-        <Bills user_id={id} />
+
       </div>
     )
   }

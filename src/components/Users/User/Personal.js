@@ -56,6 +56,8 @@ class Personal extends Component {
       options.initialValue = tmp[name]
     }
 
+    if(name == 'userData.confirmed') options.valuePropName = 'checked'
+
     return (
       <Form.Item>
         {label && <h4>{label}</h4>}
@@ -111,6 +113,7 @@ class Personal extends Component {
               {this.validator('name', t('field.uname'), <Input size="large" /> )}
               {this.validator('userData.contacts.phone', t('field.phone'), <Input size="large" /> )}
               {this.validator('userData.contacts.skype', 'Skype', <Input size="large" /> )}
+              {this.validator('userData.contacts.telegram', 'Telegram', <Input size="large" /> )}
             </div>
             <div className="col-md-4">
               {this.validator('avatar_upload_image_id', t('field.avatar'), (
