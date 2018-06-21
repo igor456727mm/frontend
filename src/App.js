@@ -278,7 +278,7 @@ class App extends Component {
                   <li><NavLink to="/tickets">{icons.support} {t('menu.support')}</NavLink></li>
                 </ul>
                 <div className="sidebar__copyright">
-                ©2018 YourBet partners.
+                ©2018 gambling.pro
                 <br />All rights reserved.
                 </div>
               </div>
