@@ -490,7 +490,7 @@ class Offer extends Component {
     const { form } = this.props
     form.validateFieldsAndScroll((err, values) => {
       if (err) return
-      values = clean(values)
+      // values = clean(values)
 
       // logo
       delete values.logo_upload_image_id
