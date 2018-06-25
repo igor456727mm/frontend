@@ -16,6 +16,7 @@ class Personal extends Component {
       data: {
         name: null,
         email: null,
+        status: 'waiting_confirmation',
         userData: {
           contacts: {},
           confirmed: false,
@@ -74,6 +75,7 @@ class Personal extends Component {
       if (err) return
       delete values.avatar_upload_image_id
       if(this.state.avatar_upload_image_id) values.userData['avatar_upload_image_id'] = this.state.avatar_upload_image_id
+      values.userData.confirmed = values.userData.confirmed ? 1 : 0
       this.setState({ iconLoading: true })
       api.patch(`/v1/users/${data.id}`, qs.stringify(values))
       .then(response => {
@@ -107,6 +109,12 @@ class Personal extends Component {
             <div className="col-md-4">
               {this.validator('login', 'Логин', <Input size="large" />, [{ required: true }] )}
               {this.validator('email', t('field.email'), <Input size="large" />, [{ required: true }] )}
+              {this.validator('status', 'Статус', (
+                <Select size="large">
+                  <Select.Option key={0} value="waiting_confirmation">Ожидает подтверждения</Select.Option>
+                  <Select.Option key={1} value="active">Активен</Select.Option>
+                </Select>
+              ), [{ required: true }] )}
               {this.validator('userData.confirmed', 'Верифицирован(а)', <Checkbox size="large" /> )}
             </div>
             <div className="col-md-4">
