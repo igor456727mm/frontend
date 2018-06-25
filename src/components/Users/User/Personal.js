@@ -115,7 +115,11 @@ class Personal extends Component {
                   <Select.Option key={1} value="active">Активен</Select.Option>
                 </Select>
               ), [{ required: true }] )}
-              {this.validator('userData.confirmed', 'Верифицирован(а)', <Checkbox size="large" /> )}
+              <Form.Item>
+                <h4>Реферальная ссылка</h4>
+                <Input disabled size="large" value={`https://gambling.pro?ref_id=${data.id}`} />
+              </Form.Item>
+              {this.validator('userData.confirmed', '', <Checkbox size="large">Верифицирован</Checkbox> )}
             </div>
             <div className="col-md-4">
               {this.validator('name', t('field.uname'), <Input size="large" /> )}
@@ -140,7 +144,7 @@ class Personal extends Component {
             </div>
           </div>
           <Form.Item className="form__item-last">
-            <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>{t('button.save')}</Button>
+            <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>Сохранить</Button>
           </Form.Item>
         </Form>
       </div>

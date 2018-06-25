@@ -530,6 +530,14 @@ class Offer extends Component {
     })
   }
 
+  _onDelete = () => {
+    const { data } = this.state
+    api.delete(`/v1/offers/${data.id}`)
+    .then(response => {
+      window.location = `/offers`
+    })
+  }
+
   _onUploadLogo = (e) => {
     const data = e.file.response
     if(!data) return
@@ -646,9 +654,20 @@ class Offer extends Component {
                 />
             ) || null}
 
-            <Form.Item style={{ marginTop: '24px' }}>
-              <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
-            </Form.Item>
+            <div className="flex" style={{ marginTop: '24px' }}>
+
+              <Form.Item>
+                <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
+              </Form.Item>
+
+              {!isNew && (
+                <Form.Item>
+                  <Button type="danger" htmlType="submit" size="large" style={{ marginLeft: '24px' }} onClick={this._onDelete}>Удалить</Button>
+                </Form.Item>
+              )}
+
+            </div>
+
 
         </div>
         <div className="content__sidebar">
