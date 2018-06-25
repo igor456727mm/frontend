@@ -228,6 +228,11 @@ class Stats extends Component {
         title: 'Revshare',
         dataIndex: 'revshare_income',
         sorter: true
+      }, {
+        title: (<div className="stats__table-th-title">Доход<div>CPA / Revshare</div></div>),
+        dataIndex: 'cpa_confirmed_commission',
+        render: (text, { cpa_confirmed_commission: cpa, revshare_comission: revshare }) => `${cpa || 0} $ / ${revshare || 0} $`,
+        sorter: true,
       }
     ]
 

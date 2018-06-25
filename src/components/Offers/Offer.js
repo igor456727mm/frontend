@@ -11,6 +11,7 @@ import * as Feather from 'react-feather'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { domain, cookie_prefix } from '../../../package.json'
+import IndividualConditions from './Offer/IndividualConditions'
 
 
 
@@ -168,7 +169,7 @@ class _Action extends Component {
         api.post(`/v1/actions`, qs.stringify(values))
         .then(response => {
           this.setState({ iconLoading: false })
-          message.success(t('Действие добавлено'))
+          message.success(t('Условие добавлено'))
           window.dispatchEvent(new Event('actions.fetch'))
           form.resetFields()
           this._toggle()
@@ -238,11 +239,10 @@ class _Action extends Component {
           visible={isVisible}
           footer={null}
           onCancel={this._toggle}>
-          <h1>{isEdit ? `Действие #${data.id}` : 'Добавление действия'}</h1>
+          <h1>{isEdit ? `Условие #${data.id}` : 'Добавление условия'}</h1>
           <Form>
             {this.validator('name', t('field.name'), <Input size="large" />, [{ required: true }] )}
-            {this.validator('description', 'Описание', <Input size="large" /> )}
-            {this.validator('alias', 'Код действия (например: reg или dep)', <Input size="large" /> )}
+            {this.validator('alias', 'Код действия (например: reg, first_dep или dep)', <Input size="large" /> )}
             {this.validator('pay_conditions.pay_type', 'Ставка', (
               <Select size="large">
                 <Select.Option value="fix">Фиксированная</Select.Option>
@@ -297,7 +297,7 @@ class Offer extends Component {
       columns: {
         actions: [
           {
-            title: 'Действия',
+            title: 'Условия',
             dataIndex: 'name',
             render: (text, row) => {
               return (
@@ -627,7 +627,6 @@ class Offer extends Component {
                 onChange={this.handleTableChange} />
             )}
 
-
             {!isNew && (
               <Table
                 className="offer__landings streams__form-landings"
@@ -639,6 +638,13 @@ class Offer extends Component {
                 locale={{ emptyText: Helpers.emptyText }}
                 onChange={this.handleTableChange} />
             )}
+
+            {!isNew && actions.length && (
+              <IndividualConditions
+                offer_id={data.id}
+                actions={actions}
+                />
+            ) || null}
 
             <Form.Item style={{ marginTop: '24px' }}>
               <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
