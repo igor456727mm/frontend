@@ -605,7 +605,7 @@ class Offer extends Component {
                     <Upload
                       onChange={this._onUploadLogo}
                       name="image"
-                      action={`https://file.yb.partners/v1/uploads?access_token=${Cookies.get(cookie_prefix + '_access_token')}`}
+                      action={`https://file-s1.gambling.pro/v1/uploads?access_token=${Cookies.get(cookie_prefix + '_access_token')}`}
                       showUploadList={false}
                       listType="picture-card"
                       className="avatar-uploader" >
