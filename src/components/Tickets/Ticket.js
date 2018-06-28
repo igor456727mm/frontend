@@ -108,7 +108,7 @@ class Ticket extends Component {
   }
 
   fetchMessages = () => {
-    const { id } = this.state
+    const { id } = this.state.data
     api.get('/v1/ticket-messages', {
       params: {
         'sort': 'id',
@@ -135,7 +135,7 @@ class Ticket extends Component {
     const { messages } = this.state
     let { avatar_image, user_id } = this.props.user
     return messages.map(item => {
-      const isSelf = item.user_id == parseInt(user_id)
+      const isSelf = item.user_id == 1
       const cls = isSelf && 'ticket__message-self' || ''
       const img = isSelf && avatar_image || '/img/support.jpg'
       return (
