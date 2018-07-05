@@ -117,6 +117,9 @@ class Stats extends Component {
       render: (text, row, i) => {
         if(data.length - 1 == i) return t('field.total')
         switch(group) {
+          case 'webmaster_id':
+            text = row.webmaster && <span><a href={`/users/${row.webmaster.id}`} target="_blank">{row.webmaster.login}</a></span> || '-'
+            break;
           case 'offer_id':
             text = row.offer && <span><a href={`/offers/${row.offer.id}`} target="_blank">{row.offer.name}</a></span> || '-'
             break;
@@ -191,7 +194,7 @@ class Stats extends Component {
         dataIndex: 'click_count',
         sorter: true
       }, {
-        title: t('field.reg_count'),
+        title: 'Рег',
         dataIndex: 'reg_count',
         sorter: true
       }, {
@@ -204,13 +207,19 @@ class Stats extends Component {
         dataIndex: 'dep_count',
         render: (text, { dep_count, dep_sum }) => `${dep_count} / ${dep_sum}`,
         sorter: true,
-      }, {
+      }, /* {
         title: t('field.player_lose'),
         dataIndex: 'player_lose_sum',
         sorter: true,
       }, {
         title: t('field.player_out'),
         dataIndex: 'player_out_sum',
+        sorter: true,
+      }, */
+      {
+        title: (<div className="stats__table-th-title">Активность<div>{t('field.player_lose')} / {t('field.player_out')}</div></div>),
+        dataIndex: 'player_lose_sum',
+        render: (text, { player_lose_sum, player_out_sum }) => `${player_lose_sum} / ${player_out_sum}`,
         sorter: true,
       }, {
         title: t('field.player_promo'),

@@ -67,10 +67,11 @@ class _Filter extends Component {
             <div className="col-md-2">
               {this.validator('group', t('field.group'), (
                 <Select size="large" getPopupContainer={Helpers.getPopupContainer()}>
-                  <Select.Option key="action_hour">{t('action_hour')}</Select.Option>
-                  <Select.Option key="action_day">{t('action_day')}</Select.Option>
-                  <Select.Option key="action_week">{t('action_week')}</Select.Option>
-                  <Select.Option key="action_month">{t('action_month')}</Select.Option>
+                  <Select.Option key="action_hour">{t('field.action_hour')}</Select.Option>
+                  <Select.Option key="action_day">{t('field.action_day')}</Select.Option>
+                  <Select.Option key="action_week">{t('field.action_week')}</Select.Option>
+                  <Select.Option key="action_month">{t('field.action_month')}</Select.Option>
+                  <Select.Option key="webmaster_id">{t('field.webmaster_id')}</Select.Option>
                   <Select.Option key="offer_id">{t('field.offer')}</Select.Option>
                   <Select.Option key="country_id">{t('field.country')}</Select.Option>
                   <Select.Option key="device_type_id">{t('field.device')}</Select.Option>

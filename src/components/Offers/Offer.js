@@ -352,7 +352,7 @@ class Offer extends Component {
           }, {
             title: 'URL',
             dataIndex: 'url',
-            render: (text) => text && <a href={text} target="_blank">{text}</a> || '-'
+            render: (text) => text && <a href={text} target="_blank" className="landing_url">{text}</a> || '-'
           }, {
             title: 'CR',
             dataIndex: 'sys_cr',
