@@ -7,6 +7,9 @@ import api from '../../../common/Api'
 import Helpers, { t, pick, flatten } from '../../../common/Helpers'
 import { domain, cookie_prefix } from '../../../../package.json'
 
+console.log(Cookies.get());
+console.log(cookie_prefix);
+
 class Personal extends Component {
 
   constructor(props) {
@@ -132,7 +135,7 @@ class Personal extends Component {
                 <Upload
                   onChange={this._onUpload}
                   name="image"
-                  action={`https://file-s1.gambling.pro/v1/uploads?access_token=${Cookies.get(cookie_prefix+'access_token')}`}
+                  action={`https://file-s1.gambling.pro/v1/uploads?access_token=${Cookies.get(cookie_prefix+'_access_token')}`}
                   showUploadList={false}
                   listType="picture-card"
                   className="avatar-uploader"

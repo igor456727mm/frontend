@@ -179,6 +179,49 @@ export const Events = {
 
 export const disabledDate = (current) => current && current > moment().endOf('day')
 
+// del
+export const parseQueryFiltersValues = (name) => {
+  const params = queryParams()
+
+  let key
+  let value
+
+  switch(name) {
+    case 'country_id':
+    case 'device_type_id':
+    case 'landing_id':
+    case 'platform_id':
+    case 'offer_id':
+    case 'sub_id_1':
+    case 'sub_id_2':
+    case 'sub_id_3':
+    case 'sub_id_4':
+    case 'sub_id_5':
+      key = `q[${name}][in]`
+      value = params[key] && params[key].split(',')
+      break;
+    case 'date':
+    case 'created_at':
+      key =  `q[${name}][between]`
+      const _value = params[key] && params[key].split(',')
+      if(_value) value = [ moment.unix(_value[0]), moment.unix(_value[1]) ]
+      break;
+    case 'name':
+      key = `q[${name}][like]`
+      value = params[key]
+      break;
+    case 'group':
+      key = name
+      value = params[key]
+      break;
+    default:
+      key = `q[${name}][equal]`
+      value = params[key]
+  }
+  return value
+}
+
+
 // translator
 export const t = (key) => {
   const { current, translations } = store.getState().lang
