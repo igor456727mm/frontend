@@ -503,6 +503,7 @@ class Offer extends Component {
 
       // description
       values.description = this.refs.description && this.refs.description.getEditorContents()
+      values.short_description = this.refs.short_description && this.refs.short_description.getEditorContents()
 
 
       if(isNew) {
@@ -545,13 +546,6 @@ class Offer extends Component {
       logo_upload_image_id: data.id,
       new_logo: data.server + data.patch,
     })
-  }
-
-  _onChangeDescription = (text, e, t) => {
-    console.log(text, e, t);
-    //const { data } = this.state
-    //data.text = text
-    //this.setState({ data: data })
   }
 
   _onDeleteLanding = (id) => {
@@ -598,7 +592,14 @@ class Offer extends Component {
                         {this.validator('url', 'URL', <Input size="large" /> )}
                     </div>
                   </div>
-                  {this.validator('short_description', 'Краткое описание', <Input size="large" /> )}
+                  {/* this.validator('short_description', 'Краткое описание', <Input size="large" /> ) */}
+
+                  <div className="ant-row ant-form-item">
+                    <h4>Краткое описание</h4>
+                    {((!isLoading && data.hasOwnProperty('short_description')) || (!isLoading && isNew)) && <ReactQuill ref="short_description" defaultValue={data.short_description} />}
+                  </div>
+
+
                 </div>
                 <div className="col-md-2">
                   {this.validator('logo_upload_image_id', 'Логотип', (

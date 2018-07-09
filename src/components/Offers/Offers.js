@@ -121,6 +121,7 @@ class Offers extends Component {
           render: text => <img src={text} />
         }, {
           dataIndex: 'name',
+          className:'nobreak',
           width: 220,
           render: (text, row) => <Link to={`/offers/${row.id}`}>{text}</Link>,
         }, {
