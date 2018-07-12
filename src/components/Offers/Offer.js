@@ -129,9 +129,14 @@ class _Action extends Component {
         options.initialValue = tmp[name]
       }
 
-      if(['pay_conditions.fields.commission_percent', 'pay_conditions.fields.revshare_percent'].includes(name) && tmp[name]) {
+      if(['pay_conditions.fields.commission_percent', 'pay_conditions.fields.site_revshare_percent', 'pay_conditions.fields.revshare_percent'].includes(name) && tmp[name]) {
         options.initialValue = parseFloat(tmp[name]) * 100
       }
+
+
+
+    } else if(initialValue) {
+      options.initialValue = initialValue
     }
 
     return (
@@ -151,12 +156,13 @@ class _Action extends Component {
 
       if(values.pay_conditions.fields.commission_percent) values.pay_conditions.fields.commission_percent = values.pay_conditions.fields.commission_percent / 100
       if(values.pay_conditions.fields.revshare_percent) values.pay_conditions.fields.revshare_percent = values.pay_conditions.fields.revshare_percent / 100
+      if(values.pay_conditions.fields.site_revshare_percent) values.pay_conditions.fields.site_revshare_percent = values.pay_conditions.fields.site_revshare_percent / 100
 
       if(data && data.id) {
         api.patch(`/v1/actions/${data.id}`, qs.stringify(values))
         .then(response => {
           this.setState({ iconLoading: false })
-          message.success(t('Действие сохранено'))
+          message.success(t('Цель сохранена'))
           window.dispatchEvent(new Event('actions.fetch'))
           this._toggle()
         })
@@ -169,7 +175,7 @@ class _Action extends Component {
         api.post(`/v1/actions`, qs.stringify(values))
         .then(response => {
           this.setState({ iconLoading: false })
-          message.success(t('Условие добавлено'))
+          message.success(t('Цель добавлена'))
           window.dispatchEvent(new Event('actions.fetch'))
           form.resetFields()
           this._toggle()
@@ -184,11 +190,19 @@ class _Action extends Component {
 
   _toggle = () => this.setState({ isVisible: !this.state.isVisible })
 
+  _checkRevshareComission = () => {
+    const { pay_conditions } = this.props.form.getFieldsValue()
+    let { site_revshare_percent = 0, revshare_percent = 0 } = pay_conditions.fields
+    if(isNaN(site_revshare_percent)) site_revshare_percent = 0
+    if(isNaN(revshare_percent)) revshare_percent = 0
+    return (parseInt(site_revshare_percent) - parseInt(revshare_percent))
+  }
+
   render() {
     const { isVisible, iconLoading, isEdit } = this.state
-    const { data, form } = this.props
+    const { data, form, currency_id } = this.props
     const currency = '$'
-
+    // console.log(form.getFieldsValue());
     let fields = null
     const { pay_conditions } = form.getFieldsValue()
     if(pay_conditions && pay_conditions.pay_type) {
@@ -223,8 +237,16 @@ class _Action extends Component {
         case 'revshare':
           fields = (
             <div className="row">
+              <div className="col-md-6">
+                {this.validator('pay_conditions.fields.site_revshare_percent', 'Ревшара сайта', <InputNumber formatter={value => `${value}%`} parser={value => value.replace('%', '')} min={0} max={100} size="large"/>, [], '0' )}
+              </div>
+              <div className="col-md-6">
+                {this.validator('pay_conditions.fields.revshare_percent', 'Ревшара вебмастера', <InputNumber formatter={value => `${value}%`} parser={value => value.replace('%', '')} min={0} max={pay_conditions.fields && pay_conditions.fields.site_revshare_percent || 100} size="large"/>, [], '0' )}
+              </div>
               <div className="col-md-12">
-                {this.validator('pay_conditions.fields.revshare_percent', 'Ревшара', <InputNumber formatter={value => `${value}%`} parser={value => value.replace('%', '')} min={0} max={100} size="large"/>, [], '0' )}
+                <div className="offer_conditions-revshare-text" style={{ color: 'red', marginBottom: '20px' }}>
+                  Комиссия партнерской программы - {this._checkRevshareComission()}%
+                </div>
               </div>
             </div>
           )
@@ -239,10 +261,10 @@ class _Action extends Component {
           visible={isVisible}
           footer={null}
           onCancel={this._toggle}>
-          <h1>{isEdit ? `Условие #${data.id}` : 'Добавление условия'}</h1>
+          <h1>{isEdit ? `Цель #${data.id}` : 'Добавление цели'}</h1>
           <Form>
             {this.validator('name', t('field.name'), <Input size="large" />, [{ required: true }] )}
-            {this.validator('alias', 'Код действия (например: reg, first_dep или dep)', <Input size="large" /> )}
+            {this.validator('alias', 'Код действия (например: reg или dep)', <Input size="large" /> )}
             {this.validator('pay_conditions.pay_type', 'Ставка', (
               <Select size="large">
                 <Select.Option value="fix">Фиксированная</Select.Option>
@@ -257,9 +279,7 @@ class _Action extends Component {
               <div className="col-md-6">
                 {this.validator('pay_conditions.fields.hold', 'Холд', <InputNumber min={0} size="large" /> )}
               </div>
-              <div className="col-md-6">
 
-              </div>
             </div>
 
             <Form.Item className="form__item-last">
