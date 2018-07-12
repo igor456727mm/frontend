@@ -183,7 +183,7 @@ class Withdrawals extends Component {
   }
 
   _onConfirmed = (id) => {
-    api.patch(`/v1/withdrawals/${id}`, qs.stringify({ status: 'confirmed' }))
+    api.patch(`/v1/withdrawals/${id}`, qs.stringify({ status: 'confirmed', currency_id: 1 }))
     .then(response => {
       message.success(`Выплата подтверждена`)
       this.fetch()
@@ -192,7 +192,7 @@ class Withdrawals extends Component {
   }
 
   _onRejected = (id) => {
-    api.patch(`/v1/withdrawals/${id}`, qs.stringify({ status: 'rejected' }))
+    api.patch(`/v1/withdrawals/${id}`, qs.stringify({ status: 'rejected', currency_id: 1 }))
     .then(response => {
       this.fetch()
     })
