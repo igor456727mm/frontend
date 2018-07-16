@@ -85,6 +85,7 @@ class _Filter extends Component {
     return (
       <div className="filter filter__tickets">
         <Form onSubmit={this.handleSubmit}>
+          {this.validator('name', t('field.name'), <Input size="large" allowClear /> )}
           {this.validator('country_id', t('field.targeting'), <TreeSelectRemote target="/v1/countries" /> )}
           {this.validator('category_id', t('field.category'), <TreeSelectRemote target="/v1/categories" /> )}
           <Form.Item>
@@ -111,6 +112,7 @@ class Offers extends Component {
       filters: {},
       pagination: {
         hideOnSinglePage: true,
+        pageSize: 100,
       },
       columns: [
         {
@@ -175,6 +177,7 @@ class Offers extends Component {
       params: {
         sort: '-id',
         page: page,
+        'per-page': 100,
         expand: 'countries,categories',
         ...filters
       }
@@ -201,6 +204,9 @@ class Offers extends Component {
           case 'country_id':
           case 'category_id':
             filters[`q[${key}][in]`] = val.join(',')
+            break;
+          case 'name':
+            filters[`q[${key}][like]`] = val
             break;
           default:
             filters[`q[${key}][equal]`] = val
