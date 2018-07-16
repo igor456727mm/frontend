@@ -138,6 +138,10 @@ class Offers extends Component {
           title: 'EPC',
           dataIndex: 'avg_epc'
         }, {
+          title: 'Приоритет',
+          dataIndex: 'priority',
+          sorter: true,
+        }, {
           render: (text, row) => {
             const categories = row.categories.map(item => item.name)
             return categories.join(',')
@@ -225,7 +229,7 @@ class Offers extends Component {
 
     columns[2].title = t('field.offer')
     columns[3].title = t('field.deductions')
-    columns[7].title = t('field.category')
+    columns[8].title = t('field.category')
 
     return (
       <div>

@@ -696,6 +696,7 @@ class Offer extends Component {
 
             <div className="offer__params-global">
               <h3>Параметры</h3>
+              {this.validator('priority', 'Приоритет выдачи (0-100)', <Input size="large" />)}
               {this.validator('category_ids', 'Категории', <Select mode="multiple" optionFilterProp="name" size="large">{categories.map(item => <Select.Option key={item.id} value={item.id} name={item.name}>{item.name}</Select.Option>)}</Select>)}
               {this.validator('status', 'Статус', <Select size="large">{Object.keys(statuses).map(key => <Select.Option key={key} value={key}>{statuses[key]}</Select.Option>)}</Select> )}
               {this.validator('visible', 'Видимый', <Select size="large"><Select.Option key={1} value={1}>Да</Select.Option><Select.Option key={0} value={0}>Нет</Select.Option></Select> )}
