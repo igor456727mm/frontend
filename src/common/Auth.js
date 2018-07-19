@@ -32,8 +32,8 @@ const Auth = {
   login: async (login, password) => {
     return await axios.post(`https://${domain}/auth/?act=getAccessToken`, qs.stringify({ login: login, password: password }))
     .then(response => {
-      const { access_token, refresh_token, user_id } = response.data
-      if(!access_token || !refresh_token) return false
+      const { access_token, refresh_token, user_id, role } = response.data
+      if(!access_token || !refresh_token || role !== 'admin') return false
       Cookies.set(`${cookie_prefix}_access_token`, access_token, { expires: 1 / 24 })
       Cookies.set(`${cookie_prefix}_refresh_token`, refresh_token, { expires: 30 })
       Cookies.set(`${cookie_prefix}_user_id`, user_id, { expires: 365 })
