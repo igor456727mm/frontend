@@ -7,9 +7,6 @@ import api from '../../../common/Api'
 import Helpers, { t, pick, flatten } from '../../../common/Helpers'
 import { domain, cookie_prefix } from '../../../../package.json'
 
-console.log(Cookies.get());
-console.log(cookie_prefix);
-
 class Personal extends Component {
 
   constructor(props) {
@@ -24,6 +21,8 @@ class Personal extends Component {
           contacts: {},
           confirmed: false,
           about: null,
+          reason_of_ban: null,
+          banned: false,
         }
       },
       avatar_upload_image_id: null,
@@ -60,7 +59,7 @@ class Personal extends Component {
       options.initialValue = tmp[name]
     }
 
-    if(name == 'userData.confirmed') options.valuePropName = 'checked'
+    if(name == 'userData.confirmed' || name == 'userData.banned') options.valuePropName = 'checked'
 
     return (
       <Form.Item>
@@ -79,6 +78,7 @@ class Personal extends Component {
       delete values.avatar_upload_image_id
       if(this.state.avatar_upload_image_id) values.userData['avatar_upload_image_id'] = this.state.avatar_upload_image_id
       values.userData.confirmed = values.userData.confirmed ? 1 : 0
+      values.userData.banned = values.userData.banned ? 1 : 0
       this.setState({ iconLoading: true })
       api.patch(`/v1/users/${data.id}`, qs.stringify(values))
       .then(response => {
@@ -104,6 +104,7 @@ class Personal extends Component {
 
   render() {
     const { iconLoading, new_avatar, data, tariffs } = this.state
+    const values = this.props.form.getFieldsValue()
     return (
       <div className="block profile__personal">
         <h2>Общая информация</h2>
@@ -146,6 +147,18 @@ class Personal extends Component {
               {this.validator('userData.about', 'About', <Input.TextArea rows={5} disabled size="large" /> )}
             </div>
           </div>
+
+          <hr />
+          <div className="row">
+            <div className="col-md-8">
+              {this.validator('userData.reason_of_ban', 'Причина бана', <Input.TextArea rows={5} size="large" /> )}
+              {this.validator('userData.banned', '', <Checkbox size="large">Забанен</Checkbox> )}
+            </div>
+            <div className="col-md-4">
+              {this.validator('userData.comments', 'Заметка о пользователе', <Input.TextArea rows={5} size="large" /> )}
+            </div>
+          </div>
+
           <Form.Item className="form__item-last">
             <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>Сохранить</Button>
           </Form.Item>

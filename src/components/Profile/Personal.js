@@ -18,6 +18,7 @@ class Personal extends Component {
         email: null,
         userData: {
           contacts: {},
+          reason_of_ban: null,
         }
       },
       avatar_upload_image_id: null,
@@ -115,8 +116,11 @@ class Personal extends Component {
             <div className="col-md-6">
               {this.validator('email', t('field.email'), <Input size="large" />, [{ required: true }] )}
               {this.validator('userData[contacts][phone]', t('field.phone'), <Input size="large" /> )}
-            </div>
+            </div>1
           </div>
+
+          reason_of_ban
+
           <Form.Item>
             <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>{t('button.save')}</Button>
           </Form.Item>

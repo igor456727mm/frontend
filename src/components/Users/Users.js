@@ -166,6 +166,7 @@ class Users extends Component {
         sort: pagination.sort || '-id',
         page: pagination.current || 1,
         ...filters,
+
       }
     })
     .then(response => {
