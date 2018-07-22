@@ -5,7 +5,7 @@ import moment from 'moment'
 import { domain, cookie_prefix } from '../../package.json'
 
 const api = axios.create({
-  baseURL: 'https://admin-api.yb.partners',
+  baseURL: 'https://a-api.gambling.pro',
 })
 
 const utcOffset = moment().utcOffset()

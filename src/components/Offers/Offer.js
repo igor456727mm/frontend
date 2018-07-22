@@ -383,7 +383,7 @@ class Offer extends Component {
           }, {
             title: <Landing offer_id={id} />,
             render: (text, row) => {
-              const link = `https://webmaster-api.yb.partners/v1/landings/${row.id}/open`
+              const link = `https://w-api.gambling.pro/v1/landings/${row.id}/open`
               return (
               <div className="table__actions">
                 {/* <span><a href={link} target="_blank">{Icons.eye}</a></span> */}

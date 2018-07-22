@@ -33,7 +33,7 @@ class StreamLink extends Component {
         <div className="flex">
           <Form.Item className="form__item-link">
             <h4>{t('field.link')}</h4>
-            <Input size="large" ref={'link'} value={`http://hit.yb.partners/v1/add/${code}${_sub}`} disabled style={{ color: 'inherit', backgroundColor: '#fff'}} />
+            <Input size="large" ref={'link'} value={`http://hit.gambling.pro/v1/add/${code}${_sub}`} disabled style={{ color: 'inherit', backgroundColor: '#fff'}} />
           </Form.Item>
           <Form.Item className="form__item-sub">
             <h4>{t('field.sub')}</h4>
