@@ -32,7 +32,7 @@ class Login extends Component {
       Cookies.set('isManager', 1, params)
 
       this.setState({ isLoading: false })
-      window.open(`https://app.${domain}`, '_blank')
+      window.open(`https://my.${domain}`, '_blank')
     })
     .catch(e => {
       this.setState({ isLoading: false })
