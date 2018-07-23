@@ -432,6 +432,15 @@ class Offer extends Component {
         response.data.category_ids = response.data.categories.map(item => item.id)
         delete response.data.trafficSources, response.data.countries, response.data.categories
 
+        // targeting
+        if(response.data.country_data && response.data.country_data.countries) {
+          response.data.country_data.countries = response.data.country_data.countries.map(country => country.id)
+        }
+
+        if(response.data.country_data && response.data.country_data.except) {
+          response.data.country_data.except = response.data.country_data.except.map(country => country.id)
+        }
+
         // visible
         response.data.visible = response.data.visible == true ? 1 : 0
 
@@ -495,7 +504,17 @@ class Offer extends Component {
     const { data } = this.state
     const { getFieldDecorator } = this.props.form
     const options = { rules: rules }
-    if(data.hasOwnProperty(name)) options.initialValue = data[name]
+    if(data.hasOwnProperty(name)) {
+      options.initialValue = data[name]
+    } else if(data && name.includes('.')) {
+      const tmp = data && flatten(data) || {}
+      options.initialValue = tmp[name]
+    }
+
+    if(typeof options.initialValue === 'boolean') options.valuePropName = 'checked'
+    if(name == 'country_data.type' && !options.initialValue) options.initialValue = 'list'
+
+
     return (
       <Form.Item className={`form__item-${name}`}>
         {label && <h4>{label}</h4>}
@@ -518,13 +537,23 @@ class Offer extends Component {
 
       // arrays to json
       values.traffic_source_ids = JSON.stringify(values.traffic_source_ids) || '[]'
-      values.country_ids = JSON.stringify(values.country_ids) || '[]'
+      //values.country_ids = JSON.stringify(values.country_ids) || '[]'
       values.category_ids = JSON.stringify(values.category_ids) || '[]'
 
       // description
       values.description = this.refs.description && this.refs.description.getEditorContents()
       values.short_description = this.refs.short_description && this.refs.short_description.getEditorContents()
 
+      // targeting
+      if(values.country_data.countries) {
+        values.country_data.countries = values.country_data.countries.map(id => ({ id: id }))
+      }
+
+      if(values.country_data.except) {
+        values.country_data.except = values.country_data.except.map(id => ({ id: id }))
+      }
+
+      values.country_data = JSON.stringify(values.country_data)
 
       if(isNew) {
         api.post(`/v1/offers`, qs.stringify(values))
@@ -596,6 +625,9 @@ class Offer extends Component {
   render() {
     const { isLoading, iconLoading, isNew, data, actions, categories, statuses, countries, columns, landings, sources, new_logo } = this.state
     const { currencies } = this.props.config
+    const { country_data } = this.props.form.getFieldsValue()
+    const _countries = countries.map(item => <Select.Option key={item.id} value={item.id} name={item.name}>{item.name}</Select.Option>)
+
     return (
       <Form>
       <div className="content__wrapper">
@@ -675,6 +707,10 @@ class Offer extends Component {
                 />
             ) || null}
 
+            <div style={{ marginTop: '24px' }}>
+              {this.validator('advertiser_info', 'Рекламодатель', <Input.TextArea size="large" rows={5} />, [] )}
+            </div>
+
             <div className="flex" style={{ marginTop: '24px' }}>
 
               <Form.Item>
@@ -709,7 +745,21 @@ class Offer extends Component {
 
             <div className="offer__params-targeting">
               <h3>Таргетинг</h3>
-              {this.validator('country_ids', '', <Select mode="multiple" optionFilterProp="name" size="large">{countries.map(item => <Select.Option key={item.id} value={item.id} name={item.name}>{item.name}</Select.Option>)}</Select>)}
+              {/* this.validator('country_ids', '', <Select mode="multiple" optionFilterProp="name" size="large">{countries.map(item => <Select.Option key={item.id} value={item.id} name={item.name}>{item.name}</Select.Option>)}</Select>) */}
+
+              {this.validator('country_data.type', '', (
+                <Select size="large">
+                  <Select.Option key={0} value="list">Список стран</Select.Option>
+                  <Select.Option key={1} value="all">Все страны</Select.Option>
+                  <Select.Option key={2} value="cis">СНГ</Select.Option>
+                </Select>
+              ), [{ required: true }] )}
+
+              {country_data && country_data.type == 'list' && this.validator('country_data.countries', 'Выбранные страны', <Select mode="multiple" optionFilterProp="name" size="large">{_countries}</Select>, [], 'list' )}
+              {country_data && country_data.type && country_data.type !== 'list' && this.validator('country_data.except', 'Исключение', <Select mode="multiple" optionFilterProp="name" size="large">{_countries}</Select>, [] )}
+
+
+
             </div>
 
           </div>
