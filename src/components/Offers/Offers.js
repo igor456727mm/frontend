@@ -21,7 +21,7 @@ class Countries extends Component {
 
   _toggle = () => this.setState({ isVisible: !this.state.isVisible })
 
-  renderCountries = (tmp, limit = 0) => {
+  renderCountries = (tmp = [], limit = 0) => {
     const countries = TMP
     return tmp.map((_tmp, i) => {
       if(limit && i > limit - 1) return
@@ -42,7 +42,7 @@ class Countries extends Component {
       return (
         <div className="offers__table-countries">
           {this.renderCountries(country_data.countries, limit)}
-          {country_data.countries.length > limit && (
+          {country_data.countries && country_data.countries.length > limit && (
             <Popover
               content={(<div className="offers__table-countries">{this.renderCountries(country_data.countries)}</div>)}
               trigger="click"
