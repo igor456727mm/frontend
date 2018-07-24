@@ -220,7 +220,7 @@ class Dashboard extends Component {
                   </td>
                   <td>
                     <h4>{t('field.dep_ratio')}</h4>
-                    {this.renderNumber('dep_ratio')}
+                    {this.renderNumber('dep_ratio')}%
                   </td>
                   <td>
                     <h4>{t('field.all_dep_sum')}</h4>

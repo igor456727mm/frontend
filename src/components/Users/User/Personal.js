@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import api from '../../../common/Api'
 import Helpers, { t, pick, flatten } from '../../../common/Helpers'
 import { domain, cookie_prefix } from '../../../../package.json'
+import { Login } from '../Users'
 
 class Personal extends Component {
 
@@ -159,9 +160,12 @@ class Personal extends Component {
             </div>
           </div>
 
-          <Form.Item className="form__item-last">
-            <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>Сохранить</Button>
-          </Form.Item>
+          <div className="flex">
+            <Form.Item className="form__item-last" style={{ marginRight: '20px' }}>
+              <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>Сохранить</Button>
+            </Form.Item>
+            <Login user_id={data.id} />
+          </div>
         </Form>
       </div>
     )

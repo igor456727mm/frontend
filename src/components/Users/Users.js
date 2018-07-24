@@ -10,7 +10,7 @@ import { domain } from '../../../package.json'
 
 const Icons = {}
 
-class Login extends Component {
+export class Login extends Component {
 
   constructor(props) {
     super(props)
