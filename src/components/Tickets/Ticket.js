@@ -101,7 +101,7 @@ class Ticket extends Component {
 
   fetch = () => {
     const { id } = this.state.data
-    api.get(`/v1/tickets/${id}`)
+    api.get(`/v1/tickets/${id}?expand=user`)
     .then((response) => {
       this.setState({ data: response.data })
     })
@@ -119,10 +119,11 @@ class Ticket extends Component {
     .then(response => {
       this.setState({ messages: response.data })
       // пометка сообщений прочитанными
-      /* api.patch(`/v1/ticket-messages?q[ticket_id][equal]=${id}`, qs.stringify({ status: 'read' }) )
+
+      api.patch(`/v1/ticket-messages?q[ticket_id][equal]=${id}`, qs.stringify({ status: 'read' }) )
       .then(() => {
         Helpers.checkTicketMessages()
-      }) */
+      })
     })
   }
 

@@ -180,6 +180,10 @@ class App extends Component {
     //Helpers.checkUserPlatforms()
     //Helpers.checkUserWallets()
     //Helpers.checkTicketMessages()
+
+    Helpers.checkTicketMessages()
+    setTimeout(() => Helpers.checkTicketMessages(), 1000 * 10)
+
   }
 
   _onChangeLang = (e) => {
@@ -205,6 +209,7 @@ class App extends Component {
     const { isLoading, isAuthorized } = this.state
     const { lang } = this.props
     const { title } = this.props.config
+    const { unreadMessages } = this.props.user
 
     if(isLoading) {
       return (
@@ -275,7 +280,7 @@ class App extends Component {
                   <li><NavLink to="/stats">{icons.stats} {t('menu.stats')}</NavLink></li>
                   <li><NavLink to="/users">{icons.support} Пользователи</NavLink></li>
                   <li><NavLink to="/finance">{icons.finance} {t('menu.finance')}</NavLink></li>
-                  <li><NavLink to="/tickets">{icons.support} {t('menu.support')}</NavLink></li>
+                  <li><NavLink to="/tickets" className="relative">{icons.support} {t('menu.support')} {unreadMessages > 0 && <span className="badge">{unreadMessages}</span>}</NavLink></li>
                 </ul>
                 <div className="sidebar__copyright">
                 ©2018 gambling.pro

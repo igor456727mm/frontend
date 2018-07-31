@@ -58,7 +58,7 @@ const Helpers = {
   },
 
   checkTicketMessages: () => {
-    const user_id = Cookies.get('user_id')
+    const user_id = 1 // Cookies.get('user_id')
 
     api.get('/v1/ticket-messages', {
       params: {

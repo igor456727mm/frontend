@@ -24859,6 +24859,7 @@ header svg {
 .ticket__message-avatar {
   background-image: url("../img/icons/avatar.jpg");
   width: 36px;
+  min-width: 36px;
   height: 36px;
   background-size: cover;
   background-position: center;
@@ -25389,4 +25390,17 @@ td.nobreak {
 }
 .offers__table-countries-trought img {
   opacity: 0.5;
+}
+.sidebar__menu .relative {
+  position: relative;
+}
+.sidebar__menu .relative .badge {
+  background: #f00;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 0 6px;
+  line-height: 15px;
+  border-radius: 5px;
+  margin-left: 20px;
 }
