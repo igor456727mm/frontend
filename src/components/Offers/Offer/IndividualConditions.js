@@ -247,9 +247,9 @@ class _Action extends Component {
       <span>
         {isEdit && (
           <div className="table__actions" style={{ marginLeft: '16px' }}>
-            <span onClick={this._toggle}>{Icons.settings}</span>
+            <span onClick={this._toggle}>изменить</span>
             <Popconfirm title="Удалить" onConfirm={this._onDelete} okText="Да" cancelText="Нет">
-              <span className="table__actions-delete">{Icons.delete}</span>
+              <span className="table__actions-delete">удалить</span>
             </Popconfirm>
           </div>
         ) || <Button style={{ float: 'right' }} onClick={this._toggle}>Добавить</Button>}
