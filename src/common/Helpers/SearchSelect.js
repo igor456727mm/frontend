@@ -33,13 +33,19 @@ class UserRemoteSelect extends React.Component {
   fetchUser = (value) => {
     this.setState({ data: [], fetching: true })
     const { target } = this.props
-    api.get(target, {
-      params: {
-        'per-page': 999,
-        'q[login][like]': value,
-        'fields': 'login,id',
-      }
-    })
+
+    const params = {
+      'per-page': 999,
+      'fields': 'login,id',
+    }
+
+    if(isNaN(value)) {
+      params['q[login][like]'] = value
+    } else {
+      params['q[id][equal]'] = value
+    }
+
+    api.get(target, { params })
     .then(response => {
       const data = response.data.map(item => {
         return {
@@ -87,7 +93,7 @@ class UserRemoteSelect extends React.Component {
         value={_value}
         onChange={this.handleChange}
       >
-        {data.map(d => <Option key={d.value}>{d.text}</Option>)}
+        {data.map(d => <Option key={d.value}>#{d.value} {d.text}</Option>)}
       </Select>
     );
   }
