@@ -4,9 +4,12 @@ import qs from 'qs'
 import * as Cookies from 'js-cookie'
 import { connect } from 'react-redux'
 import api from '../../../common/Api'
-import Helpers, { t, pick, flatten } from '../../../common/Helpers'
+import Helpers, { t, pick, flatten, Events } from '../../../common/Helpers'
 import { domain, cookie_prefix } from '../../../../package.json'
 import { Login } from '../Users'
+
+import HoldToBalance from './HoldToBalance'
+import Withdraw from './Withdraw'
 
 class Personal extends Component {
 
@@ -24,6 +27,8 @@ class Personal extends Component {
           about: null,
           reason_of_ban: null,
           banned: false,
+          balance: 0,
+          hold: 0
         }
       },
       avatar_upload_image_id: null,
@@ -32,6 +37,11 @@ class Personal extends Component {
   }
 
   componentDidMount = () => {
+    this.fetch()
+    Events.follow('user.fetch', this.fetch)
+  }
+
+  fetch = () => {
     const { user_id } = this.props
     api.get(`/v1/users/${user_id}?expand=userData`)
     .then(response => {
@@ -109,6 +119,7 @@ class Personal extends Component {
     return (
       <div className="block profile__personal">
         <h2>Общая информация</h2>
+        <br />
         <Form onSubmit={this.handleSubmit}>
           <div className="row">
             <div className="col-md-4">
@@ -167,6 +178,11 @@ class Personal extends Component {
             <Login user_id={data.id} />
           </div>
         </Form>
+        <div style={{ marginTop: '40px' }}>
+          <h2>Баланс: {data.userData.balance}$ / Холд: {data.userData.hold}$</h2>
+          <HoldToBalance user_id={this.props.user_id} hold={data.userData.hold} />
+          <Withdraw user_id={this.props.user_id} balance={data.userData.balance} />
+        </div>
       </div>
     )
 

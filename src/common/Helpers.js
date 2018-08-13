@@ -155,6 +155,9 @@ const Helpers = {
       case 'pending':
         color = 'orange';
         break;
+      case 'rejected':
+        color = 'red';
+        break;
     }
     const text = statuses[status]
     return <span className={`c__${color}`}>{text || status}</span>
