@@ -459,6 +459,9 @@ export class TreeSelectRemote extends Component {
         values={data}
         notFoundContent={isLoading ? Helpers.spinner() : Helpers.emptyText()}
         placeholder={t('field.all')}
+        dropdownMatchSelectWidth={false}
+        searchPlaceholder="Поиск..."
+        filterTreeNode={(input, option) => option.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         {...this.props}
       />
     )

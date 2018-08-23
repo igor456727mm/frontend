@@ -84,7 +84,7 @@ class _Filter extends Component {
               {this.validator('created_at', 'Дата', <RangePicker allowClear={false} disabledDate={disabledDate} size="large" format="DD.MM.YYYY" /> )}
             </div>
             <div className="col-md-2">
-              {this.validator('offer_id', 'Оффер', <TreeSelectRemote filter="offers" /> )}
+              {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" /> )}
               <div className="filter__separator"></div>
               {this.validator('landing_id', 'Лендинг', <TreeSelectRemote filter="landings" /> )}
             </div>
