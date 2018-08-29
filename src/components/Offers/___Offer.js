@@ -63,7 +63,7 @@ class Streams extends Component {
   renderItems = () => {
     const { data, offer_id } = this.state
     return data.map(item => {
-      const date = moment.unix(item.created_at).format('DD.MM.YYYY (HH:MM)')
+      const date = moment.unix(item.created_at).format('DD.MM.YYYY (HH:mm)')
       const link = item._links && item._links.landing && item._links.landing.href
       return (
         <div className="offers__item streams__item" key={item.id}>

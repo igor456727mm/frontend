@@ -287,7 +287,7 @@ class App extends Component {
                 <br />All rights reserved.
                 </div>
               </div>
-              <div className="content">
+              <div className="content" id="content">
                 <Switch>
                   {content}
                 </Switch>

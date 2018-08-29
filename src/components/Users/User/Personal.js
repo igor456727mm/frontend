@@ -28,7 +28,9 @@ class Personal extends Component {
           reason_of_ban: null,
           banned: false,
           balance: 0,
-          hold: 0
+          hold: 0,
+          show_ref: false,
+          ref_income_percent: 0
         }
       },
       avatar_upload_image_id: null,
@@ -45,6 +47,7 @@ class Personal extends Component {
     const { user_id } = this.props
     api.get(`/v1/users/${user_id}?expand=userData`)
     .then(response => {
+      response.data.userData.ref_income_percent = parseFloat(response.data.userData.ref_income_percent) * 100
       this.setState({ data: response.data })
     })
     .catch(e => {
@@ -70,7 +73,7 @@ class Personal extends Component {
       options.initialValue = tmp[name]
     }
 
-    if(name == 'userData.confirmed' || name == 'userData.banned') options.valuePropName = 'checked'
+    if(name == 'userData.confirmed' || name == 'userData.banned' || name == 'userData.show_ref') options.valuePropName = 'checked'
 
     return (
       <Form.Item>
@@ -90,6 +93,9 @@ class Personal extends Component {
       if(this.state.avatar_upload_image_id) values.userData['avatar_upload_image_id'] = this.state.avatar_upload_image_id
       values.userData.confirmed = values.userData.confirmed ? 1 : 0
       values.userData.banned = values.userData.banned ? 1 : 0
+      values.userData.show_ref = values.userData.show_ref ? 1 : 0
+      values.userData.ref_income_percent = parseFloat(values.userData.ref_income_percent) / 100
+
       this.setState({ iconLoading: true })
       api.patch(`/v1/users/${data.id}`, qs.stringify(values))
       .then(response => {
@@ -142,6 +148,7 @@ class Personal extends Component {
               {this.validator('userData.contacts.phone', t('field.phone'), <Input size="large" /> )}
               {this.validator('userData.contacts.skype', 'Skype', <Input size="large" /> )}
               {this.validator('userData.contacts.telegram', 'Telegram', <Input size="large" /> )}
+              {this.validator('userData.show_ref', '', <Checkbox size="large">Доступ к реферальной системе</Checkbox> )}
             </div>
             <div className="col-md-4">
               {this.validator('avatar_upload_image_id', t('field.avatar'), (
@@ -157,6 +164,8 @@ class Personal extends Component {
                 </Upload>
               ))}
               {this.validator('userData.about', 'About', <Input.TextArea rows={5} disabled size="large" /> )}
+              {this.validator('userData.ref_income_percent', 'Реф. процент', <InputNumber min={0} max={100} formatter={value => `${value}%`} parser={value => value.replace('%', '')} size="large" /> )}
+
             </div>
           </div>
 

@@ -74,7 +74,7 @@ class _Leads extends Component {
         }, {
           title: 'Окончание холда',
           dataIndex: 'end_hold_time',
-          render: text => text && moment.unix(text).utcOffset(Helpers.time_offset()).format('DD.MM.YY HH:MM')
+          render: text => text && moment.unix(text).utcOffset(Helpers.time_offset()).format('DD.MM.YY HH:mm')
         }, {
           title: 'Sub ID',
           render: (text, row) => {

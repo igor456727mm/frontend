@@ -156,7 +156,7 @@ class Ticket extends Component {
 
   render() {
     const { data, sections, statuses } = this.state
-    const date = moment.unix(data.created_at).format('DD.MM.YYYY (HH:MM)')
+    const date = moment.unix(data.created_at).format('DD.MM.YYYY (HH:mm)')
     const status = Helpers.renderStatus(data.status, statuses)
     const messages = this.renderMessages()
     return (

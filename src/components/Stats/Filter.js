@@ -14,6 +14,11 @@ import SearchSelect from '../../common/Helpers/SearchSelect'
 const Option = Select.Option
 const { RangePicker } = DatePicker
 
+const options = {
+  size: 'large',
+  getPopupContainer: () => document.getElementById('content'),
+}
+
 export const initialFilter = {
   group: 'action_day',
   'q[created_at][between]': `${moment().subtract(14, "days").startOf('day').unix()},${moment().endOf('day').unix()}`,
@@ -66,7 +71,7 @@ class _Filter extends Component {
           <div className="row">
             <div className="col-md-2">
               {this.validator('group', t('field.group'), (
-                <Select size="large" getPopupContainer={Helpers.getPopupContainer()}>
+                <Select {...options}>
                   <Select.Option key="action_hour">{t('field.action_hour')}</Select.Option>
                   <Select.Option key="action_day">{t('field.action_day')}</Select.Option>
                   <Select.Option key="action_week">{t('field.action_week')}</Select.Option>
@@ -81,30 +86,30 @@ class _Filter extends Component {
                 </Select>
               ))}
               <div className="filter__separator"></div>
-              {this.validator('created_at', 'Дата', <RangePicker allowClear={false} disabledDate={disabledDate} size="large" format="DD.MM.YYYY" /> )}
+              {this.validator('created_at', 'Дата', <RangePicker allowClear={false} disabledDate={disabledDate} format="DD.MM.YYYY" {...options} /> )}
             </div>
             <div className="col-md-2">
-              {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" /> )}
+              {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}
               <div className="filter__separator"></div>
-              {this.validator('landing_id', 'Лендинг', <TreeSelectRemote filter="landings" /> )}
+              {this.validator('landing_id', 'Лендинг', <TreeSelectRemote filter="landings" {...options}/> )}
             </div>
             <div className="col-md-2">
-              {this.validator('platform_id', 'Площадка', <TreeSelectRemote filter="platforms" /> )}
+              {this.validator('platform_id', 'Площадка', <TreeSelectRemote filter="platforms" {...options} /> )}
               <div className="filter__separator"></div>
-              {this.validator('stream_id', 'Поток', <TreeSelectRemote filter="streams" /> )}
+              {this.validator('stream_id', 'Поток', <TreeSelectRemote filter="streams" {...options} /> )}
             </div>
             <div className="col-md-2">
-              {this.validator('sub_id_1_key', 'sub_id_1', <TreeSelectRemote filter="sub_id_1" /> )}
+              {this.validator('sub_id_1_key', 'sub_id_1', <TreeSelectRemote filter="sub_id_1" {...options} /> )}
               <div className="filter__separator"></div>
-              {this.validator('country_id', 'Страны', <TreeSelectRemote filter="countries" /> )}
+              {this.validator('country_id', 'Страны', <TreeSelectRemote filter="countries" {...options} /> )}
             </div>
             <div className="col-md-2">
-              {this.validator('sub_id_2_key', 'sub_id_2', <TreeSelectRemote filter="sub_id_2" /> )}
+              {this.validator('sub_id_2_key', 'sub_id_2', <TreeSelectRemote filter="sub_id_2" {...options} /> )}
               <div className="filter__separator"></div>
-              {this.validator('webmaster_id', 'Пользователь', <SearchSelect target="/v1/users" /> )}
+              {this.validator('webmaster_id', 'Пользователь', <SearchSelect target="/v1/users" {...options} /> )}
             </div>
             <div className="col-md-2">
-              {this.validator('sub_id_3_key', 'sub_id_3', <TreeSelectRemote filter="sub_id_3" /> )}
+              {this.validator('sub_id_3_key', 'sub_id_3', <TreeSelectRemote filter="sub_id_3" {...options} /> )}
               <div className="filter__separator"></div>
               <Form.Item>
                 <h4>&nbsp;</h4>

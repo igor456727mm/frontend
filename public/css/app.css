@@ -24457,6 +24457,7 @@ table .ant-form-item-control > * {
   padding-bottom: 0;
   overflow: hidden;
   overflow-y: scroll;
+  position: relative;
 }
 .content__wrapper {
   display: flex;
@@ -25410,4 +25411,7 @@ td.nobreak {
 }
 .ant-select-search__field__wrap .ant-select-search__field {
   width: 100% !important;
+}
+.stats__table tr:last-child > td {
+  background-color: #e6f7ff;
 }

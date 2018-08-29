@@ -116,7 +116,7 @@ class Users extends Component {
         }, {
           title: 'Дата создания',
           dataIndex: 'created_at',
-          render: text => moment.unix(text).format('DD.MM.YYYY HH:MM'),
+          render: text => moment.unix(text).format('DD.MM.YYYY HH:mm'),
           sorter: true,
         }, {
           title: 'Логин',

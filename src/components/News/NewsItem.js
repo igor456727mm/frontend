@@ -43,7 +43,7 @@ class NewsItem extends Component {
 
   render() {
     const { isLoading, data } = this.state
-    const date = moment.unix(data.created_at).format('DD.MM.YYYY (HH:MM)')
+    const date = moment.unix(data.created_at).format('DD.MM.YYYY (HH:mm)')
     return (
       <div className="content__wrapper">
         <div className="content__inner news">

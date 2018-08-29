@@ -64,7 +64,7 @@ class News extends Component {
   renderItems = () => {
     const { data } = this.state
     return data.map(item => {
-      const date = moment.unix(item.created_at).format('DD.MM.YYYY (HH:MM)')
+      const date = moment.unix(item.created_at).format('DD.MM.YYYY (HH:mm)')
       return (
         <div className="block news__list-item" key={item.id}>
           <div className="flex news__header">

@@ -434,7 +434,7 @@ export class TreeSelectRemote extends Component {
     const url = filter && `v1/statistics/filters?name=${filter}` || target
     api.get(url, {
       params: {
-        'per-page': 100,
+        'per-page': 999,
       }
     })
     .then(response => {

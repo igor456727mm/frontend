@@ -80,6 +80,10 @@ class Tickets extends Component {
           dataIndex: 'status',
           render: text => Helpers.renderStatus(text, this.state.statuses),
         }, {
+          title: 'Пользователь',
+          dataIndex: 'cUser.login',
+          render: (text, row) => text && <Link to={`/users/${row.cUser.id}`}>{text}</Link>,
+        }, {
           dataIndex: 'title',
           render: (text, row) => (<Link to={`/tickets/${row.id}`}>{text}</Link>)
         }, {
@@ -131,6 +135,7 @@ class Tickets extends Component {
       params: {
         sort: '-id',
         page: page,
+        expand: 'cUser,rUser',
         ...filters
       }
     })
@@ -172,12 +177,11 @@ class Tickets extends Component {
     columns[0].title = t('field.date')
     columns[1].title = t('field.section')
     columns[2].title = t('field.status')
-    columns[3].title = t('field.subject')
-    columns[4].title = t('field.messages')
+    columns[4].title = t('field.subject')
+    columns[5].title = t('field.messages')
 
     return (
-      <div className="content__wrapper">
-        <div className="content__inner tickets">
+      <div className="tickets">
           <Filter onSubmit={this.onFilter} statuses={statuses} sections={sections} />
           <Table
             columns={columns}
@@ -187,11 +191,7 @@ class Tickets extends Component {
             loading={isLoading}
             locale={{ emptyText: Helpers.emptyText }}
             onChange={this.handleTableChange} />
-        </div>
-        <div className="content__sidebar">
-          <Consultant />
-          <Add sections={sections} />
-        </div>
+
       </div>
     )
   }
