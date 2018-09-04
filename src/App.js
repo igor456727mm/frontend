@@ -23,8 +23,8 @@ import Promo from './components/Promo/Promo'
 import Finance from './components/Finance/Finance'
 import Stats from './components/Stats/Stats'
 
-import News from './components/News/News'
-import NewsItem from './components/News/NewsItem'
+import News from './components/News'
+import NewsItem from './components/News/Form'
 import Platforms from './components/Platforms/Platforms'
 import Offers from './components/Offers/Offers'
 import Offer from './components/Offers/Offer'
@@ -132,7 +132,15 @@ const routes = [
   {
     path: '/users/:id',
     component: User,
-  }
+  }, {
+    path: '/news',
+    component: News,
+    exact: true,
+  },
+  {
+    path: '/news/:id',
+    component: NewsItem,
+  },
 ]
 
 const getUrlParam = (key) => {
@@ -276,6 +284,7 @@ class App extends Component {
                   {/* <li><NavLink to="/news">{icons.news} {t('menu.news')}</NavLink></li> */}
                   <li><NavLink to="/platforms">{icons.platforms} {t('menu.platforms')}</NavLink></li>
                   <li><NavLink to="/offers">{icons.products} {t('menu.offers')}</NavLink></li>
+                  <li><NavLink to="/news">{icons.products} Новости</NavLink></li>
                   {/* <li><NavLink to="/promo">{icons.promo} {t('menu.promo')}</NavLink></li> */}
                   <li><NavLink to="/stats">{icons.stats} {t('menu.stats')}</NavLink></li>
                   <li><NavLink to="/users">{icons.support} Пользователи</NavLink></li>

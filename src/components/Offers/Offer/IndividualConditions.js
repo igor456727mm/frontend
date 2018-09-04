@@ -284,6 +284,9 @@ class _Action extends Component {
                 <div className="col-md-6">
                   {this.validator('visible', '', <Checkbox  size="large">Видимый</Checkbox> )}
                 </div>
+                <div className="col-md-6">
+                  {this.validator('limit', 'Лимиты', <InputNumber size="large" /> )}
+                </div>
 
               </div>
 

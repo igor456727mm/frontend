@@ -751,12 +751,13 @@ class Offer extends Component {
                 <Select size="large">
                   <Select.Option key={0} value="list">Список стран</Select.Option>
                   <Select.Option key={1} value="all">Все страны</Select.Option>
+                  <Select.Option key={1} value="all_except_cis">Все кроме СНГ</Select.Option>
                   <Select.Option key={2} value="cis">СНГ</Select.Option>
                 </Select>
               ), [{ required: true }] )}
 
               {country_data && country_data.type == 'list' && this.validator('country_data.countries', 'Выбранные страны', <Select mode="multiple" optionFilterProp="name" size="large">{_countries}</Select>, [], 'list' )}
-              {country_data && country_data.type && country_data.type !== 'list' && this.validator('country_data.except', 'Исключение', <Select mode="multiple" optionFilterProp="name" size="large">{_countries}</Select>, [] )}
+              {country_data && country_data.type && country_data.type !== 'list' && country_data.type !== 'all_except_cis' && this.validator('country_data.except', 'Исключение', <Select mode="multiple" optionFilterProp="name" size="large">{_countries}</Select>, [] )}
 
 
 

@@ -1,3 +1,4 @@
+
 const initialState = {
   current: 'ru',
   list: [{ name: 'en', code: 'en' }],
