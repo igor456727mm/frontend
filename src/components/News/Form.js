@@ -28,6 +28,7 @@ class Offer extends Component {
         description: null,
         text: null,
         visible: 1,
+        important: 1
       },
     }
   }
@@ -50,6 +51,7 @@ class Offer extends Component {
       api.get(`/v1/news/${id}?expand=offer`)
       .then(response => {
         response.data.visible = response.data.visible == true ? 1 : 0
+        response.data.important = response.data.important == true ? 1 : 0
         this.setState({
           isLoading: false,
           data: response.data
@@ -159,6 +161,7 @@ class Offer extends Component {
             <div className="offer__params-global">
               <h3>Параметры</h3>
               {this.validator('visible', 'Видимый', <Select size="large"><Select.Option key={1} value={1}>Да</Select.Option><Select.Option key={0} value={0}>Нет</Select.Option></Select> )}
+              {this.validator('important', 'Показывать в сайдбаре', <Select size="large"><Select.Option key={1} value={1}>Да</Select.Option><Select.Option key={0} value={0}>Нет</Select.Option></Select> )}
             </div>
 
           </div>
