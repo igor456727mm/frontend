@@ -25415,3 +25415,14 @@ td.nobreak {
 .stats__table tr:last-child > td {
   background-color: #e6f7ff;
 }
+.stats__table-leads table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.stats__table-leads-btns {
+  margin: 20px 0;
+}
+.stats__table-leads-btns > * {
+  margin-right: 20px;
+}

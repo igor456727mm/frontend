@@ -10,6 +10,9 @@ import * as Feather from 'react-feather'
 
 const Helpers = {
 
+  time_offset: () => 180,
+  renderCurrency: () => '$',
+
   errorHandler: (e) => {
     if(e && e.response && e.response.data && Array.isArray(e.response.data)) {
       e.response.data.forEach(error => {
