@@ -50,7 +50,7 @@ class _Edit extends Component {
     form.validateFieldsAndScroll((err, values) => {
       if (err) return
       values = clean(values)
-      values.action_index_ids = action_index_id || selectedActionIndexIds
+      values.action_index_ids = action_index_id || selectedActionIndexIds && selectedActionIndexIds.join(',')
       this.setState({ iconLoading: true })
       api.post('/v1/conversions/change-financial-data', qs.stringify(values))
       .then(response => {
@@ -271,7 +271,7 @@ class Leads extends Component {
 
   _onMultipleConfirm = () => {
     const { selectedActionIndexIds: ids } = this.state
-    api.post('/v1/conversions/confirm', qs.stringify({ action_index_ids: ids }))
+    api.post('/v1/conversions/confirm', qs.stringify({ action_index_ids: ids.join(',') }))
     .then(response => {
       this.fetch()
       this.setState({ selectedActionIndexIds: [], selectedRowKeys: [] })
@@ -289,7 +289,7 @@ class Leads extends Component {
 
   _onMultipleReject = () => {
     const { selectedActionIndexIds: ids } = this.state
-    api.post('/v1/conversions/reject', qs.stringify({ action_index_ids: ids }))
+    api.post('/v1/conversions/reject', qs.stringify({ action_index_ids: ids.join(',') }))
     .then(response => {
       this.fetch()
       this.setState({ selectedActionIndexIds: [], selectedRowKeys: [] })
@@ -298,10 +298,12 @@ class Leads extends Component {
   }
 
   _onDelete = (id, index) => {
-    const { data } = this.state
-    data.splice(index, 1);
-    this.setState({ data })
     api.delete(`/v1/conversions/${id}`)
+    .then(response => {
+      const { data } = this.state
+      data.splice(index, 1);
+      this.setState({ data })
+    })
     .catch(Helpers.errorHandler)
   }
 
