@@ -10,6 +10,8 @@ import locale from 'antd/lib/date-picker/locale/ru_RU'
 import qs from 'qs'
 import Filter from './Filter'
 import _ from 'lodash'
+import * as Feather from 'react-feather';
+
 
 const Icons = {}
 
@@ -72,7 +74,7 @@ class _Edit extends Component {
     const { action_index_id } = this.props
     return (
       <span>
-        <Button onClick={this._toggle}>Изменить</Button>
+        <Button onClick={this._toggle}>{action_index_id && <Feather.Settings /> || 'Изменить'}</Button>
         <Modal
           visible={isVisible}
           footer={null}
@@ -152,14 +154,14 @@ class Leads extends Component {
           dataIndex: 'webmaster_id',
           render: (text, row) => row.webmaster && <a href={`/users/${text}`}>{row.webmaster.email}</a> || text
         }, {
-          title: 'Sub',
-          render: (text, row) => (
-            <div>
-              sub1: {row.sub_id_1}
-              <br />sub2: {row.sub_id_2}
-              <br />sub3: {row.sub_id_3}
-            </div>
-          )
+          title: 'Sub1',
+          dataIndex: 'sub_id_1'
+        }, {
+          title: 'Sub2',
+          dataIndex: 'sub_id_2'
+        }, {
+          title: 'Sub3',
+          dataIndex: 'sub_id_3'
         }, {
           title: 'ID конверсии',
           dataIndex: 'action_index_id',
@@ -170,12 +172,10 @@ class Leads extends Component {
             const disabled = end_hold_time === null ? false : (end_hold_time < moment().unix()) || false
             return (
               <div className="leads__table-actions">
-                <div style={{ marginBottom: '10px' }}>
-                  <Edit action_index_id={action_index_id} data={{ income: row.income, commission: row.commission }} />
-                  <Button disabled={disabled || status === 'confirmed'} onClick={() => this._onConfirm(action_index_id, index)} style={{ marginLeft: '10px'}}>Принять</Button>
-                </div>
-                <Button disabled={disabled || status === 'rejected'} onClick={() => this._onReject(action_index_id, index)} style={{ marginRight: '10px' }}>Отклонить</Button>
-                <Button disabled={disabled} onClick={() => this._onDelete(action_index_id, index)}>Удалить</Button>
+                <Edit action_index_id={action_index_id} data={{ income: row.income, commission: row.commission }} />
+                <Button disabled={disabled || status === 'confirmed'} onClick={() => this._onConfirm(action_index_id, index)} style={{ margin: '0 10px'}}><Feather.CheckCircle /></Button>
+                <Button disabled={disabled || status === 'rejected'} onClick={() => this._onReject(action_index_id, index)} style={{ marginRight: '10px' }}><Feather.XCircle /></Button>
+                <Button disabled={disabled} onClick={() => this._onDelete(action_index_id, index)}><Feather.Trash /></Button>
               </div>
             )
           }

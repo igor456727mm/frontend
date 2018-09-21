@@ -25426,3 +25426,10 @@ td.nobreak {
 .stats__table-leads-btns > * {
   margin-right: 20px;
 }
+.leads__table-actions .ant-btn {
+  padding: 0 10px;
+}
+.leads__table-actions .ant-btn svg {
+  width: 1em;
+  height: 1em;
+}
