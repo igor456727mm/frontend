@@ -53,7 +53,7 @@ class _MessageForm extends Component {
     const { iconLoading } = this.state
     return (
       <Form className="flex ticket__message-form" onSubmit={this.handleSubmit}>
-        {this.validator('text', <Input placeholder={t('ticket.form.placeholder')} size="large" />, [{ required: true, min: 3, message: ' ' }] )}
+        {this.validator('text', <Input.TextArea placeholder={'Введите сообщение.\nEnter - новая строка'} size="large" style={{ height: '350px' }}/>, [{ required: true, min: 3, message: ' ' }] )}
         <Form.Item>
           <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>{t('button.send')}</Button>
         </Form.Item>
