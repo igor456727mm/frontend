@@ -101,7 +101,7 @@ class Ticket extends Component {
 
   fetch = () => {
     const { id } = this.state.data
-    api.get(`/v1/tickets/${id}?expand=user`)
+    api.get(`/v1/tickets/${id}`)
     .then((response) => {
       this.setState({ data: response.data })
     })

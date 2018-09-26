@@ -12,10 +12,14 @@ const utcOffset = moment().utcOffset()
 
 // добавление токена при request!
 api.interceptors.request.use(config => {
+  const role = Cookies.get(`${cookie_prefix}_role`)
   const access_token = Cookies.get(`${cookie_prefix}_access_token`)
   config.headers['Authorization'] = `Bearer ${access_token}`
   config.headers['Accept-Language'] = Cookies.get('lang')
   config.headers['Time-Offset'] = utcOffset
+
+  if(role === 'manager') config.baseURL = 'https://m-api.gambling.pro'
+
   return config
 }, error => {
   return Promise.reject(error)

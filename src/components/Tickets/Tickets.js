@@ -135,7 +135,7 @@ class Tickets extends Component {
       params: {
         sort: '-id',
         page: page,
-        expand: 'cUser,rUser',
+        expand: 'cUser',
         ...filters
       }
     })
