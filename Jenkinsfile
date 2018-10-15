@@ -1,4 +1,7 @@
 node {
+  env.NODEJS_HOME = "${tool 'node'}"
+  env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
+
   def build="gamblingpro.cabinet.build$BUILD_NUMBER";
   def remoteDir="/var/www/yb.partners/frontend/cabinet";
 
@@ -10,19 +13,17 @@ node {
   remote.allowAnyHosts = true
   def branchName = scm.branches[0].name.replaceAll("\\*\\/", "")
 
-  env.NODEJS_HOME = "${tool 'node'}"
-  env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
-
   stage(name: 'checkout') {
     try {
       notifySlack("started build @ $build")
+      sh 'rm -f build.tgz'
       git(
         branch: branchName,
         credentialsId: 'jenkins ssh key',
         url: 'git@bitbucket.org:yougomedia/gamblingpro.cabinet.git'
       )
     } catch (error) {
-      notifySlack('stage checkout failed ' + build)
+      notifySlack("stage checkout failed @ $build")
       throw error
     }
   }
@@ -47,11 +48,16 @@ node {
 
   stage(name: 'deploy') {
     try {
-      sh 'ls -la build'
-      // sshCommand(
-      //   remote: remote,
-      //   command: """cd ${remoteDir} && git fetch origin --prune && git rebase origin/${branchName}"""
-      // )
+      sh 'tar -zvf build.tgz build'
+      sshPut(
+        remote: remote,
+        from: 'build.tgz',
+        into: "$remoteDir/"
+      )
+      sshCommand(
+        remote: remote,
+        command: "cd ${remoteDir} && tar -zxf build.tgz && rm build.tgz"
+      )
     } catch (error) {
       notifySlack("stage deploy failed @ $build")
       throw error
@@ -60,6 +66,7 @@ node {
 
   stage(name: 'cleanup') {
     try {
+      sh 'rm build.tgz'
       sh 'git reset --hard HEAD'
     } catch (error) {
       notifySlack("stage cleanup failed @ $build")
