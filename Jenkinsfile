@@ -48,7 +48,7 @@ node {
 
   stage(name: 'deploy') {
     try {
-      sh 'tar -zvf build.tgz build'
+      sh 'tar -zcf build.tgz build'
       sshPut(
         remote: remote,
         from: 'build.tgz',
