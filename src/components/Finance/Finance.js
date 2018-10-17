@@ -100,6 +100,9 @@ class Withdrawals extends Component {
             return number ? `${text} / ${number}` : text
           }
         }, {
+          title: 'Комментарий',
+          dataIndex: 'comment',
+        }, {
           width: 280,
           render: (text, row) => {
             if(row.status !== 'pending') return null
