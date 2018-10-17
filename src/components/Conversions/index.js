@@ -164,7 +164,7 @@ class Leads extends Component {
           dataIndex: 'sub_id_3'
         }, {
           title: 'ID конверсии',
-          dataIndex: 'action_index_id',
+          dataIndex: 'lead_id',
         }, {
           width: 220,
           render: (text, { action_index_id, end_hold_time, status, ...row }, index ) => {
