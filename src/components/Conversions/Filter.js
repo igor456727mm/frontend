@@ -61,7 +61,7 @@ class _Filter extends Component {
               {this.validator('created_at', 'Дата', <RangePicker allowClear={false} disabledDate={disabledDate} format="DD.MM.YYYY" {...options} /> )}
             </div>
             <div className="col-md-2">
-              {this.validator('action_index_id', 'ID конверсии', <Input size="large" /> )}
+              {this.validator('lead_id', 'ID конверсии', <Input size="large" /> )}
             </div>
             <div className="col-md-2">
               {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}

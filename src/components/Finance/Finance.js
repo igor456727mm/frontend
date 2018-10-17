@@ -100,8 +100,8 @@ class Withdrawals extends Component {
             return number ? `${text} / ${number}` : text
           }
         }, {
-          title: 'Комментарий',
-          dataIndex: 'comment',
+          title: 'Комментарий вебмастеру',
+          dataIndex: 'webmmaster_comment',
         }, {
           width: 280,
           render: (text, row) => {
