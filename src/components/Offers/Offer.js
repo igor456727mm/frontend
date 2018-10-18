@@ -314,6 +314,7 @@ class Offer extends Component {
       landings: [],
       sources: [], // global sources
       actions: [],
+      advertisers: [],
       columns: {
         actions: [
           {
@@ -469,6 +470,10 @@ class Offer extends Component {
     api.get(`v1/categories`)
     .then(response => this.setState({ categories: response.data }))
 
+    // advertisers
+    api.get(`v1/advertisers`)
+    .then(response => this.setState({ advertisers: response.data }))
+
   }
 
   fetchLandings = () => {
@@ -623,11 +628,11 @@ class Offer extends Component {
   }
 
   render() {
-    const { isLoading, iconLoading, isNew, data, actions, categories, statuses, countries, columns, landings, sources, new_logo } = this.state
+    const { isLoading, iconLoading, isNew, data, actions, categories, statuses, countries, columns, landings, sources, new_logo, advertisers } = this.state
     const { currencies } = this.props.config
     const { country_data } = this.props.form.getFieldsValue()
     const _countries = countries.map(item => <Select.Option key={item.id} value={item.id} name={item.name}>{item.name}</Select.Option>)
-
+    const _advertisers = advertisers.map(item => <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>)
     return (
       <Form>
       <div className="content__wrapper">
@@ -736,6 +741,7 @@ class Offer extends Component {
               {this.validator('category_ids', 'Категории', <Select mode="multiple" optionFilterProp="name" size="large">{categories.map(item => <Select.Option key={item.id} value={item.id} name={item.name}>{item.name}</Select.Option>)}</Select>)}
               {this.validator('status', 'Статус', <Select size="large">{Object.keys(statuses).map(key => <Select.Option key={key} value={key}>{statuses[key]}</Select.Option>)}</Select> )}
               {this.validator('visible', 'Видимый', <Select size="large"><Select.Option key={1} value={1}>Да</Select.Option><Select.Option key={0} value={0}>Нет</Select.Option></Select> )}
+              {this.validator('advertiser_id', 'Рекламодатель', <Select size="large">{_advertisers}</Select> )}
             </div>
 
             <div className="offer__params-sources">
