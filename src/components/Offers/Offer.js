@@ -301,7 +301,7 @@ class Offer extends Component {
     const { id } = props.match.params
     this.state = {
       isNew: id == 'new',
-      isLoading: false,
+      isLoading: true,
       data: {
         id: id,
         // description: null,
@@ -446,10 +446,30 @@ class Offer extends Component {
         response.data.visible = response.data.visible == true ? 1 : 0
 
         this.setState({
-          isLoading: false,
+          // isLoading: false,
           data: response.data
          })
       })
+
+      // translate костыли
+      api.get('/v1/translations', {
+        params: {
+          'q[model_class_name][equal]': 'Offer',
+          'q[model_id][equal]': id,
+          'q[attribute][in]': 'description,short_description',
+          'q[language][equal]': 'en',
+        }
+      })
+      .then(response => {
+        response.data.map(item => {
+          const { data } = this.state
+          data[`${item.attribute}_en`] = item.text,
+          data[`${item.attribute}_en_id`] = item.id
+          this.setState({ data: data })
+        })
+        this.setState({ isLoading: false })
+      })
+
     } else {
       this.setState({ isLoading: false })
     }
@@ -473,6 +493,8 @@ class Offer extends Component {
     // advertisers
     api.get(`v1/advertisers`)
     .then(response => this.setState({ advertisers: response.data }))
+
+
 
   }
 
@@ -560,6 +582,9 @@ class Offer extends Component {
 
       values.country_data = JSON.stringify(values.country_data)
 
+
+
+
       if(isNew) {
         api.post(`/v1/offers`, qs.stringify(values))
         .then(response => {
@@ -571,6 +596,41 @@ class Offer extends Component {
           Helpers.errorHandler(e)
         })
       } else {
+
+        // translate
+        const { short_description_en_id, description_en_id } = this.state.data
+        const description_en = this.refs.description_en && this.refs.description_en.getEditorContents()
+        if(description_en_id) {
+          api.patch(`/v1/translations/${description_en_id}`, qs.stringify({ text: description_en }))
+        } else if(description_en) {
+          api.post(`/v1/translations`, qs.stringify({
+            text: description_en,
+            model_id: data.id,
+            model_class_name: 'Offer',
+            attribute: 'description',
+            'language': 'en'
+          }))
+          .then(response => {
+            this.setState({ description_en_id: response.data.id })
+          })
+        }
+
+        const short_description_en = this.refs.short_description_en && this.refs.short_description_en.getEditorContents()
+        if(short_description_en_id) {
+          api.patch(`/v1/translations/${short_description_en_id}`, qs.stringify({ text: short_description_en }))
+        } else if(short_description_en) {
+          api.post(`/v1/translations`, qs.stringify({
+            text: short_description_en,
+            model_id: data.id,
+            model_class_name: 'Offer',
+            attribute: 'short_description',
+            'language': 'en'
+          }))
+          .then(response => {
+            this.setState({ short_description_en_id: response.data.id })
+          })
+        }
+
         api.patch(`/v1/offers/${data.id}`, qs.stringify(values))
         .then(response => {
           this.setState({ iconLoading: false })
@@ -654,6 +714,9 @@ class Offer extends Component {
                   <div className="ant-row ant-form-item">
                     <h4>Краткое описание</h4>
                     {((!isLoading && data.hasOwnProperty('short_description')) || (!isLoading && isNew)) && <ReactQuill ref="short_description" defaultValue={data.short_description} />}
+                    <br />
+                    <h4>Краткое описание EN</h4>
+                    {!isLoading && <ReactQuill ref="short_description_en" defaultValue={data.short_description_en} />}
                   </div>
 
 
@@ -676,6 +739,9 @@ class Offer extends Component {
               <div className="ant-row ant-form-item">
                 <h4>Описание</h4>
                 {((!isLoading && data.hasOwnProperty('description')) || (!isLoading && isNew)) && <ReactQuill ref="description" defaultValue={data.description} />}
+                <br />
+                <h4>Описание EN</h4>
+                {!isLoading && <ReactQuill ref="description_en" defaultValue={data.description_en} />}
               </div>
             </div>
 
