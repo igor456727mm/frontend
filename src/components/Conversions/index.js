@@ -154,6 +154,9 @@ class Leads extends Component {
           title: 'Разница',
           render: (text, row) => (row.revised_income - (row.income + row.commission)) + '$'
         }, {
+          title: 'Статус сверки',
+          dataIndex: 'revise_status',
+        }, {
           title: 'Цель',
           dataIndex: 'action.name',
         }, {
