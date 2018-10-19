@@ -59,6 +59,8 @@ class _Filter extends Component {
           <div className="row">
             <div className="col-md-2">
               {this.validator('created_at', 'Дата', <RangePicker allowClear={false} disabledDate={disabledDate} format="DD.MM.YYYY" {...options} /> )}
+              <div className="filter__separator"></div>
+              {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options}/> )}
             </div>
             <div className="col-md-2">
               {this.validator('lead_id', 'ID конверсии', <Input size="large" /> )}

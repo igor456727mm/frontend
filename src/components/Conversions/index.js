@@ -207,7 +207,7 @@ class Leads extends Component {
         ...filters,
         'per-page': pagination.pageSize,
         currency_id: 1,
-        expand: 'stream,action,city,country,currency,offer,device,platform,webmaster,user',
+        expand: 'stream,action,city,country,currency,offer,device,platform,webmaster,user,advertiser',
       }
     })
     .then(response => {

@@ -115,6 +115,33 @@ class _Action extends Component {
     }
   }
 
+  componentDidMount = () => {
+    const { isEdit } = this.state
+    // translate костыли
+    if(isEdit) {
+      api.get('/v1/translations', {
+        params: {
+          'q[model_class_name][equal]': 'Action',
+          'q[model_id][equal]': this.props.data.id,
+          'q[attribute][equal]': 'name',
+          'q[language][equal]': 'en',
+        }
+      })
+      .then(response => {
+        response.data.map(item => {
+          /* const { data } = this.state
+          data[`${item.attribute}_en`] = item.text,
+          data[`${item.attribute}_en_id`] = item.id
+          this.setState({ data: data }) */
+          const options = {}
+          options[`${item.attribute}_en`] = item.text
+          options[`${item.attribute}_en_id`] = item.id
+          this.props.form.setFieldsValue(options)
+        })
+      })
+    }
+  }
+
   validator = (name, label, input, rules = [], initialValue) => {
     const { data } = this.props
     const { getFieldDecorator } = this.props.form
@@ -170,6 +197,25 @@ class _Action extends Component {
           this.setState({ iconLoading: false })
           Helpers.errorHandler(e)
         })
+
+
+
+        // translate
+        if(values.name_en_id && values.name_en) {
+          api.patch(`/v1/translations/${values.name_en_id}`, qs.stringify({ text: values.name_en }))
+        } else if(values.name_en) {
+          api.post(`/v1/translations`, qs.stringify({
+            text: values.name_en,
+            model_id: data.id,
+            model_class_name: 'Action',
+            attribute: 'name',
+            'language': 'en'
+          }))
+          .then(response => {
+            this.props.form.setFieldsValue({ name_en_id: response.data.id })
+          })
+        }
+
       } else {
         values.offer_id = offer_id
         api.post(`/v1/actions`, qs.stringify(values))
@@ -264,6 +310,8 @@ class _Action extends Component {
           <h1>{isEdit ? `Цель #${data.id}` : 'Добавление цели'}</h1>
           <Form>
             {this.validator('name', t('field.name'), <Input size="large" />, [{ required: true }] )}
+            {this.validator('name_en', 'Название EN', <Input size="large" placeholder={!isEdit && 'Доступно при редактировании'} disabled={!isEdit} /> )}
+            <div style={{ display: 'none' }}>{this.validator('name_en_id', '', <Input size="large" /> )}</div>
             {this.validator('alias', 'Код действия (например: reg или dep)', <Input size="large" /> )}
             {this.validator('pay_conditions.pay_type', 'Ставка', (
               <Select size="large">
