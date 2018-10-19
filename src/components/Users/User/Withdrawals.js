@@ -69,6 +69,15 @@ class Withdrawals extends Component {
             )
           }
         }, {
+          title: 'Комментарий вебу',
+          dataIndex: 'webmaster_comment',
+          render: (text, row) => {
+            if(row.status !== 'pending') return text
+            return (
+              <input name="webmaster_comment" className="ant-input" placeholder="Комментарий вебу" defaultValue={text} />
+            )
+          }
+        }, {
           width: 280,
           render: (text, row) => {
             /*
@@ -156,13 +165,14 @@ class Withdrawals extends Component {
     const row = e.target.closest("tr")
     const status = row.childNodes[3].children[0].value
     const comment = row.childNodes[5].children[0].value
+    const webmaster_comment = row.childNodes[6].children[0].value
 
     if(status === 'pending' && !comment) {
       message.error('Не указан статус или комментарий')
       return
     }
 
-    api.patch(`/v1/withdrawals/${id}`, qs.stringify({ status, comment, currency_id: 1 }))
+    api.patch(`/v1/withdrawals/${id}`, qs.stringify({ status, comment, webmaster_comment, currency_id: 1 }))
     .then(response => {
       this.fetch()
       Events.dispatch('user.fetch')
