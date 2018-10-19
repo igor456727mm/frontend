@@ -127,6 +127,9 @@ class Leads extends Component {
           dataIndex: 'offer_id',
           render: (text, row) => text && <a href={`/offers/${row.offer.id}`} target="_blank" style={{ width: '200px', display: 'inline-block' }}>{row.offer.name}</a> || '-'
         }, {
+          title: 'Рекламодатель',
+          render: (text, row) => row.offer && row.offer.advertiser && row.offer.advertiser.name || '-'
+        }, {
           title: 'ГЕО',
           render: (text, { country, ip }) => <div>{country && country.name}<br />{ip}</div>
         }, {
@@ -143,6 +146,13 @@ class Leads extends Component {
           title: 'Комиссия ПП',
           dataIndex: 'commission',
           render: (text) => `${text}$`
+        }, {
+          title: 'Доход из сверки',
+          dataIndex: 'revised_income',
+          render: (text) => `${text}$`
+        }, {
+          title: 'Разница',
+          render: (text, row) => row.commission - row.revised_income + '$'
         }, {
           title: 'Цель',
           dataIndex: 'action.name',
@@ -207,7 +217,7 @@ class Leads extends Component {
         ...filters,
         'per-page': pagination.pageSize,
         currency_id: 1,
-        expand: 'stream,action,city,country,currency,offer,device,platform,webmaster,user,advertiser',
+        expand: 'stream,action,city,country,currency,offer,device,platform,webmaster,user,offer.advertiser',
       }
     })
     .then(response => {

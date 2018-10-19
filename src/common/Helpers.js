@@ -4,7 +4,7 @@ import { Icon, Spin, message } from 'antd'
 import qs from 'qs'
 import moment from 'moment'
 import * as Cookies from 'js-cookie'
-import RcTreeSelect, { TreeNode } from 'rc-tree-select'
+import RcTreeSelect, { TreeNode } from 'but1head-rc-tree-select'
 import store from '../reducers'
 import * as Feather from 'react-feather'
 
