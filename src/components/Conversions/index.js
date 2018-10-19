@@ -152,7 +152,7 @@ class Leads extends Component {
           render: (text) => `${text}$`
         }, {
           title: 'Разница',
-          render: (text, row) => row.commission - row.revised_income + '$'
+          render: (text, row) => (row.revised_income - (row.income + row.commission)) + '$'
         }, {
           title: 'Цель',
           dataIndex: 'action.name',
