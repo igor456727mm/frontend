@@ -30,10 +30,12 @@ class Stats extends Component {
   }
 
   handleTableChange = ({ current: page }, filters, { columnKey, order }) => {
+    // console.log('handleTableChange', page, columnKey, order);
     const sort = order == 'ascend' ? columnKey : `-${columnKey}`
     const pagination = { ...this.state.pagination, current: page, sort: sort }
     this.setState({ pagination }, this.fetch)
   }
+
 
   componentDidMount = () => {
     this.fetch()
@@ -47,6 +49,8 @@ class Stats extends Component {
   fetch = () => {
     const { filters, pagination } = this.state
     this.setState({ isLoading: true })
+
+  //  console.log('fetch', filters, pagination);
 
     // 24 perpage on action_hour
     pagination.pageSize = 11
@@ -104,15 +108,17 @@ class Stats extends Component {
     const group = filters['group']
     const title = group.includes(`sub_id_`) && group.replace(`_key`, '') || group.replace('_id', '')
 
+    // console.log('renderFirstColumn', pagination);
+
     // костыль для "правильной" сортировки в таблице
-    const tmp = {}
+    /* const tmp = {}
     const sortOrder = pagination.sort && pagination.sort.includes(group) && (pagination.sort.charAt(0) == '-' ? 'descend' : 'ascend' ) || !pagination.sort && `descend`
-    if(sortOrder) tmp.sortOrder = sortOrder
+    if(sortOrder) tmp.sortOrder = sortOrder */
     return {
       title: t(`field.${title}`),
       dataIndex: group,
       sorter: true,
-      ...tmp,
+      // ...tmp,
       defaultSortOrder: 'descend',
       render: (text, row, i) => {
         if(data.length - 1 == i) return t('field.total')

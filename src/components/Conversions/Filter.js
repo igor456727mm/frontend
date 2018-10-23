@@ -64,6 +64,8 @@ class _Filter extends Component {
             </div>
             <div className="col-md-2">
               {this.validator('lead_id', 'ID конверсии', <Input size="large" /> )}
+              <div className="filter__separator"></div>
+              {this.validator('hit_id', 'Hit ID', <Input size="large" /> )}
             </div>
             <div className="col-md-2">
               {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}

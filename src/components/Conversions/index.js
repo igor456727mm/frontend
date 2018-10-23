@@ -179,6 +179,9 @@ class Leads extends Component {
           title: 'ID конверсии',
           dataIndex: 'lead_id',
         }, {
+          title: 'Hit ID',
+          dataIndex: 'hit_id',
+        }, {
           width: 220,
           render: (text, { action_index_id, end_hold_time, status, ...row }, index ) => {
             // можно удалять все, кроме конверсии с истекщим сроком холда.
