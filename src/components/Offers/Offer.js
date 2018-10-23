@@ -5,15 +5,14 @@ import Cookies from 'js-cookie'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { Route, Redirect, Switch, NavLink, Link } from 'react-router-dom'
-import Helpers, { t, pick, clean, TreeSelectRemote, OfferAccessButton } from '../../common/Helpers'
-import api from '../../common/Api'
 import * as Feather from 'react-feather'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { domain, cookie_prefix } from '../../../package.json'
+import Helpers, { t, pick, clean, TreeSelectRemote, OfferAccessButton } from '../../common/Helpers'
 import IndividualConditions from './Offer/IndividualConditions'
-
-
+import api from '../../common/Api'
+import { cookie_prefix } from '../../../package.json'
+import { domain, scheme } from '../../config'
 
 const Icons = {}
 class _Landing extends Component {
@@ -432,7 +431,7 @@ class Offer extends Component {
           }, {
             title: <Landing offer_id={id} />,
             render: (text, row) => {
-              const link = `https://w-api.gambling.pro/v1/landings/${row.id}/open`
+              const link = `${scheme}w-api.${domain}/v1/landings/${row.id}/open`
               return (
               <div className="table__actions">
                 {/* <span><a href={link} target="_blank">{Icons.eye}</a></span> */}
@@ -774,7 +773,7 @@ class Offer extends Component {
                     <Upload
                       onChange={this._onUploadLogo}
                       name="image"
-                      action={`https://file-s1.gambling.pro/v1/uploads?access_token=${Cookies.get(cookie_prefix + '_access_token')}`}
+                      action={`${scheme}file-s1.${domain}/v1/uploads?access_token=${Cookies.get(cookie_prefix + '_access_token')}`}
                       showUploadList={false}
                       listType="picture-card"
                       className="avatar-uploader" >

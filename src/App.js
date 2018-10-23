@@ -12,7 +12,7 @@ import * as Feather from 'react-feather'
 import api from './common/Api'
 import Auth, { AuthForm } from './common/Auth'
 import Helpers, { t, pick } from './common/Helpers'
-import { domain } from '../package.json'
+import { domain, scheme } from './config'
 import Notifications from './components/Notifications'
 
 // компоненты для роутинга
@@ -204,7 +204,7 @@ class App extends Component {
     const key = e.target && e.target.dataset.lang || e
     Cookies.set('lang', key, { expires: 365 })
     if(!lang.translations[key]) {
-      api.get(`https://system-api.gambling.pro/v1/settings/client-messages`)
+      api.get(`${scheme}system-api.${domain}/v1/settings/client-messages`)
       .then(response => {
         this.props.dispatch({
           type: 'CHANGE_LANG',

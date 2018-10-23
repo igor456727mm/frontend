@@ -2,10 +2,11 @@ import axios from 'axios'
 import Auth from './Auth'
 import * as Cookies from 'js-cookie'
 import moment from 'moment'
-import { domain, cookie_prefix } from '../../package.json'
+import { cookie_prefix } from '../../package.json'
+import { domain, scheme } from '../config'
 
 const api = axios.create({
-  baseURL: 'https://a-api.gambling.pro',
+  baseURL: `${scheme}a-api.${domain}`,
 })
 
 const utcOffset = moment().utcOffset()
@@ -18,7 +19,7 @@ api.interceptors.request.use(config => {
   config.headers['Accept-Language'] = Cookies.get('lang')
   config.headers['Time-Offset'] = utcOffset
 
-  if(role === 'manager') config.baseURL = 'https://m-api.gambling.pro'
+  if(role === 'manager') config.baseURL = `${scheme}m-api.${domain}`
 
   return config
 }, error => {

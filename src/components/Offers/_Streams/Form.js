@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Form, Input, InputNumber, Button, Select, message, Checkbox, Popconfirm } from 'antd'
 import { connect } from 'react-redux'
+import copy from 'copy-to-clipboard'
 import qs from 'qs'
 import api from '../../../common/Api'
 import Helpers, { t, pick } from '../../../common/Helpers'
-import copy from 'copy-to-clipboard'
+import { domain, scheme } from '../../../config'
 
 class StreamLink extends Component {
 
@@ -33,7 +34,7 @@ class StreamLink extends Component {
         <div className="flex">
           <Form.Item className="form__item-link">
             <h4>{t('field.link')}</h4>
-            <Input size="large" ref={'link'} value={`http://hit.gambling.pro/v1/add/${code}${_sub}`} disabled style={{ color: 'inherit', backgroundColor: '#fff'}} />
+            <Input size="large" ref={'link'} value={`http://hit.${domain}/v1/add/${code}${_sub}`} disabled style={{ color: 'inherit', backgroundColor: '#fff'}} />
           </Form.Item>
           <Form.Item className="form__item-sub">
             <h4>{t('field.sub')}</h4>
