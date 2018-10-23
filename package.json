@@ -20,6 +20,9 @@
     "react-scripts": "1.1.4",
     "redux": "^3.7.2"
   },
+  "devDependencies": {
+    "stylus": "^0.54.5"
+  },
   "scripts": {
     "start": "stylus -w src/styles/app.styl -o public/css/app.css | REACT_APP_VERSION=$npm_package_version react-scripts start",
     "push": "./push.sh",
