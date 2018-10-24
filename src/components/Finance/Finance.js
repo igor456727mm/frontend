@@ -101,7 +101,7 @@ class Withdrawals extends Component {
           }
         }, {
           title: 'Комментарий вебмастеру',
-          dataIndex: 'webmmaster_comment',
+          dataIndex: 'webmaster_comment',
         }, {
           width: 280,
           render: (text, row) => {
