@@ -538,7 +538,7 @@ class Offer extends Component {
     .then(response => this.setState({ categories: response.data }))
 
     // advertisers
-    api.get(`v1/advertisers`)
+    api.get(`v1/advertisers?per-page=100`)
     .then(response => this.setState({ advertisers: response.data }))
 
 
