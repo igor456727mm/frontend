@@ -9,7 +9,7 @@ import moment from 'moment'
 import locale from 'antd/lib/date-picker/locale/ru_RU'
 import qs from 'qs'
 import SearchSelect from '../../common/Helpers/SearchSelect'
-
+import Revise from './Revise'
 
 const Option = Select.Option
 const { RangePicker } = DatePicker
@@ -69,6 +69,8 @@ class _Filter extends Component {
             </div>
             <div className="col-md-2">
               {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}
+              <div className="filter__separator"></div>
+              <Revise />
             </div>
             <div className="col-md-2">
               {this.validator('stream_id', 'Поток', <TreeSelectRemote filter="streams" {...options} /> )}
