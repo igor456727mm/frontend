@@ -25435,3 +25435,13 @@ td.nobreak {
   width: 1em;
   height: 1em;
 }
+.revise-by-stream {
+  margin-top: 30px;
+  overflow-y: scroll;
+  height: 100px;
+  margin-bottom: 30px;
+}
+.revise-by-stream td,
+.revise-by-stream th {
+  padding: 10px;
+}

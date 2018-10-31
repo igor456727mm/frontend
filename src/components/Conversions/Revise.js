@@ -10,7 +10,6 @@ import locale from 'antd/lib/date-picker/locale/ru_RU'
 import qs from 'qs'
 import SearchSelect from '../../common/Helpers/SearchSelect'
 
-
 const Option = Select.Option
 const { RangePicker } = DatePicker
 
@@ -19,24 +18,21 @@ const options = {
   getPopupContainer: () => document.getElementById('content'),
 }
 
-export const initialFilter = {
-  //group: 'action_day',
-  // 'q[created_at][between]': `${moment().subtract(14, "days").startOf('day').unix()},${moment().endOf('day').unix()}`,
-}
-
 class _Filter extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
       isVisible: false,
-      type: 'revise-by-lead-id',
+      type: 'revise-by-stream',
+      dryRun: 1,
+      data: [],
     }
   }
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { type } = this.state
+    const { type, dryRun } = this.state
     this.props.form.validateFieldsAndScroll((err, values) => {
       clean(values)
 
@@ -49,7 +45,8 @@ class _Filter extends Component {
 
       const formData = new FormData()
       formData.append('csv-file', this.uploadInput.files[0])
-      Object.keys(values).forEach(key => formData.append(key, values[key]));
+      formData.append('dryRun', dryRun)
+      Object.keys(values).forEach(key => formData.append(key, values[key]))
 
       api.post(`/v1/hit-actions/${type}`, formData, {
         headers: {
@@ -57,7 +54,22 @@ class _Filter extends Component {
         }
       })
       .then(response => {
-        message.success('Успешно загружено')
+
+        // if revise-by-stream first iteration
+        if(type === 'revise-by-stream' && dryRun === 1) {
+          const data = response.data.hitActionChanges.map(item => {
+            return {
+              stream_id: item.stream_id,
+              in_system: item.hitActionChanges.length,
+              in_revise: item.leads_count,
+            }
+          })
+          this.setState({ data: data, dryRun: 0 })
+          return
+        }
+
+        message.success('Сверка успешно загружена')
+        this.setState({ data: [], dryRun: type === 'revise-by-stream' ? 1 : 0 })
       })
       .catch(Helpers.errorHandler)
 
@@ -75,15 +87,15 @@ class _Filter extends Component {
     )
   }
 
-  _toggle = () => this.setState({ isVisible: !this.state.isVisible })
+  _toggle = () => this.setState({ isVisible: !this.state.isVisible, data: [], dryRun: 1 })
 
   _onChangeType = (e) => {
     const type = e.target.value
-    this.setState({ type })
+    this.setState({ type, dryRun: type === 'revise-by-stream' ? 1 : 0 })
   }
 
   render() {
-    const { isVisible, type } = this.state
+    const { isVisible, type, data, dryRun } = this.state
     return (
       <span>
         <Button onClick={this._toggle} style={{ marginTop: '26px', borderColor: '#20ae0e', color: '#20ae0e' }} size="large">Загрузить сверку</Button>
@@ -113,9 +125,34 @@ class _Filter extends Component {
 
               <input type="file" name="csv-file" ref={(ref) => { this.uploadInput = ref; }} />
 
-              <Form.Item>
+              {data.length && (
+                <div className="revise-by-stream">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>ID потока</th>
+                        <th>Лидов в системе</th>
+                        <th>Лидов в сверке</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.map(item => (
+                        <tr>
+                          <td>{item.stream_id}</td>
+                          <td>{item.in_system}</td>
+                          <td>{item.in_revise}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) || null}
+
+              <Form.Item style={{ marginBottom: 0 }}>
                 <h4>&nbsp;</h4>
-                <Button type="primary" size="large" onClick={this.handleSubmit}>Загрузить данные в систему</Button>
+                <Button type="primary" size="large" onClick={this.handleSubmit}>
+                  {type === 'revise-by-stream' && dryRun === 1 ? 'Проверить данные' : 'Загрузить данные в систему'}
+                </Button>
               </Form.Item>
             </Form>
           </Modal>
