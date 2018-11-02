@@ -27,6 +27,7 @@ class _Filter extends Component {
       type: 'revise-by-stream',
       dryRun: 1,
       data: [],
+      total: {},
     }
   }
 
@@ -55,6 +56,12 @@ class _Filter extends Component {
       })
       .then(response => {
 
+        const total = {
+          leadCountDiff: response.data.leadCountDiff,
+          leadCountRevise: response.data.leadCountRevise,
+          leadCountSystem: response.data.leadCountSystem,
+        }
+
         // if revise-by-stream first iteration
         if(type === 'revise-by-stream' && dryRun === 1) {
           const data = response.data.hitActionChanges.map(item => {
@@ -64,12 +71,12 @@ class _Filter extends Component {
               in_revise: item.leads_count,
             }
           })
-          this.setState({ data: data, dryRun: 0 })
+          this.setState({ data: data, dryRun: 0, total })
           return
         }
 
         message.success('Сверка успешно загружена')
-        this.setState({ data: [], dryRun: type === 'revise-by-stream' ? 1 : 0 })
+        this.setState({ data: [], dryRun: type === 'revise-by-stream' ? 1 : 0, total })
       })
       .catch(Helpers.errorHandler)
 
@@ -87,7 +94,7 @@ class _Filter extends Component {
     )
   }
 
-  _toggle = () => this.setState({ isVisible: !this.state.isVisible, data: [], dryRun: 1 })
+  _toggle = () => this.setState({ isVisible: !this.state.isVisible, data: [], dryRun: 1, total: {} })
 
   _onChangeType = (e) => {
     const type = e.target.value
@@ -95,7 +102,7 @@ class _Filter extends Component {
   }
 
   render() {
-    const { isVisible, type, data, dryRun } = this.state
+    const { isVisible, type, data, dryRun, total } = this.state
     return (
       <span>
         <Button onClick={this._toggle} style={{ marginTop: '26px', borderColor: '#20ae0e', color: '#20ae0e' }} size="large">Загрузить сверку</Button>
@@ -137,7 +144,7 @@ class _Filter extends Component {
                     </thead>
                     <tbody>
                       {data.map(item => (
-                        <tr>
+                        <tr key={item.stream_id}>
                           <td>{item.stream_id}</td>
                           <td>{item.in_system}</td>
                           <td>{item.in_revise}</td>
@@ -145,6 +152,16 @@ class _Filter extends Component {
                       ))}
                     </tbody>
                   </table>
+                </div>
+              ) || null}
+
+
+              {total && Object.keys(total).length > 0 && (
+                <div>
+                  <h3>Результат</h3>
+                  Лидов в системе: {total.leadCountSystem}
+                  <br />Лидов в в сверке: {total.leadCountRevise}
+                  <br />Разница: {total.leadCountDiff}
                 </div>
               ) || null}
 

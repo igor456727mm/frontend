@@ -138,6 +138,7 @@ class Leads extends Component {
         }, {
           title: 'Статус',
           dataIndex: 'status',
+          render: (text) => this.state.statuses[text] || text,
         }, {
           title: 'Доход веба',
           dataIndex: 'income',
