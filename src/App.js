@@ -32,6 +32,7 @@ import Offer from './components/Offers/Offer'
 import Users from './components/Users/Users'
 import User from './components/Users/User'
 import Conversions from './components/Conversions'
+import Revises from './components/Revises'
 
 const NoMatch = ({ location }) => (
   <div>
@@ -105,6 +106,10 @@ const routes = [
   {
     path: '/conversions',
     component: Conversions,
+  },
+  {
+    path: '/revises',
+    component: Revises,
   },
   {
     path: '/news',
@@ -293,6 +298,7 @@ class App extends Component {
                   {/* <li><NavLink to="/promo">{icons.promo} {t('menu.promo')}</NavLink></li> */}
                   <li><NavLink to="/stats">{icons.stats} {t('menu.stats')}</NavLink></li>
                   <li><NavLink to="/conversions">{icons.stats} Конверсии</NavLink></li>
+                  <li><NavLink to="/revises">{icons.stats} Сверки</NavLink></li>
                   <li><NavLink to="/users">{icons.support} Пользователи</NavLink></li>
                   <li><NavLink to="/finance">{icons.finance} {t('menu.finance')}</NavLink></li>
                   <li><NavLink to="/tickets" className="relative">{icons.support} {t('menu.support')} {unreadMessages > 0 && <span className="badge">{unreadMessages}</span>}</NavLink></li>
