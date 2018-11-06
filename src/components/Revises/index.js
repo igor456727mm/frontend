@@ -48,6 +48,7 @@ class Revises extends Component {
           title: 'Название',
           dataIndex: 'title',
           sorter: true,
+          render: (text, row) => <Link to={`/conversions?q[created_at][between]=${row.date_from},${row.date_to}&q[advertiser_id][in]=${row.advertiser_id}`} style={{ display: 'block', minWidth: '200px'}}>{text}</Link>
         }, {
           title: 'Дата создания',
           dataIndex: 'created_at',

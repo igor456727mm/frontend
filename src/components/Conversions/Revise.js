@@ -40,7 +40,7 @@ class _Filter extends Component {
       //created_at
       if(values.created_at && Array.isArray(values.created_at)) {
         const start = values.created_at[0].startOf('day').unix()
-        const end = values.created_at[0].endOf('day').unix()
+        const end = values.created_at[1].endOf('day').unix()
         if(start && end) values.created_at = [start, end].join(',')
       }
 
