@@ -100,6 +100,7 @@ class _Filter extends Component {
           {this.validator('name', t('field.name'), <Input size="large" allowClear /> )}
           {this.validator('country_id', t('field.targeting'), <TreeSelectRemote target="/v1/countries" /> )}
           {this.validator('category_id', t('field.category'), <TreeSelectRemote target="/v1/categories" /> )}
+          {this.validator('visible', 'Видимый', <Select size="large"><Select.Option key="1" value="true">Да</Select.Option><Select.Option key="0" value="false">Нет</Select.Option></Select> )}
           <Form.Item>
             <h4>&nbsp;</h4>
             <Button htmlType="submit" type="primary" size="large">{t('button.show')}</Button>
