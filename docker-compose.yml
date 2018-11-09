@@ -1,0 +1,21 @@
+---
+version: "3.3"
+
+networks:
+  frontend:
+    external:
+      name: nginx-proxy
+
+services:
+
+### NGINX Server Container ##################################
+
+  nginx:
+    image: docker.rain.wtf/gamblingpro.cabinet
+    restart: unless-stopped
+    networks:
+      - frontend
+    environment:
+      - VIRTUAL_HOST=cabinet.gambling.local.rain.wtf
+      - API_DOMAIN=gambling.local.rain.wtf
+      - API_SCHEME=http://
