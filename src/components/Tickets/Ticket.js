@@ -114,6 +114,7 @@ class Ticket extends Component {
         'sort': 'id',
         'q[ticket_id][equal]': id,
         'per-page': 999,
+        'expand': 'user'
       }
     })
     .then(response => {
@@ -136,13 +137,17 @@ class Ticket extends Component {
     const { messages } = this.state
     let { avatar_image, user_id } = this.props.user
     return messages.map(item => {
-      const isSelf = [1, 256].includes(item.user_id)
+      //const isSelf = [1, 256].includes(item.user_id)
+      const isSelf = item.user.role !== 'webmaster'
       const cls = isSelf && 'ticket__message-self' || ''
       const img = isSelf && avatar_image || '/img/support.jpg'
       return (
         <div className={`flex ticket__message ${cls}`} key={item.id}>
           <div className="ticket__message-avatar" style={{ backgroundImage: `url(${img})`}}></div>
-          <div className="ticket__message-text">{item.text}</div>
+          <div className="ticket__message-text">
+            {item.text}
+            <div>#{item.user.id} {item.user.login}</div>
+          </div>
         </div>
       )
     })

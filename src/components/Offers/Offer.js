@@ -14,6 +14,7 @@ import api from '../../common/Api'
 import { cookie_prefix } from '../../../package.json'
 import { domain, scheme } from '../../config'
 
+
 const Icons = {}
 class _Landing extends Component {
 
@@ -630,6 +631,7 @@ class Offer extends Component {
       values.country_data = JSON.stringify(values.country_data)
 
 
+      // if(values.extra_trafficback) values.extra_trafficback = JSON.stringify(values.extra_trafficback)
 
 
       if(isNew) {
@@ -740,6 +742,7 @@ class Offer extends Component {
     const { country_data } = this.props.form.getFieldsValue()
     const _countries = countries.map(item => <Select.Option key={item.id} value={item.id} name={item.name}>{item.name}</Select.Option>)
     const _advertisers = advertisers.map(item => <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>)
+    const values = this.props.form.getFieldsValue()
     return (
       <Form>
       <div className="content__wrapper">
@@ -853,6 +856,18 @@ class Offer extends Component {
               {this.validator('priority', 'Приоритет выдачи (0-100)', <Input size="large" />)}
               {this.validator('category_ids', 'Категории', <Select mode="multiple" optionFilterProp="name" size="large">{categories.map(item => <Select.Option key={item.id} value={item.id} name={item.name}>{item.name}</Select.Option>)}</Select>)}
               {this.validator('status', 'Статус', <Select size="large">{Object.keys(statuses).map(key => <Select.Option key={key} value={key}>{statuses[key]}</Select.Option>)}</Select> )}
+
+              {values.status === 'stopped' && (
+                <div>
+                  <h3>Перенаправление трафика при остановке оффера</h3>
+                  {this.validator('extra_trafficback.offer_id', 'ID оффера', <Input size="large" />)}
+                  {this.validator('extra_trafficback.landing_id', 'ID лендинга', <Input size="large" />)}
+                  <hr />
+                </div>
+              )}
+
+
+
               {this.validator('visible', 'Видимый', <Select size="large"><Select.Option key={1} value={1}>Да</Select.Option><Select.Option key={0} value={0}>Нет</Select.Option></Select> )}
               {this.validator('advertiser_id', 'Рекламодатель', <Select size="large">{_advertisers}</Select> )}
             </div>
