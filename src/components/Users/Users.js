@@ -6,7 +6,7 @@ import * as Cookies from 'js-cookie'
 import { Link } from 'react-router-dom'
 import Helpers, { Filters, t, pick, clean, disabledDate } from '../../common/Helpers'
 import api from '../../common/Api'
-import { domain } from '../../../package.json'
+import { domain, scheme } from '../../config'
 
 const Icons = {}
 
@@ -32,7 +32,7 @@ export class Login extends Component {
       Cookies.set('isManager', 1, params)
 
       this.setState({ isLoading: false })
-      window.open(`https://my.${domain}`, '_blank')
+      window.open(`${scheme}my.${domain}`, '_blank')
     })
     .catch(e => {
       this.setState({ isLoading: false })

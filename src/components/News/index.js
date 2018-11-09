@@ -6,7 +6,6 @@ import Cookies from 'js-cookie'
 import { Link } from 'react-router-dom'
 import Helpers, { Filters, Events, t, pick, clean, disabledDate } from '../../common/Helpers'
 import api from '../../common/Api'
-import { domain } from '../../../package.json'
 
 
 class _Filter extends Component {

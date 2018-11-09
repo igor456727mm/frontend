@@ -4,7 +4,8 @@ import { Input, Button, Form, message } from 'antd'
 import axios from 'axios'
 import qs from 'qs'
 import api from './Api'
-import { domain, cookie_prefix } from '../../package.json'
+import { cookie_prefix } from '../../package.json'
+import { domain, scheme } from '../config'
 import { t } from './Helpers'
 
 const Auth = {
@@ -18,7 +19,7 @@ const Auth = {
   refreshToken: async () => {
     const refresh_token = Cookies.get(`${cookie_prefix}_refresh_token`)
     if(!refresh_token) return Auth.exit('refresh_token отсутствует')
-    return await axios.post(`https://${domain}/auth/?act=refreshAccessToken`, qs.stringify({ access_token: refresh_token }))
+    return await axios.post(`${scheme}${domain}/auth/?act=refreshAccessToken`, qs.stringify({ access_token: refresh_token }))
     .then(response => {
       const { access_token } = response.data
       if(!access_token) return Auth.exit('обновление токена не дало access_token')
@@ -30,7 +31,7 @@ const Auth = {
     })
   },
   login: async (login, password) => {
-    return await axios.post(`https://${domain}/auth/?act=getAccessToken`, qs.stringify({ login: login, password: password }))
+    return await axios.post(`${scheme}${domain}/auth/?act=getAccessToken`, qs.stringify({ login: login, password: password }))
     .then(response => {
       const { access_token, refresh_token, user_id, role } = response.data
       if(!access_token || !refresh_token || !['admin', 'manager'].includes(role)) return false
@@ -52,7 +53,7 @@ const Auth = {
       Cookies.remove(key)
     })
     window.dispatchEvent(new Event('user.exit'))
-    // if(window.location.hostname !== 'localhost') window.location = `http://${domain}`
+    // if(window.location.hostname !== 'localhost') window.location = `${scheme}${domain}`
     return false
   }
 }
