@@ -42,6 +42,7 @@ node {
       sh 'npm run build'
     } catch (error) {
       notifySlack("stage build script failed @ $build")
+      sh 'git reset --hard HEAD'
       throw error
     }
   }
@@ -60,6 +61,19 @@ node {
       )
     } catch (error) {
       notifySlack("stage deploy failed @ $build")
+      sh 'git reset --hard HEAD'
+      throw error
+    }
+  }
+
+  stage(name: 'build docker image') {
+    try {
+      docker.withRegistry('http://docker.rain.wtf', 'docker.rain.wtf') {
+          def customImage = docker.build("gamblingpro-cabinet", "-f ./Dockerfile ./build")
+          customImage.push()
+      }
+    } catch (error) {
+      notifySlack("stage build docker image failed @ $build")
       throw error
     }
   }
