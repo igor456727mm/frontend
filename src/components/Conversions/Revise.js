@@ -101,6 +101,19 @@ class _Filter extends Component {
     this.setState({ type, dryRun: type === 'revise-by-stream' ? 1 : 0 })
   }
 
+  /*
+  {type === 'revise-by-lead-id' ? (
+    <div>
+      {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options}/> )}
+    </div>
+  ) : (
+    <div>
+      {this.validator('dep_count', 'Количество депозитов', <Input size="large" /> )}
+      {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}
+    </div>
+  )}
+  */
+
   render() {
     const { isVisible, type, data, dryRun, total } = this.state
     return (
@@ -119,16 +132,9 @@ class _Filter extends Component {
                 </Radio.Group>
               </div>
               {this.validator('created_at', 'Дата', <RangePicker format="DD.MM.YYYY" {...options} /> )}
-              {type === 'revise-by-lead-id' ? (
-                <div>
-                  {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options}/> )}
-                </div>
-              ) : (
-                <div>
-                  {this.validator('dep_count', 'Количество депозитов', <Input size="large" /> )}
-                  {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}
-                </div>
-              )}
+              {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options}/> )}
+
+
 
               <input type="file" name="csv-file" ref={(ref) => { this.uploadInput = ref; }} />
 

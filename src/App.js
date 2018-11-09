@@ -202,10 +202,12 @@ class App extends Component {
     Helpers.checkTicketMessages()
     setTimeout(() => Helpers.checkTicketMessages(), 1000 * 10)
 
-
+    /*
+    api.get('/v1/manager-access')
     api.get('/v1/manager-access/actions')
     api.get('/v1/manager-access/types')
     api.get('/v1/manager-access/models')
+    */
 
   }
 
