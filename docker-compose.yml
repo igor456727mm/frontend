@@ -11,7 +11,7 @@ services:
 ### NGINX Server Container ##################################
 
   nginx:
-    image: docker.rain.wtf/gamblingpro.cabinet
+    image: docker.rain.wtf/gamblingpro-cabinet
     restart: unless-stopped
     networks:
       - frontend
