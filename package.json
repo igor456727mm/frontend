@@ -29,7 +29,6 @@
     "_old_push": "git add . && git commit -am $npm_package_version && git push origin master",
     "build": "REACT_APP_VERSION=$npm_package_version react-scripts build && rm build/service-worker.js && rm build/static/js/*.map",
     "release": "npm run push && git add ./build -f && git commit -am 'RELEASE '$npm_package_version && git push origin master",
-    "build:docker": "docker build -t docker.rain.wtf/gamblingpro.cabinet -f ./Dockerfile ./build",
     "postinstall": "cp -rf ./helpers/rc-tree-select ./node_modules/"
   },
   "domain": "gambling.pro",

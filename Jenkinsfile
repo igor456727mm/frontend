@@ -69,7 +69,7 @@ node {
   stage(name: 'build docker image') {
     try {
       docker.withRegistry('http://docker.rain.wtf', 'docker.rain.wtf') {
-          def customImage = docker.build("gamblingpro-cabinet", "-f ./Dockerfile ./build")
+          def customImage = docker.build("gamblingpro-cabinet", "-f ${env.WORKSPACE}/Dockerfile ${env.WORKSPACE}/build")
           customImage.push()
       }
     } catch (error) {
