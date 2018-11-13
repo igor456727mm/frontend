@@ -4,4 +4,8 @@ WORKDIR /usr/share/nginx/html
 
 COPY . /usr/share/nginx/html
 
-ENTRYPOINT /usr/share/nginx/html/docker-entrypoint.sh nginx -g "daemon off;"
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+ENTRYPOINT [ "/usr/share/nginx/html/docker-entrypoint.sh" ]
+
+CMD nginx -g "daemon off;"
