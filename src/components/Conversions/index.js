@@ -56,6 +56,9 @@ class _Edit extends Component {
       this.setState({ iconLoading: true })
       api.post('/v1/conversions/change-financial-data', qs.stringify(values))
       .then(response => {
+        if (response.data && response.data[values.action_index_ids] && response.data[values.action_index_ids].success === false) {
+          throw new Error(`Error changing financial data for ${values.action_index_ids}`);
+        }
         this.setState({ iconLoading: false, isVisible: false })
         Events.dispatch('leads.fetch')
         message.success(t('Конверсия сохранена'))
@@ -83,6 +86,7 @@ class _Edit extends Component {
           <Form>
             {this.validator('income', 'Доход вебмастера', <Input size="large" /> )}
             {this.validator('commission', 'Комиссия ПП', <Input size="large" /> )}
+            {this.validator('revised_income', 'Доход из сверки', <Input size="large" /> )}
             <Form.Item className="form__item-last">
               <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
             </Form.Item>
@@ -189,7 +193,7 @@ class Leads extends Component {
             const disabled = end_hold_time === null ? false : (end_hold_time < moment().unix()) || false
             return (
               <div className="leads__table-actions">
-                <Edit action_index_id={action_index_id} data={{ income: row.income, commission: row.commission }} />
+                <Edit action_index_id={action_index_id} data={{ income: row.income, commission: row.commission, revised_income: row.revised_income }} />
                 <Button disabled={disabled || status === 'confirmed'} onClick={() => this._onConfirm(action_index_id, index)} style={{ margin: '0 10px'}}><Feather.CheckCircle /></Button>
                 <Button disabled={disabled || status === 'rejected'} onClick={() => this._onReject(action_index_id, index)} style={{ marginRight: '10px' }}><Feather.XCircle /></Button>
                 <Button disabled={disabled} onClick={() => this._onDelete(action_index_id, index)}><Feather.Trash /></Button>
@@ -347,7 +351,7 @@ class Leads extends Component {
           onChange={this.handleTableChange} />
 
           <div className="stats__table-leads-btns">
-            <Edit selectedActionIndexIds={selectedActionIndexIds} data={{ income: 0, commission: 0 }} />
+            <Edit selectedActionIndexIds={selectedActionIndexIds} data={{ income: 0, commission: 0, revised_income: 0 }} />
             <Button onClick={this._onMultipleConfirm}>Принять</Button>
             <Button onClick={this._onMultipleReject}>Отклонить</Button>
           </div>

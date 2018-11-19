@@ -18,6 +18,8 @@ const Helpers = {
       e.response.data.forEach(error => {
         message.error(error.message)
       })
+    } else if (e.message && typeof e.toString === 'function') {
+      message.error(`Произошла ошибка ${e}`)
     } else {
       message.error('Произошла ошибка')
     }
