@@ -357,15 +357,12 @@ class Leads extends Component {
           pagination={{
             ...pagination,
             onShowSizeChange: (current, size) => this.setState(
-              state => {
-                const a = ({
-                  pagination: {
-                    ...state.pagination,
-                    pageSize: size,
-                  },
-                });
-                return a;
-              }
+              state => ({
+                pagination: {
+                  ...state.pagination,
+                  pageSize: size,
+                },
+              }),
             ),
           }}
           loading={isLoading}
