@@ -342,6 +342,7 @@ class Leads extends Component {
           ref="tbl"
           rowSelection={rowSelection}
           className="stats__table stats__table-leads"
+          rowClassName={(row) => `ant-table-row-revise_status--${row.revise_status}`}
           columns={columns}
           rowKey={(item, i) => i}
           dataSource={data}
@@ -355,7 +356,6 @@ class Leads extends Component {
             <Button onClick={this._onMultipleConfirm}>Принять</Button>
             <Button onClick={this._onMultipleReject}>Отклонить</Button>
           </div>
-
 
       </div>
     )

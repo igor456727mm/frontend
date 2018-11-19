@@ -24342,6 +24342,19 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
     order: 1;
   }
 }
+.ant-table-row-revise_status--pending {
+  background-color: #ffffe0;
+}
+.ant-table-row-revise_status--waiting {
+  background-color: #ffb6c1;
+}
+.ant-table-row-revise_status--hold {
+  background-color: #add8e6;
+}
+.ant-table-row-revise_status--corrected,
+.ant-table-row-revise_status--confirmed {
+  background-color: #90ee90;
+}
 html,
 body,
 #root,
