@@ -116,6 +116,9 @@ class Leads extends Component {
       statuses: {},
       pagination: {
         hideOnSinglePage: true,
+        pageSizeOptions: ['5', '10', '25', '50', '100'],
+        showSizeChanger: true,
+        pageSize: 10,
       },
       selectedRowKeys: [],
       selectedActionIndexIds: [],
@@ -244,8 +247,13 @@ class Leads extends Component {
 
   handleTableChange = ({ current: page }, filters, { columnKey, order }) => {
     const sort = order == 'ascend' ? columnKey : `-${columnKey}`
-    const pagination = { ...this.state.pagination, current: page, sort: sort }
-    this.setState({ pagination }, this.fetch)
+    this.setState(state => ({
+      pagination: {
+        ...state.pagination,
+        current: page,
+        sort,
+      },
+    }), this.fetch)
   }
 
   onFilter = (values) => {
@@ -346,7 +354,20 @@ class Leads extends Component {
           columns={columns}
           rowKey={(item, i) => i}
           dataSource={data}
-          pagination={pagination}
+          pagination={{
+            ...pagination,
+            onShowSizeChange: (current, size) => this.setState(
+              state => {
+                const a = ({
+                  pagination: {
+                    ...state.pagination,
+                    pageSize: size,
+                  },
+                });
+                return a;
+              }
+            ),
+          }}
           loading={isLoading}
           locale={{ emptyText: Helpers.emptyText }}
           onChange={this.handleTableChange} />
