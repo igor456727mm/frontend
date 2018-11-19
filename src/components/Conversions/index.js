@@ -166,7 +166,7 @@ class Leads extends Component {
         }, {
           title: 'Вебмастер',
           dataIndex: 'webmaster_id',
-          render: (text, row) => row.webmaster && <a href={`/users/${text}`}>{row.webmaster.email}</a> || text
+          render: (text, row) => row.webmaster && <a href={`/users/${text}`}>(#{row.webmaster.id}) {row.webmaster.email}</a> || text
         }, {
           title: 'Sub1',
           dataIndex: 'sub_id_1'
