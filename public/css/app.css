@@ -25449,10 +25449,10 @@ td.nobreak {
   height: 1em;
 }
 .revise-by-stream {
-  margin-top: 30px;
+  margin-top: 1.5rem;
   overflow-y: scroll;
-  height: 100px;
-  margin-bottom: 30px;
+  min-height: 100px;
+  margin-bottom: 1.5rem;
 }
 .revise-by-stream td,
 .revise-by-stream th {

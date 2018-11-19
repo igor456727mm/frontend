@@ -134,8 +134,6 @@ class _Filter extends Component {
               {this.validator('created_at', 'Дата', <RangePicker format="DD.MM.YYYY" {...options} /> )}
               {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options}/> )}
 
-
-
               <input type="file" name="csv-file" ref={(ref) => { this.uploadInput = ref; }} />
 
               {data.length && (
@@ -146,14 +144,18 @@ class _Filter extends Component {
                         <th>ID потока</th>
                         <th>Лидов в системе</th>
                         <th>Лидов в сверке</th>
+                        <th>Разница</th>
                       </tr>
                     </thead>
                     <tbody>
                       {data.map(item => (
-                        <tr key={item.stream_id}>
+                        <tr key={item.stream_id} style={{
+                          backgroundColor: +item.in_system - +item.in_revise ? 'lightpink' : 'none',
+                        }}>
                           <td>{item.stream_id}</td>
                           <td>{item.in_system}</td>
                           <td>{item.in_revise}</td>
+                          <td>{+item.in_system - +item.in_revise}</td>
                         </tr>
                       ))}
                     </tbody>
