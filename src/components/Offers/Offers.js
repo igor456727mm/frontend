@@ -56,7 +56,13 @@ class Countries extends Component {
     } else {
       return (
         <div className="offers__table-countries">
-          {country_data.type == 'all' ? 'ALL GEO' : 'СНГ'}
+          {(() => {
+            switch (country_data.type) {
+              case 'all': return 'ALL GEO';
+              case 'all_except_cis': return 'Все кроме СНГ';
+              default: return 'CНГ';
+            }
+          })()}
           {country_data.except && (
             <div className="offers__table-countries-trought">
               {this.renderCountries(country_data.except)}
