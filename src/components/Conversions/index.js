@@ -145,7 +145,9 @@ class Leads extends Component {
         }, {
           title: 'Статус',
           dataIndex: 'status',
-          render: (text) => this.state.statuses[text] || text,
+          render: (text, row) => {
+            return this.state.statuses[text] || text
+          },
         }, {
           title: 'Доход веба',
           dataIndex: 'income',
@@ -160,10 +162,13 @@ class Leads extends Component {
           render: (text) => `${text}$`
         }, {
           title: 'Разница',
-          render: (text, row) => (row.revised_income - (row.income + row.commission)) + '$'
+          render: (text, row) => (row.revised_income - (row.income + row.commission)).toFixed(2) + '$'
         }, {
           title: 'Статус сверки',
           dataIndex: 'revise_status',
+          render: (text, row) => {
+            return this.state.statuses[text] || text
+          },
         }, {
           title: 'Цель',
           dataIndex: 'action.name',
