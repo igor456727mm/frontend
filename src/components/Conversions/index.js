@@ -114,6 +114,7 @@ class Leads extends Component {
       filters: (_.isEmpty(tmp) && { ...initialFilter }) || tmp,
       types: {},
       statuses: {},
+      reviseStatuses: {},
       pagination: {
         hideOnSinglePage: true,
         pageSizeOptions: ['5', '10', '25', '50', '100'],
@@ -145,7 +146,9 @@ class Leads extends Component {
         }, {
           title: 'Статус',
           dataIndex: 'status',
-          render: (text) => this.state.statuses[text] || text,
+          render: (text, row) => {
+            return this.state.statuses[text] || text
+          },
         }, {
           title: 'Доход веба',
           dataIndex: 'income',
@@ -160,10 +163,13 @@ class Leads extends Component {
           render: (text) => `${text}$`
         }, {
           title: 'Разница',
-          render: (text, row) => (row.revised_income - (row.income + row.commission)) + '$'
+          render: (text, row) => (row.revised_income - (row.income + row.commission)).toFixed(2) + '$'
         }, {
           title: 'Статус сверки',
           dataIndex: 'revise_status',
+          render: (text, row) => {
+            return this.state.reviseStatuses[text] || text
+          },
         }, {
           title: 'Цель',
           dataIndex: 'action.name',
@@ -214,6 +220,9 @@ class Leads extends Component {
 
     api.get('/v1/conversions/statuses')
     .then(response => this.setState({ statuses: response.data }))
+
+    api.get('/v1/conversions/revise-statuses')
+    .then(response => this.setState({ reviseStatuses: response.data }))
   }
 
   componentWillUnmount = () => {
