@@ -167,9 +167,7 @@ class Leads extends Component {
         }, {
           title: 'Статус сверки',
           dataIndex: 'revise_status',
-          render: (text, row) => {
-            return this.state.reviseStatuses[text] || text
-          },
+          render: (text) => this.state.reviseStatuses[text] || text,
         }, {
           title: 'Цель',
           dataIndex: 'action.name',
