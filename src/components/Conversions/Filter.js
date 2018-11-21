@@ -73,10 +73,10 @@ class _Filter extends Component {
               <Revise />
             </div>
             <div className="col-md-2">
-              {this.validator('stream_id', 'Поток', <TreeSelectRemote filter="streams" {...options} /> )}
+              {this.validator('stream_id', 'Поток', <SearchSelect target="streams" {...options} /> )}
             </div>
             <div className="col-md-2">
-              {this.validator('webmaster_id', 'Пользователь', <SearchSelect target="/v1/users" {...options} /> )}
+              {this.validator('webmaster_id', 'Пользователь', <SearchSelect target="users" {...options} /> )}
             </div>
             <div className="col-md-2">
               <Form.Item>

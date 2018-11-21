@@ -4,11 +4,11 @@ import debounce from 'lodash/debounce';
 import api from '../Api'
 const Option = Select.Option;
 
-class UserRemoteSelect extends React.Component {
+class RemoteSelect extends React.Component {
 
   constructor(props) {
     super(props)
-    this.fetchUser = debounce(this.fetchUser, 800)
+    this.fetchData = debounce(this.fetchData, 800)
     this.state = {
       data: [],
       value: null,
@@ -16,41 +16,58 @@ class UserRemoteSelect extends React.Component {
     }
   }
 
-  componentDidMount = () => {
-    const { value: initialValue } = this.props
-    if(initialValue) {
-      api.get(`/v1/users/${initialValue}`)
-      .then(response => {
-        this.setState({
-          value: { key: initialValue, label: response.data.login },
-          data: [],
-          fetching: false,
-        })
-      })
+  // componentDidMount = () => {
+  //   const { value: initialValue } = this.props
+  //   if(initialValue) {
+  //     api.get(`${this.getApiUrl()}${initialValue}`)
+  //     .then(response => {
+  //       this.setState({
+  //         value: { key: initialValue, label: response.data.login },
+  //         data: [],
+  //         fetching: false,
+  //       })
+  //     })
+  //   }
+  // }
+
+  getDataReq = (target) => {
+    const data = {
+      users: {
+        apiUrl: `/v1/${target}/`,
+        fields: ['id', 'login'],
+      },
+      streams: {
+        apiUrl: `/v1/${target}/`,
+        fields: ['id', 'name'],
+      }
     }
+    return data[target]
   }
 
-  fetchUser = (value) => {
+  getReqParams = (value, data) => {
+      const reqParams = {
+        'per-page': 999,
+        'fields': `${data.fields[0]},${data.fields[1]}`,
+      }
+      if(isNaN(value)) {
+        reqParams[`q[${data.fields[1]}][like]`] = value
+      } else {
+        reqParams[`q[${data.fields[0]}][equal]`] = value
+      }
+      return reqParams
+  }
+
+  fetchData = (value) => {
     this.setState({ data: [], fetching: true })
     const { target } = this.props
-
-    const params = {
-      'per-page': 999,
-      'fields': 'login,id',
-    }
-
-    if(isNaN(value)) {
-      params['q[login][like]'] = value
-    } else {
-      params['q[id][equal]'] = value
-    }
-
-    api.get(target, { params })
+    const dataReq = this.getDataReq(target)
+    const reqParams = this.getReqParams(value, dataReq)
+    api.get(dataReq.apiUrl, { params: reqParams })
     .then(response => {
       const data = response.data.map(item => {
         return {
-          value: item.id,
-          text: item.login,
+          value: item[dataReq.fields[0]],
+          text: item[dataReq.fields[1]],
         }
       })
       this.setState({ data: data, fetching: false });
@@ -84,7 +101,7 @@ class UserRemoteSelect extends React.Component {
         placeholder="Поиск..."
         notFoundContent={fetching ? <Spin size="small" /> : null}
         filterOption={false}
-        onSearch={this.fetchUser}
+        onSearch={this.fetchData}
         style={{ width: '100%' }}
         size="large"
         showArrow={false}
@@ -98,4 +115,4 @@ class UserRemoteSelect extends React.Component {
     );
   }
 }
-export default UserRemoteSelect
+export default RemoteSelect
