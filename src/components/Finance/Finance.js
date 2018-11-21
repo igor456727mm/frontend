@@ -42,7 +42,7 @@ class _Filter extends Component {
       <div className="filter filter__withdrawals block">
         <Form>
           {this.validator('created_at', t('field.date'), <DatePicker.RangePicker disabledDate={disabledDate} size="large" format="DD.MM.YYYY"  /> )}
-          {this.validator('user_id', 'Пользователь', <SearchSelect target="/v1/users" /> )}
+          {this.validator('user_id', 'Пользователь', <SearchSelect target="users" /> )}
           {this.validator('status', t('field.status'), <Select placeholder={t('field.all')} size="large" allowClear>{_statuses}</Select> )}
           <Form.Item>
             <h4>&nbsp;</h4>

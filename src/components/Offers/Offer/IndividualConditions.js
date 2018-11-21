@@ -261,7 +261,7 @@ class _Action extends Component {
 
             <Form>
               {this.validator('action_id', 'Цель', <Select onChange={this._onChangeActionId} disabled={isEdit} size="large">{_actions}</Select>, [{ required: true }] )}
-              {this.validator('user_id', 'Пользователь', <SearchSelect disabled={isEdit} target="/v1/users" />, [{ required: true }] )}
+              {this.validator('user_id', 'Пользователь', <SearchSelect disabled={isEdit} target="users" />, [{ required: true }] )}
               {this.validator('pay_conditions.name', t('field.name'), <Input size="large" placeholder={placeholders.name} /> )}
               {this.validator('pay_conditions.pay_type', 'Ставка', (
                 <Select size="large">
