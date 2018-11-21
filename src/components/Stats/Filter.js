@@ -108,7 +108,7 @@ class _Filter extends Component {
             <div className="col-md-2">
               {this.validator('sub_id_2_key', 'sub_id_2', <TreeSelectRemote filter="sub_id_2" {...options} /> )}
               <div className="filter__separator"></div>
-              {this.validator('webmaster_id', 'Пользователь', <SearchSelect target="/v1/users" {...options} /> )}
+              {this.validator('webmaster_id', 'Пользователь', <SearchSelect target="users" {...options} /> )}
             </div>
             <div className="col-md-2">
               {this.validator('sub_id_3_key', 'sub_id_3', <TreeSelectRemote filter="sub_id_3" {...options} /> )}
