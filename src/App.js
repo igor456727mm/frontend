@@ -301,12 +301,12 @@ class App extends Component {
                   {/* <li><NavLink to="/news">{icons.news} {t('menu.news')}</NavLink></li> */}
                   <li><NavLink to="/platforms">{icons.platforms} {t('menu.platforms')}</NavLink></li>
                   <li><NavLink to="/offers">{icons.products} {t('menu.offers')}</NavLink></li>
-                  <li><NavLink to="/news">{icons.products} Новости</NavLink></li>
+                  <li><NavLink to="/news">{icons.products} {t('menu.news')}</NavLink></li>
                   {/* <li><NavLink to="/promo">{icons.promo} {t('menu.promo')}</NavLink></li> */}
                   <li><NavLink to="/stats">{icons.stats} {t('menu.stats')}</NavLink></li>
-                  <li><NavLink to="/conversions">{icons.stats} Конверсии</NavLink></li>
-                  <li><NavLink to="/revises">{icons.stats} Сверки</NavLink></li>
-                  <li><NavLink to="/users">{icons.support} Пользователи</NavLink></li>
+                  <li><NavLink to="/conversions">{icons.stats} {t('menu.conversions')}</NavLink></li>
+                  <li><NavLink to="/revises">{icons.stats} {t('menu.revises')}</NavLink></li>
+                  <li><NavLink to="/users">{icons.support} {t('menu.users')}</NavLink></li>
                   <li><NavLink to="/finance">{icons.finance} {t('menu.finance')}</NavLink></li>
                   <li><NavLink to="/tickets" className="relative">{icons.support} {t('menu.support')} {unreadMessages > 0 && <span className="badge">{unreadMessages}</span>}</NavLink></li>
                 </ul>

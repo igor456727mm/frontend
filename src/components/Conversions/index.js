@@ -232,7 +232,6 @@ class Leads extends Component {
   fetch = () => {
     const { filters, pagination } = this.state
     this.setState({ isLoading: true })
-
     api.get('/v1/conversions', {
       params: {
         sort: pagination.sort || '-id',
@@ -244,18 +243,21 @@ class Leads extends Component {
       }
     })
     .then(response => {
-      pagination.total = parseInt(response.headers['x-pagination-total-count'])
-      this.setState({
+      this.setState(state => {
+        const { pagination } = state
+        pagination.total = parseInt(response.headers['x-pagination-total-count'])
+        return {
         isLoading: false,
         data: response.data,
         pagination
+        }
       })
       Filters.toUrl(filters)
     })
   }
 
   handleTableChange = ({ current: page }, filters, { columnKey, order }) => {
-    const sort = order == 'ascend' ? columnKey : `-${columnKey}`
+    const sort = (order && columnKey) && (order == 'ascend' ? columnKey : `-${columnKey}`)
     this.setState(state => ({
       pagination: {
         ...state.pagination,
