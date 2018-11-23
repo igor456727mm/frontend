@@ -17,7 +17,7 @@
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.4",
+    "react-scripts": "^2.1.1",
     "redux": "^3.7.2"
   },
   "devDependencies": {
@@ -34,5 +34,8 @@
     "postinstall": "cp -rf ./helpers/rc-tree-select ./node_modules/"
   },
   "domain": "gambling.pro",
-  "cookie_prefix": "cabinet"
+  "cookie_prefix": "cabinet",
+  "browserslist": [
+    " > 5%"
+  ]
 }
