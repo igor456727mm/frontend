@@ -181,7 +181,7 @@ class Users extends Component {
   }
 
   handleTableChange = ({ current: page }, filters, { columnKey, order }) => {
-    const sort = order == 'ascend' ? columnKey : `-${columnKey}`
+    const sort = (order && columnKey) && (order == 'ascend' ? columnKey : `-${columnKey}`)
     const pagination = { ...this.state.pagination, current: page, sort: sort }
     this.setState({ pagination }, this.fetch)
   }

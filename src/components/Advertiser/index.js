@@ -33,20 +33,13 @@ class _Filter extends Component {
   }
 
   render() {
-    const { statuses } = this.props
-    const _statuses = Object.keys(statuses).map(item => <Select.Option key={item} value={item}>{statuses[item]}</Select.Option>)
     return (
       <div className="filter">
         <Form>
-          {this.validator('created_at', t('field.date'), <DatePicker.RangePicker disabledDate={disabledDate} size="large" format="DD.MM.YYYY"  /> )}
           {this.validator('name', t('field.name'), <Input size="large" /> )}
           <Form.Item>
             <h4>&nbsp;</h4>
             <Button onClick={this.handleSubmit} htmlType="submit" size="large">{t('button.show')}</Button>
-          </Form.Item>
-          <Form.Item>
-            <h4>&nbsp;</h4>
-            <Link class="ant-btn ant-btn-lg" to="/news/new">Добавить новость</Link>
           </Form.Item>
         </Form>
       </div>
@@ -55,13 +48,12 @@ class _Filter extends Component {
 }
 const Filter = Form.create()(_Filter)
 
-class News extends Component {
+class Advertiser extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
       isLoading: false,
-      statuses: {},
       filters: Filters.parse(),
       data: [],
       pagination: {
@@ -77,41 +69,29 @@ class News extends Component {
           title: 'Название',
           dataIndex: 'name',
           sorter: true,
-          render: (text, row) => <Link to={`/news/${row.id}`}>{text}</Link>
         }, {
           title: 'Дата создания',
           dataIndex: 'created_at',
           render: text => moment.unix(text).format('DD.MM.YYYY HH:mm'),
-          sorter: true,
-        }, {
-          title: 'Опубликовано',
-          dataIndex: 'visible',
-          render: (text) => text ? <span className="color__green">Да</span> : <span className="color__red">нет</span>
-        }
+        },
       ]
     }
   }
 
   componentDidMount = () => {
-    Helpers.setTitle('menu.news')
+    Helpers.setTitle('Рекламодатели')
 
     this.fetch()
-    Events.follow(`news.fetch`, this.fetch)
-  }
-
-  componentWillUnmount = () => {
-    Events.unfollow(`news.fetch`, this.fetch)
   }
 
   fetch = () => {
     const { filters, pagination } = this.state
     this.setState({ isLoading: true })
-    api.get('/v1/news', {
+    api.get('/v1/advertisers', {
       params: {
         sort: pagination.sort || '-id',
         page: pagination.current || 1,
         ...filters,
-        expand: 'offer'
       }
     })
     .then(response => {
@@ -137,11 +117,11 @@ class News extends Component {
   }
 
   render() {
-    const { statuses, isLoading } = this.state
+    const { isLoading } = this.state
     const props = pick(this.state, 'data:dataSource', 'columns', 'pagination', 'isLoading:loading')
     return (
       <div>
-        <Filter onSubmit={this.onFilter} statuses={statuses} />
+        <Filter onSubmit={this.onFilter} />
         <Table
           rowKey={item => item.id}
           locale={{ emptyText: Helpers.emptyText }}
@@ -153,4 +133,4 @@ class News extends Component {
   }
 }
 
-export default News
+export default Advertiser

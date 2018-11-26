@@ -90,7 +90,7 @@ class _Filter extends Component {
             <div className="col-md-2">
               {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}
               <div className="filter__separator"></div>
-              {this.validator('revise_status', 'Статус сверки', <ReviseStatus reviseStatuses={reviseStatuses} /> )}
+              {this.validator('revise_status', 'Статус сверки', <ReviseStatus reviseStatuses={reviseStatuses} {...options} /> )}
             </div>
             <div className="col-md-2">
               {this.validator('stream_id', 'Поток', <SearchSelect target="streams" {...options} /> )}
