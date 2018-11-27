@@ -126,7 +126,7 @@ class Withdrawals extends Component {
       }
     })
     this.fetch(current, {
-      sort: order == 'ascend' ? columnKey : `-${columnKey}`
+      sort: (order && columnKey) && (order == 'ascend' ? columnKey : `-${columnKey}`)
     })
   }
 

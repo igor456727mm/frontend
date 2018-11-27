@@ -34,6 +34,9 @@ import User from './components/Users/User'
 import Conversions from './components/Conversions'
 import Revises from './components/Revises'
 
+import Advertiser from './components/Advertiser'
+import Partner from './components/Partner'
+
 const NoMatch = ({ location }) => (
   <div>
     <h3>No match for <code>{location.pathname}</code></h3>
@@ -150,6 +153,16 @@ const routes = [
   {
     path: '/news/:id',
     component: NewsItem,
+  },
+  {
+    path: '/advertiser',
+    component: Advertiser,
+    exact: true
+  },
+  {
+    path: '/partner',
+    component: Partner,
+    exact: true
   },
 ]
 
@@ -308,6 +321,8 @@ class App extends Component {
                   <li><NavLink to="/revises">{icons.stats} {t('menu.revises')}</NavLink></li>
                   <li><NavLink to="/users">{icons.support} {t('menu.users')}</NavLink></li>
                   <li><NavLink to="/finance">{icons.finance} {t('menu.finance')}</NavLink></li>
+                  <li><NavLink to="/advertiser">Рекламодатели</NavLink></li>
+                  <li><NavLink to="/partner">Модули партнеров</NavLink></li>
                   <li><NavLink to="/tickets" className="relative">{icons.support} {t('menu.support')} {unreadMessages > 0 && <span className="badge">{unreadMessages}</span>}</NavLink></li>
                 </ul>
                 <div className="sidebar__copyright">

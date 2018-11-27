@@ -354,7 +354,7 @@ class Leads extends Component {
     const hasSelected = selectedRowKeys.length > 0;
     return (
       <div>
-        <Filter type="leads" initialFilter={initialFilter} types={this.state.types} onSubmit={this.onFilter} />
+        <Filter type="leads" initialFilter={initialFilter} types={this.state.types} reviseStatuses={this.state.reviseStatuses} onSubmit={this.onFilter} />
         <Table
           ref="tbl"
           rowSelection={rowSelection}

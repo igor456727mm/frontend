@@ -479,7 +479,9 @@ class Offer extends Component {
         response.data.traffic_source_ids = response.data.trafficSources.map(item => item.id)
         response.data.country_ids = response.data.countries.map(item => item.id)
         response.data.category_ids = response.data.categories.map(item => item.id)
-        delete response.data.trafficSources, response.data.countries, response.data.categories
+        delete response.data.trafficSources
+        delete response.data.countries
+        delete response.data.categories
 
         // targeting
         if(response.data.country_data && response.data.country_data.countries) {
@@ -511,7 +513,7 @@ class Offer extends Component {
       .then(response => {
         response.data.map(item => {
           const { data } = this.state
-          data[`${item.attribute}_en`] = item.text,
+          data[`${item.attribute}_en`] = item.text
           data[`${item.attribute}_en_id`] = item.id
           this.setState({ data: data })
         })

@@ -8,54 +8,54 @@ import Helpers, { Filters, Events, t, pick, clean, disabledDate } from '../../co
 import api from '../../common/Api'
 
 
-class _Filter extends Component {
+// class _Filter extends Component {
+//
+//   constructor(props) {
+//     super(props)
+//   }
+//
+//   handleSubmit = (e) => {
+//     e.preventDefault()
+//     this.props.form.validateFieldsAndScroll((err, values) => {
+//       this.props.onSubmit(clean(values))
+//     })
+//   }
+//
+//   validator = (name, label, input) => {
+//     const { getFieldDecorator } = this.props.form
+//     const options = { initialValue: Filters.value(name) }
+//     return (
+//       <Form.Item className={`filter__field-${name}`}>
+//         {label && <h4>{label}</h4>}
+//         {getFieldDecorator(name, options)(input)}
+//       </Form.Item>
+//     )
+//   }
+//
+//   render() {
+//     const { statuses } = this.props
+//     const _statuses = Object.keys(statuses).map(item => <Select.Option key={item} value={item}>{statuses[item]}</Select.Option>)
+//     return (
+//       <div className="filter">
+//         <Form>
+//           {this.validator('created_at', t('field.date'), <DatePicker.RangePicker disabledDate={disabledDate} size="large" format="DD.MM.YYYY"  /> )}
+//           {this.validator('name', t('field.name'), <Input size="large" /> )}
+//           <Form.Item>
+//             <h4>&nbsp;</h4>
+//             <Button onClick={this.handleSubmit} htmlType="submit" size="large">{t('button.show')}</Button>
+//           </Form.Item>
+//           <Form.Item>
+//             <h4>&nbsp;</h4>
+//             <Link class="ant-btn ant-btn-lg" to="/news/new">Добавить новость</Link>
+//           </Form.Item>
+//         </Form>
+//       </div>
+//     )
+//   }
+// }
+// const Filter = Form.create()(_Filter)
 
-  constructor(props) {
-    super(props)
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault()
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      this.props.onSubmit(clean(values))
-    })
-  }
-
-  validator = (name, label, input) => {
-    const { getFieldDecorator } = this.props.form
-    const options = { initialValue: Filters.value(name) }
-    return (
-      <Form.Item className={`filter__field-${name}`}>
-        {label && <h4>{label}</h4>}
-        {getFieldDecorator(name, options)(input)}
-      </Form.Item>
-    )
-  }
-
-  render() {
-    const { statuses } = this.props
-    const _statuses = Object.keys(statuses).map(item => <Select.Option key={item} value={item}>{statuses[item]}</Select.Option>)
-    return (
-      <div className="filter">
-        <Form>
-          {this.validator('created_at', t('field.date'), <DatePicker.RangePicker disabledDate={disabledDate} size="large" format="DD.MM.YYYY"  /> )}
-          {this.validator('name', t('field.name'), <Input size="large" /> )}
-          <Form.Item>
-            <h4>&nbsp;</h4>
-            <Button onClick={this.handleSubmit} htmlType="submit" size="large">{t('button.show')}</Button>
-          </Form.Item>
-          <Form.Item>
-            <h4>&nbsp;</h4>
-            <Link class="ant-btn ant-btn-lg" to="/news/new">Добавить новость</Link>
-          </Form.Item>
-        </Form>
-      </div>
-    )
-  }
-}
-const Filter = Form.create()(_Filter)
-
-class News extends Component {
+class Advertiser extends Component {
 
   constructor(props) {
     super(props)
@@ -138,19 +138,12 @@ class News extends Component {
 
   render() {
     const { statuses, isLoading } = this.state
-    const props = pick(this.state, 'data:dataSource', 'columns', 'pagination', 'isLoading:loading')
     return (
       <div>
-        <Filter onSubmit={this.onFilter} statuses={statuses} />
-        <Table
-          rowKey={item => item.id}
-          locale={{ emptyText: Helpers.emptyText }}
-          onChange={this.handleTableChange}
-          {...props}
-          />
+        Hello world!
       </div>
     )
   }
 }
 
-export default News
+export default Advertiser

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { NavLink, Link } from 'react-router-dom'
-import { Form, Table, Icon, Divider, Select, Input, Button, message, Popconfirm, Tooltip,  DatePicker, Modal } from 'antd'
+import { Form, Table, Icon, Divider, Select, Input, Button, message, Popconfirm, Tooltip,  DatePicker, Modal, TreeSelect } from 'antd'
 import Helpers, { Filters, t, pick, clean, disabledDate, TreeSelectRemote, queryParams } from '../../common/Helpers'
 import api from '../../common/Api'
 import axios from 'axios'
@@ -17,6 +17,25 @@ const { RangePicker } = DatePicker
 const options = {
   size: 'large',
   getPopupContainer: () => document.getElementById('content'),
+}
+
+const { TreeNode } = TreeSelect
+
+class ReviseStatus extends React.Component {
+
+  render() {
+    const { reviseStatuses } = this.props
+    const renderStatuses = Object.keys(reviseStatuses).map(item => <TreeNode value={item} title={reviseStatuses[item]} key={item} />)
+    return (
+      <TreeSelect
+      allowClear
+      multiple
+      {...this.props}
+    >
+    {renderStatuses}
+    </TreeSelect>
+    );
+  }
 }
 
 export const initialFilter = {
@@ -53,6 +72,7 @@ class _Filter extends Component {
   }
 
   render() {
+    const { reviseStatuses } = this.props
     return (
       <div className="filter filter__stats">
         <Form onSubmit={this.handleSubmit}>
@@ -70,10 +90,12 @@ class _Filter extends Component {
             <div className="col-md-2">
               {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}
               <div className="filter__separator"></div>
-              <Revise />
+              {this.validator('revise_status', 'Статус сверки', <ReviseStatus reviseStatuses={reviseStatuses} {...options} /> )}
             </div>
             <div className="col-md-2">
               {this.validator('stream_id', 'Поток', <SearchSelect target="streams" {...options} /> )}
+              <div className="filter__separator"></div>
+              <Revise />
             </div>
             <div className="col-md-2">
               {this.validator('webmaster_id', 'Пользователь', <SearchSelect target="users" {...options} /> )}
