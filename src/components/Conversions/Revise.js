@@ -28,6 +28,7 @@ class _Filter extends Component {
       dryRun: 1,
       data: [],
       total: {},
+      leadesDiff: [],
     }
   }
 
@@ -76,7 +77,22 @@ class _Filter extends Component {
         }
 
         message.success('Сверка успешно загружена')
-        this.setState({ data: [], dryRun: type === 'revise-by-stream' ? 1 : 0, total })
+
+        const leadesDiff = response.data.hitActionChanges.filter((item) => !Array.isArray(item.errors) && Object.keys(item.errors).length > 0)
+        const leadesDiffWithErrors = leadesDiff.map((item) => {
+          const errors = Object.keys(item.errors).reduce((acc, el) => [ ...acc, ...item.errors[el] ], [])
+          return ({
+            ...item,
+            errors
+          })
+        })
+
+        this.setState({
+          data: [],
+          dryRun: type === 'revise-by-stream' ? 1 : 0,
+          total,
+          leadesDiff: leadesDiffWithErrors,
+        })
       })
       .catch(Helpers.errorHandler)
 
@@ -114,8 +130,43 @@ class _Filter extends Component {
   )}
   */
 
+  renderLeadesDiff = () => {
+    const { leadesDiff } = this.state
+    const columns = [
+            {
+              title: 'lead id',
+              dataIndex: 'lead_id',
+              width: 90,
+            },
+            {
+              title: 'Сумма',
+              dataIndex: 'amount',
+              width: 80,
+            },
+            {
+              title: 'Ошибки',
+              dataIndex: 'errors',
+              render: (text) => {
+                return text.join(', ')
+              }
+            },
+          ]
+    return (
+      <div>
+        <br />
+        <h4>Отличия в лидах:</h4>
+        <Table
+          rowKey={(item) => item.lead_id}
+          locale={{ emptyText: Helpers.emptyText }}
+          columns={columns}
+          dataSource={leadesDiff}
+          />
+      </div>
+    )
+  }
+
   render() {
-    const { isVisible, type, data, dryRun, total } = this.state
+    const { isVisible, type, data, dryRun, total, leadesDiff } = this.state
     return (
       <span>
         <Button onClick={this._toggle} style={{ marginTop: '26px', borderColor: '#20ae0e', color: '#20ae0e' }} size="large">Загрузить сверку</Button>
@@ -166,12 +217,16 @@ class _Filter extends Component {
 
               {total && Object.keys(total).length > 0 && (
                 <div>
-                  <h3>Результат</h3>
+                  <br />
+                  <h4>Результат</h4>
                   Лидов в системе: {total.leadCountSystem}
                   <br />Лидов в в сверке: {total.leadCountRevise}
                   <br />Разница: {total.leadCountDiff}
                 </div>
               ) || null}
+
+              {leadesDiff && Object.keys(leadesDiff).length > 0
+                && (type === 'revise-by-lead-id') && this.renderLeadesDiff() || null}
 
               <Form.Item style={{ marginBottom: 0 }}>
                 <h4>&nbsp;</h4>
