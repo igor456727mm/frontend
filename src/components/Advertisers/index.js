@@ -39,7 +39,11 @@ class _Filter extends Component {
           {this.validator('name', t('field.name'), <Input size="large" /> )}
           <Form.Item>
             <h4>&nbsp;</h4>
-            <Button onClick={this.handleSubmit} htmlType="submit" size="large">{t('button.show')}</Button>
+            <Button onClick={this.handleSubmit} type="primary" htmlType="submit" size="large">{t('button.show')}</Button>
+          </Form.Item>
+          <Form.Item>
+            <h4>&nbsp;</h4>
+            <Link className="ant-btn ant-btn-lg" to="/advertisers/new">Добавить рекламодателя</Link>
           </Form.Item>
         </Form>
       </div>
@@ -69,6 +73,9 @@ class Advertiser extends Component {
           title: 'Название',
           dataIndex: 'name',
           sorter: true,
+          render: (text, row) => {
+            return <Link to={`/advertisers/${row.id}`}>{text}</Link>
+          },
         }, {
           title: 'Дата создания',
           dataIndex: 'created_at',

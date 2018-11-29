@@ -34,7 +34,8 @@ import User from './components/Users/User'
 import Conversions from './components/Conversions'
 import Revises from './components/Revises'
 
-import Advertiser from './components/Advertiser'
+import Advertisers from './components/Advertisers'
+import Advertiser from './components/Advertisers/Advertiser'
 import Partner from './components/Partner'
 
 const NoMatch = ({ location }) => (
@@ -155,7 +156,12 @@ const routes = [
     component: NewsItem,
   },
   {
-    path: '/advertiser',
+    path: '/advertisers',
+    component: Advertisers,
+    exact: true
+  },
+  {
+    path: '/advertisers/:id',
     component: Advertiser,
     exact: true
   },
@@ -321,7 +327,7 @@ class App extends Component {
                   <li><NavLink to="/revises">{icons.stats} {t('menu.revises')}</NavLink></li>
                   <li><NavLink to="/users">{icons.support} {t('menu.users')}</NavLink></li>
                   <li><NavLink to="/finance">{icons.finance} {t('menu.finance')}</NavLink></li>
-                  <li><NavLink to="/advertiser">Рекламодатели</NavLink></li>
+                  <li><NavLink to="/advertisers">Рекламодатели</NavLink></li>
                   <li><NavLink to="/partner">Модули партнеров</NavLink></li>
                   <li><NavLink to="/tickets" className="relative">{icons.support} {t('menu.support')} {unreadMessages > 0 && <span className="badge">{unreadMessages}</span>}</NavLink></li>
                 </ul>
