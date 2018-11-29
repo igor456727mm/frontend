@@ -46,7 +46,7 @@ import api from '../../common/Api'
 //           </Form.Item>
 //           <Form.Item>
 //             <h4>&nbsp;</h4>
-//             <Link class="ant-btn ant-btn-lg" to="/news/new">Добавить новость</Link>
+//             <Link className="ant-btn ant-btn-lg" to="/news/new">Добавить новость</Link>
 //           </Form.Item>
 //         </Form>
 //       </div>

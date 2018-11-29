@@ -42,11 +42,11 @@ class _Filter extends Component {
           {this.validator('name', t('field.name'), <Input size="large" /> )}
           <Form.Item>
             <h4>&nbsp;</h4>
-            <Button onClick={this.handleSubmit} htmlType="submit" size="large">{t('button.show')}</Button>
+            <Button onClick={this.handleSubmit} type="primary" htmlType="submit" size="large">{t('button.show')}</Button>
           </Form.Item>
           <Form.Item>
             <h4>&nbsp;</h4>
-            <Link class="ant-btn ant-btn-lg" to="/news/new">Добавить новость</Link>
+            <Link className="ant-btn ant-btn-lg" to="/news/new">Добавить новость</Link>
           </Form.Item>
         </Form>
       </div>
