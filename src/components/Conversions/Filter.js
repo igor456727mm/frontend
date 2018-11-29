@@ -10,6 +10,7 @@ import locale from 'antd/lib/date-picker/locale/ru_RU'
 import qs from 'qs'
 import SearchSelect from '../../common/Helpers/SearchSelect'
 import Revise from './Revise'
+import GetData from './GetData'
 
 const Option = Select.Option
 const { RangePicker } = DatePicker
@@ -99,6 +100,8 @@ class _Filter extends Component {
             </div>
             <div className="col-md-2">
               {this.validator('webmaster_id', 'Пользователь', <SearchSelect target="users" {...options} /> )}
+              <div className="filter__separator"></div>
+              <GetData />
             </div>
             <div className="col-md-2">
               <Form.Item>

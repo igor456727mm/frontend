@@ -220,7 +220,7 @@ class _Filter extends Component {
                   <br />
                   <h4>Результат</h4>
                   Лидов в системе: {total.leadCountSystem}
-                  <br />Лидов в в сверке: {total.leadCountRevise}
+                  <br />Лидов в сверке: {total.leadCountRevise}
                   <br />Разница: {total.leadCountDiff}
                 </div>
               ) || null}
