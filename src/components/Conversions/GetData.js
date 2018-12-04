@@ -23,20 +23,61 @@ class Filter extends Component {
     }
   }
 
+  prepareQueryParams = (values) => {
+    const skip = ['group']
+    const filters = {}
+    const keys = Object.keys(values)
+    if(!keys.length) return filters
+    keys.forEach(key => {
+      const val = values[key]
+      const isArray = Array.isArray(val)
+      if(!val || skip.includes(key) || isArray && !val.length) return
+      if(isArray) {
+        if(['created_at', 'date'].includes(key)) {
+          const start = val[0] && val[0].startOf('day').unix()
+          const end = val[1] && val[1].endOf('day').unix()
+          if(start && end) {
+            filters.startDate = start
+            filters.endDate = end
+          }
+        } else {
+          switch (key) {
+            case 'advertiser_id':
+              filters.advertiserId = val.join(',')
+              break;
+            case 'offer_id':
+              filters.offerIds = val.join(',')
+              break;
+            default:
+              filters[key] = val.join(',')
+          }
+        }
+      } else {
+        switch (key) {
+          case 'advertiser_id':
+            filters.advertiserId = val
+            break;
+          case 'offer_id':
+            filters.offerIds = val
+            break;
+          default:
+            filters[key] = val
+        }
+      }
+    })
+    return filters
+  }
+
   handleSubmit = (e) => {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
       clean(values)
-      const preparedValues = Filters.prepare(values)
-      const timeValues = preparedValues['q[created_at][between]'].split(',')
-      preparedValues.startDate = timeValues[0]
-      preparedValues.endDate = timeValues[1]
-      delete preparedValues['q[created_at][between]']
+      const queryParams = this.prepareQueryParams(values)
       this.setState({ isLoading: true })
 
       api.get('/v1/hit-actions/export', {
         params: {
-          ...preparedValues,
+          ...queryParams,
         }
       })
       .then(response => {
@@ -82,7 +123,7 @@ class Filter extends Component {
 
               {this.validator('created_at', 'Дата', <RangePicker format="DD.MM.YYYY" {...options} /> )}
               {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}
-              {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options}/> )}
+              {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options} treeCheckable={false} /> )}
 
               <Form.Item style={{ marginBottom: 0 }}>
                 <h4>&nbsp;</h4>
