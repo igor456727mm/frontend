@@ -115,7 +115,7 @@ class Stats extends Component {
     const sortOrder = pagination.sort && pagination.sort.includes(group) && (pagination.sort.charAt(0) == '-' ? 'descend' : 'ascend' ) || !pagination.sort && `descend`
     if(sortOrder) tmp.sortOrder = sortOrder */
     return {
-      title: t(`field.${title}`),
+      title: title === 'stream' ? t(`field.${title}`) + ' / ID' : t(`field.${title}`),
       dataIndex: group,
       sorter: true,
       // ...tmp,
@@ -142,7 +142,7 @@ class Stats extends Component {
             text = '-'
             break;
           case 'stream_id':
-            text = row.stream && <span>{row.stream.name}</span> || '-'
+            text = row.stream && <span>{`${row.stream.name} / ${row.stream.id}`}</span> || '-'
             break;
           case 'action_day':
             text = row[group] && moment.unix(row[group]).format('DD.MM.YY')
