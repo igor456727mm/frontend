@@ -248,7 +248,6 @@ class _Action extends Component {
     const { isVisible, iconLoading, isEdit } = this.state
     const { data, form, currency_id } = this.props
     const currency = '$'
-    // console.log(form.getFieldsValue());
     let fields = null
     const { pay_conditions } = form.getFieldsValue()
     if(pay_conditions && pay_conditions.pay_type) {
@@ -366,7 +365,7 @@ class Offer extends Component {
       columns: {
         actions: [
           {
-            title: 'Условия',
+            title: 'Название',
             dataIndex: 'name',
             render: (text, row) => {
               return (
@@ -376,32 +375,53 @@ class Offer extends Component {
                 </div>
               )
             }
-          }, {
-            title: 'Ставка',
+          },
+          {
+            title: 'Условия',
             render: (text, row) => {
-              const currency = '$'
               const { pay_type, fields } = row.pay_conditions
-              let amount
-              switch(pay_type) {
-                case 'fix':
-                  amount = `${fields.price} ${currency}`
-                  break;
+              let condition, name, price, commission, site_revshare_percent, revshare_percent, price_from, price_to
+
+              switch (pay_type) {
                 case 'flex':
-                  amount = fields.price_to && `до ${fields.price_to} ${currency}` || `от ${fields.price_from} ${currency}`
-                  break;
+                  price_from = fields.price_from != null ? fields.price_from : '-'
+                  price_to = fields.price_to != null ? fields.price_to : '-'
+                  condition = (
+                    <span>
+                      Стоимость от&nbsp;
+                      <span style={{ whiteSpace: 'nowrap' }} >
+                        {price_from}$&nbsp;
+                      </span>
+                        / Стоимость до&nbsp;
+                      <span style={{ whiteSpace: 'nowrap' }} >
+                        {price_to}$&nbsp;
+                      </span>
+                    </span>
+                  )
+                  return condition
+                case 'fix':
+                  price = fields.price != null ? fields.price : '-'
+                  commission = fields.commission != null ? fields.commission : '-'
+                  condition = <span>Стоимость <span style={{ whiteSpace: 'nowrap' }} >{price}$</span> / Комиссия <span style={{ whiteSpace: 'nowrap' }} >{commission}$</span></span>
+                  return condition
                 case 'revshare':
-                  amount = `${fields.revshare_percent * 100}%`
-                  break;
+                  site_revshare_percent = fields.site_revshare_percent != null ? fields.site_revshare_percent * 100 : '-'
+                  revshare_percent = fields.revshare_percent != null ? fields.revshare_percent * 100 : '-'
+                  condition = <span>Ревшара сайта: <span style={{ whiteSpace: 'nowrap' }} >{site_revshare_percent}%</span> / Ревшара вебмастера: <span style={{ whiteSpace: 'nowrap' }} >{revshare_percent}%</span></span>
+                  return condition
               }
-              return <div>{amount}</div>
-            }
-          }, {
+
+            },
+            width: 220,
+          },
+          {
             title: 'Холд',
             render: (text, row) => {
               const { fields } = row.pay_conditions
               return `до ${fields.hold} дней`
             }
-          }, {
+          },
+          {
             title: <Action offer_id={id} />,
             render: (text, row) => {
               return (
