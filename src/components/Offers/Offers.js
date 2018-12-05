@@ -103,7 +103,7 @@ class _Filter extends Component {
     return (
       <div className="filter filter__tickets">
         <Form onSubmit={this.handleSubmit}>
-          {this.validator('name', t('field.name'), <Input size="large" allowClear /> )}
+          {this.validator('name', t('field.name'), <Input size="large" /> )}
           {this.validator('country_id', t('field.targeting'), <TreeSelectRemote target="/v1/countries" /> )}
           {this.validator('category_id', t('field.category'), <TreeSelectRemote target="/v1/categories" /> )}
           {this.validator('visible', 'Видимый', <Select size="large"><Select.Option key="1" value="true">Да</Select.Option><Select.Option key="0" value="false">Нет</Select.Option></Select> )}
@@ -152,6 +152,50 @@ class Offers extends Component {
           dataIndex: '',
           render: (text, row) => <Countries country_data={row.country_data} countries={row.countries} />,
           width: 220,
+        },
+        {
+          title: 'Условия (название/знач./знач.)',
+          dataIndex: '',
+          render: (text, row) => {
+            const { actions } = text
+            const getPlainActions = actions && Array.isArray(actions) && actions.length > 0 && actions.reduce((acc, item) => {
+              let condition, name, price, commission, site_revshare_percent, revshare_percent, price_from, price_to
+              name = item.name ? item.name : '-'
+              const { fields, pay_type } = item.pay_conditions
+
+              switch (pay_type) {
+                case 'flex':
+                  price_from = fields.price_from != null ? fields.price_from : '-'
+                  price_to = fields.price_to != null ? fields.price_to : '-'
+                  condition = (
+                    <span>
+                      {name} / Стоимость от&nbsp;
+                      <span style={{ whiteSpace: 'nowrap' }} >
+                        {price_from}$&nbsp;
+                      </span>
+                        / Стоимость до&nbsp;
+                      <span style={{ whiteSpace: 'nowrap' }} >
+                        {price_to}$&nbsp;
+                      </span>
+                    </span>
+                  )
+                  return actions.length === 1 ? condition : <div>{condition};<br/>{acc}</div>
+                case 'fix':
+                  price = fields.price != null ? fields.price : '-'
+                  commission = fields.commission != null ? fields.commission : '-'
+                  condition = <span>{name} / Стоимость <span style={{ whiteSpace: 'nowrap' }} >{price}$</span> / Комиссия <span style={{ whiteSpace: 'nowrap' }} >{commission}$</span></span>
+                  return actions.length === 1 ? condition : <div>{condition};<br/>{acc}</div>
+                case 'revshare':
+                  site_revshare_percent = fields.site_revshare_percent != null ? fields.site_revshare_percent * 100 : '-'
+                  revshare_percent = fields.revshare_percent != null ? fields.revshare_percent * 100 : '-'
+                  condition = <span>{name} / Ревшара сайта: <span style={{ whiteSpace: 'nowrap' }} >{site_revshare_percent}%</span> / Ревшара вебмастера: <span style={{ whiteSpace: 'nowrap' }} >{revshare_percent}%</span></span>
+                  return actions.length === 1 ? condition : <div>{condition};<br/>{acc}</div>
+              }
+
+            }, '')
+            return getPlainActions;
+          },
+          width: 220,
         }, {
           title: 'CR',
           dataIndex: 'avg_cr',
@@ -198,7 +242,7 @@ class Offers extends Component {
         sort: '-id',
         page: page,
         'per-page': 100,
-        expand: 'countries,categories',
+        expand: 'countries,categories,actions',
         ...filters
       }
     })

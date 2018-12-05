@@ -24783,7 +24783,6 @@ header svg {
   position: absolute;
   width: 210px;
   background-color: #fff;
-  overflow-y: scroll;
   top: 70px;
   bottom: 0;
   border-right: 1px solid #dfe2e5;
