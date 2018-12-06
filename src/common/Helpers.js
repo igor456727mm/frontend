@@ -368,11 +368,19 @@ export const queryParams = () => {
 
 // custom tree-select
 class _TreeSelect extends RcTreeSelect {
+
+  clearSearchInput() {
+    const { clearInputAfterSelect } =  this.props
+    this.getInputDOMNode().focus();
+    if (!('inputValue' in this.props) && clearInputAfterSelect) {
+      this.setState({ inputValue: '' });
+    }
+  }
+
   renderTopControlNode() {
     const { value } = this.state
     const props =  this.props
     const { children, placeholder, choiceTransitionName, prefixCls, maxTagTextLength } = props
-
     let selectedValueNodes = [];
 
     if(value.length) {
@@ -406,6 +414,7 @@ export const TreeSelect = (props) => {
     prefixCls: "ant-select",
     className: "ant-select-custom ant-select-lg",
     dropdownClassName: `ant-select-tree-dropdown`,
+    clearInputAfterSelect: false,
     ...props,
     //showSearch: false,
     //filterTreeNode: false,
