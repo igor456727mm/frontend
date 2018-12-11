@@ -10,6 +10,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import Helpers, { t, pick, clean, TreeSelectRemote, OfferAccessButton } from '../../common/Helpers'
 import IndividualConditions from './Offer/IndividualConditions'
+import SearchSelect from '../../common/Helpers/SearchSelect'
 import api from '../../common/Api'
 import { cookie_prefix } from '../../../package.json'
 import { domain, scheme } from '../../config'
@@ -92,6 +93,7 @@ class _Landing extends Component {
           <Form>
             {this.validator('name', t('field.name'), <Input size="large" />, [{ required: true }] )}
             {this.validator('url', t('field.url'), <Input size="large" />, [] )}
+            {this.validator('webmaster_id', t('field.user'), <SearchSelect  target="users" />)}
             <Form.Item className="form__item-last">
               <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
             </Form.Item>
@@ -309,7 +311,7 @@ class _Action extends Component {
           <h1>{isEdit ? `Цель #${data.id}` : 'Добавление цели'}</h1>
           <Form>
             {this.validator('name', t('field.name'), <Input size="large" />, [{ required: true }] )}
-            {this.validator('name_en', 'Название EN', <Input size="large" placeholder={!isEdit && 'Доступно при редактировании'} disabled={!isEdit} /> )}
+            {this.validator('name_en', 'Название EN', <Input size="large" placeholder={!isEdit ? 'Доступно при редактировании' : undefined} disabled={!isEdit} /> )}
             <div style={{ display: 'none' }}>{this.validator('name_en_id', '', <Input size="large" /> )}</div>
             {this.validator('alias', 'Код действия (например: reg или dep)', <Input size="large" /> )}
             {this.validator('pay_conditions.pay_type', 'Ставка', (
@@ -442,7 +444,17 @@ class Offer extends Component {
             title: 'URL',
             dataIndex: 'url',
             render: (text) => text && <a href={text} target="_blank" className="landing_url">{text}</a> || '-'
-          }, {
+          },
+          {
+            title: 'Пользователь',
+            dataIndex: '',
+            render: (text, row) => {
+              const id = text.webmaster ? text.webmaster.id : null
+              const email = text.webmaster ? text.webmaster.email : null
+              return (id && email) ? `#${id} ${email}` : ''
+            }
+          },
+           {
             title: 'CR',
             dataIndex: 'sys_cr',
             render: text => `${text}%`
@@ -577,6 +589,7 @@ class Offer extends Component {
       params: {
         'q[offer_id][equal]': id,
         'per-page': 999,
+        'expand': 'webmaster',
       }
     })
     .then(response => {
