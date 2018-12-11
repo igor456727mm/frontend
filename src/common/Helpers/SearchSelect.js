@@ -11,24 +11,31 @@ class RemoteSelect extends React.Component {
     this.fetchData = debounce(this.fetchData, 800)
     this.state = {
       data: [],
-      value: null,
+      value: { key: 0, label: [] },
       fetching: false,
     }
   }
 
-  // componentDidMount = () => {
-  //   const { value: initialValue } = this.props
-  //   if(initialValue) {
-  //     api.get(`${this.getApiUrl()}${initialValue}`)
-  //     .then(response => {
-  //       this.setState({
-  //         value: { key: initialValue, label: response.data.login },
-  //         data: [],
-  //         fetching: false,
-  //       })
-  //     })
-  //   }
-  // }
+  componentDidMount = () => {
+    const { value: initialValue } = this.props
+    if(initialValue) {
+      this.setState({ data: [], fetching: true })
+      const { target } = this.props
+      const dataReq = this.getDataReq(target)
+      const reqParams = this.getReqParams(initialValue, dataReq)
+      api.get(dataReq.apiUrl, { params: reqParams })
+      .then(response => {
+        const data = response.data.map(item => {
+          return {
+            value: item[dataReq.fields[0]],
+            text: item[dataReq.fields[1]],
+          }
+        })
+        const value = { key: data[0].value, label: ["#", data[0].value, " ", data[0].text] }
+        this.setState({ value, fetching: false });
+      })
+    }
+  }
 
   getDataReq = (target) => {
     const data = {
@@ -82,7 +89,7 @@ class RemoteSelect extends React.Component {
       fetching: false,
     })
 
-    if(value === undefined) value = { key: undefined, label: null }
+    if(value === undefined) value = { key: 0, label: [] }
     this.props.onChange(value.key, t)
 
 
@@ -92,7 +99,6 @@ class RemoteSelect extends React.Component {
     const { fetching, data, value } = this.state;
     const { value: initialValue } = this.props
     const _value = value || initialValue
-
 
     return (
       <Select
@@ -110,7 +116,7 @@ class RemoteSelect extends React.Component {
         value={_value}
         onChange={this.handleChange}
       >
-        {data.map(d => <Option key={d.value}>#{d.value} {d.text}</Option>)}
+        {data.map(item => <Select.Option key={item.value}>#{item.value} {item.text}</Select.Option>)}
       </Select>
     );
   }
