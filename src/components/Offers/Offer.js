@@ -920,8 +920,8 @@ class Offer extends Component {
                 <Select size="large">
                   <Select.Option key={0} value="list">Список стран</Select.Option>
                   <Select.Option key={1} value="all">Все страны</Select.Option>
-                  <Select.Option key={1} value="all_except_cis">Все кроме СНГ</Select.Option>
-                  <Select.Option key={2} value="cis">СНГ</Select.Option>
+                  <Select.Option key={2} value="all_except_cis">Все кроме СНГ</Select.Option>
+                  <Select.Option key={3} value="cis">СНГ</Select.Option>
                 </Select>
               ), [{ required: true }] )}
 

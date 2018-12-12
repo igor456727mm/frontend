@@ -89,8 +89,8 @@ class RemoteSelect extends React.Component {
       fetching: false,
     })
 
-    if(value === undefined) value = { key: 0, label: [] }
-    this.props.onChange(value.key, t)
+    if(!value) value = { key: 0, label: [] }
+    this.props.onChange(value, t)
 
 
   }
