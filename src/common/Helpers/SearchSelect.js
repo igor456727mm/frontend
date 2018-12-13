@@ -11,7 +11,7 @@ class RemoteSelect extends React.Component {
     this.fetchData = debounce(this.fetchData, 800)
     this.state = {
       data: [],
-      value: '',
+      value: { key: '', label: <span style={{color: "#bfbfbf"}}>Поиск...</span> },
       fetching: false,
     }
   }
@@ -31,7 +31,7 @@ class RemoteSelect extends React.Component {
             text: item[dataReq.fields[1]],
           }
         })
-        const value = `#${data[0].value} ${data[0].text}`
+        const value = { key: data[0].value, label: ["#", data[0].value, " ", data[0].text] }
         this.setState({ value, fetching: false });
       })
     }
@@ -82,21 +82,22 @@ class RemoteSelect extends React.Component {
   }
 
   handleChange = (value, t) => {
+    if(!value) value = { key: '', label: <span style={{color: "#bfbfbf"}}>Поиск...</span> }
     this.setState({
       value: value,
       data: [],
       fetching: false,
     })
-    this.props.onChange(value, t)
+    this.props.onChange(value.key, t)
   }
 
   render() {
     const { fetching, data, value } = this.state;
     const { value: initialValue } = this.props
     const _value = value || initialValue
-
     return (
       <Select
+        labelInValue
         showSearch
         placeholder="Поиск..."
         notFoundContent={fetching ? <Spin size="small" /> : null}
@@ -110,7 +111,7 @@ class RemoteSelect extends React.Component {
         value={_value}
         onChange={this.handleChange}
       >
-        {data.map(item => <Select.Option key={item.value}>#{item.value} {item.text}</Select.Option>)}
+        {data.map(item => <Select.Option value={item.value} key={item.value}>#{item.value} {item.text}</Select.Option>)}
       </Select>
     );
   }
