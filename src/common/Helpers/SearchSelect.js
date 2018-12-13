@@ -11,7 +11,7 @@ class RemoteSelect extends React.Component {
     this.fetchData = debounce(this.fetchData, 800)
     this.state = {
       data: [],
-      value: { key: 0, label: [] },
+      value: '',
       fetching: false,
     }
   }
@@ -31,7 +31,7 @@ class RemoteSelect extends React.Component {
             text: item[dataReq.fields[1]],
           }
         })
-        const value = { key: data[0].value, label: ["#", data[0].value, " ", data[0].text] }
+        const value = `#${data[0].value} ${data[0].text}`
         this.setState({ value, fetching: false });
       })
     }
@@ -87,11 +87,7 @@ class RemoteSelect extends React.Component {
       data: [],
       fetching: false,
     })
-
-    if(!value) value = { key: 0, label: [] }
-    this.props.onChange(value.key, t)
-
-
+    this.props.onChange(value, t)
   }
 
   render() {
@@ -101,7 +97,6 @@ class RemoteSelect extends React.Component {
 
     return (
       <Select
-        labelInValue
         showSearch
         placeholder="Поиск..."
         notFoundContent={fetching ? <Spin size="small" /> : null}
