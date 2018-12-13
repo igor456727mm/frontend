@@ -18,7 +18,7 @@ class RemoteSelect extends React.Component {
 
   componentDidMount = () => {
     const { value: initialValue } = this.props
-    if(initialValue) {
+    if(initialValue && !Array.isArray(initialValue)) {
       this.setState({ data: [], fetching: true })
       const { target } = this.props
       const dataReq = this.getDataReq(target)
