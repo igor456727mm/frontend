@@ -82,7 +82,6 @@ class RemoteSelect extends React.Component {
   }
 
   handleChange = (value, t) => {
-
     this.setState({
       value: value,
       data: [],
@@ -90,7 +89,7 @@ class RemoteSelect extends React.Component {
     })
 
     if(!value) value = { key: 0, label: [] }
-    this.props.onChange(value, t)
+    this.props.onChange(value.key, t)
 
 
   }
