@@ -321,6 +321,7 @@ class IndividualConditions extends Component {
       columns: [
         {
           title: 'Условия',
+          dataIndex: '',
           render: (text, row) => {
             if(!row.pay_conditions) return
             return Object.keys(row.pay_conditions).map((k, i) => {
@@ -340,6 +341,7 @@ class IndividualConditions extends Component {
           }
         }, {
           title: 'Ставка',
+          dataIndex: '',
           render: (text, row) => {
             if(!row.pay_conditions) return
             return Object.keys(row.pay_conditions).map((k, i) => {
@@ -362,6 +364,7 @@ class IndividualConditions extends Component {
           }
         }, {
           title: 'Холд',
+          dataIndex: '',
           render: (text, row) => {
             if(!row.pay_conditions) return
             return Object.keys(row.pay_conditions).map((k, i) => {
