@@ -45,6 +45,12 @@ class Revises extends Component {
           dataIndex: 'id',
           sorter: true,
         }, {
+          title: 'Скачать',
+          dataIndex: 'url',
+          render: (text, row) => {
+            return text ? <Button href={text} style={{ padding: '5px 10px'}}><Feather.DownloadCloud /></Button> : null
+          }
+        }, {
           title: 'Название',
           dataIndex: 'title',
           sorter: true,
