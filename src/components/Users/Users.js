@@ -204,6 +204,7 @@ class Users extends Component {
       const userIds = responseUsers.data.map(user => user.id)
       return api.get('/v1/user-data', {
         params: {
+          fields: 'user_id',
           expand: 'referralStat',
           'q[user_id][in]': userIds.join(','),
           'per-page': pagination.pageSize,
