@@ -104,8 +104,10 @@ class Users extends Component {
       statuses: {},
       filters: Filters.parse(),
       data: [],
+      users: [],
       pagination: {
         hideOnSinglePage: true,
+        pageSize: 25,
       },
       columns: [
         {
@@ -132,7 +134,29 @@ class Users extends Component {
           dataIndex: 'status',
           render: text => Helpers.renderStatus(text, this.state.statuses),
           sorter: true,
-        }, {
+        },
+        {
+          title: 'Кол-во рефералов',
+          dataIndex: '',
+          render: (text, row) => {
+            return row.referralStat && row.referralStat.usersCount || null
+          },
+        },
+        {
+          title: 'Доход',
+          dataIndex: '',
+          render: (text, row) => {
+            return row.referralStat && row.referralStat.income || null
+          },
+        },
+        {
+          title: 'В холде',
+          dataIndex: '',
+          render: (text, row) => {
+            return row.referralStat && row.referralStat.hold || null
+          },
+        },
+        {
           render: (text, row) => (
             <div className="table__actions">
               <span><Link to={`/stats?group=action_day&q[webmaster_id][equal]=${row.id}`} className="ant-btn">Статистика пользователя</Link></span>
@@ -165,16 +189,47 @@ class Users extends Component {
       params: {
         sort: pagination.sort || '-id',
         page: pagination.current || 1,
+        'per-page': pagination.pageSize,
         ...filters,
 
       }
     })
-    .then(response => {
-      pagination.total = parseInt(response.headers['x-pagination-total-count'])
+    .then(responseUsers => {
+      const { pagination } = this.state
+      const total = parseInt(responseUsers.headers['x-pagination-total-count'])
+      this.setState({
+        users: responseUsers.data,
+        pagination: {...pagination, total }
+      })
+      const userIds = responseUsers.data.map(user => user.id)
+      return api.get('/v1/user-data', {
+        params: {
+          fields: 'user_id',
+          expand: 'referralStat',
+          'q[user_id][in]': userIds.join(','),
+          'per-page': pagination.pageSize,
+        }
+      })
+    })
+    .then(responseUsersData => {
+      const { users } = this.state
+      const usersData = responseUsersData.data
+      if (users.length !== usersData.length) {
+        console.log(`Внимание! Не для каждого id нашлась пара, проверьте получаемые данные.`)
+      }
+      const data = users.map(user => {
+        const userData = usersData.find(el => {
+          return user.id == el.user_id
+        })
+        if (!userData) {
+          console.log(`Нет совпадений поля id для пользователя #${user.id}`)
+        }
+        const newUserData = { ...user, referralStat: userData ? userData.referralStat : null }
+        return newUserData
+      })
       this.setState({
         isLoading: false,
-        data: response.data,
-        pagination
+        data,
       })
     })
     Filters.toUrl(filters)
@@ -192,7 +247,7 @@ class Users extends Component {
   }
 
   render() {
-    const { statuses, isLoading } = this.state
+    const { statuses, isLoading, pagination } = this.state
     const props = pick(this.state, 'data:dataSource', 'columns', 'pagination', 'isLoading:loading')
     return (
       <div>
