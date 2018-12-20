@@ -449,6 +449,7 @@ export class TreeSelectRemote extends Component {
     api.get(url, {
       params: {
         'per-page': 999,
+        fields: 'id,name',
       }
     })
     .then(response => {
