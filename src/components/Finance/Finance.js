@@ -218,6 +218,7 @@ class Withdrawals extends Component {
         <TabPane tab="Выплаты" key="1">
           <Filter onSubmit={this.onFilter} statuses={statuses} />
           <Table
+            className="app__table"
             columns={columns}
             rowKey={item => item.id}
             dataSource={data}

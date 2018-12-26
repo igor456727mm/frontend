@@ -143,10 +143,17 @@ class Users extends Component {
           },
         },
         {
-          title: 'Доход',
+          title: 'Кол-во активных рефералов',
           dataIndex: '',
           render: (text, row) => {
-            return row.referralStat && row.referralStat.income || null
+            return row.referralStat && row.referralStat.activeUsersCount || null
+          },
+        },
+        {
+          title: 'Реферальный баланс',
+          dataIndex: 'referralBalance',
+          render: (text, row) => {
+            return text
           },
         },
         {
@@ -205,7 +212,7 @@ class Users extends Component {
       return api.get('/v1/user-data', {
         params: {
           fields: 'user_id',
-          expand: 'referralStat',
+          expand: 'referralStat,referralBalance',
           'q[user_id][in]': userIds.join(','),
           'per-page': pagination.pageSize,
         }
@@ -224,7 +231,7 @@ class Users extends Component {
         if (!userData) {
           console.log(`Нет совпадений поля id для пользователя #${user.id}`)
         }
-        const newUserData = { ...user, referralStat: userData ? userData.referralStat : null }
+        const newUserData = { ...user, referralBalance: userData ? userData.referralBalance : null, referralStat: userData ? userData.referralStat : null }
         return newUserData
       })
       this.setState({
@@ -253,6 +260,7 @@ class Users extends Component {
       <div>
         <Filter onSubmit={this.onFilter} statuses={statuses} />
         <Table
+          className="app__table"
           rowKey={item => item.id}
           locale={{ emptyText: Helpers.emptyText }}
           onChange={this.handleTableChange}

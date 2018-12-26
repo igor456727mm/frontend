@@ -171,6 +171,7 @@ class ReferralPayouts extends Component {
       <div>
         <Filter onSubmit={this.onFilter} />
         <Table
+          className="app__table"
           rowKey={(item, i) => `${item.user_id}${item.offer_id}${i}`}
           locale={{ emptyText: Helpers.emptyText }}
           onChange={this.handleTableChange}

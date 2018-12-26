@@ -25460,3 +25460,6 @@ td.nobreak {
 .revise-by-stream th {
   padding: 10px;
 }
+.app__table table {
+  white-space: nowrap;
+}
