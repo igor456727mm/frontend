@@ -166,6 +166,22 @@ const Helpers = {
     }
     const text = statuses[status]
     return <span className={`c__${color}`}>{text || status}</span>
+  },
+
+  renderStatusRef: (status) => {
+    let color = ''
+    let text = ''
+    switch (status) {
+      case 'success':
+        color = 'green';
+        text = 'Успешно';
+        break;
+      case 'waiting':
+        color = 'orange';
+        text = 'Ожидание';
+        break;
+    }
+    return <span className={`c__${color}`}>{text}</span>
   }
 
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Table, Select, Input, DatePicker, Button, message } from 'antd'
+import { Form, Table, Select, Input, DatePicker, Button, message, Tabs } from 'antd'
 import moment from 'moment'
 import qs from 'qs'
 import { Link } from 'react-router-dom'
@@ -7,6 +7,9 @@ import { connect } from 'react-redux'
 import Helpers, { t, pick, queryParams, parseQueryFiltersValues, disabledDate } from '../../common/Helpers'
 import api from '../../common/Api'
 import SearchSelect from '../../common/Helpers/SearchSelect'
+import ReferralPayouts from './ReferralPayouts'
+
+const TabPane = Tabs.TabPane
 
 class _Filter extends Component {
 
@@ -211,17 +214,22 @@ class Withdrawals extends Component {
     columns[5].title = t('field.wallet')
 
     return (
-      <div>
-        <Filter onSubmit={this.onFilter} statuses={statuses} />
-        <Table
-          columns={columns}
-          rowKey={item => item.id}
-          dataSource={data}
-          pagination={pagination}
-          loading={isLoading}
-          locale={{ emptyText: Helpers.emptyText }}
-          onChange={this.handleTableChange} />
-      </div>
+      <Tabs type="card">
+        <TabPane tab="Выплаты" key="1">
+          <Filter onSubmit={this.onFilter} statuses={statuses} />
+          <Table
+            columns={columns}
+            rowKey={item => item.id}
+            dataSource={data}
+            pagination={pagination}
+            loading={isLoading}
+            locale={{ emptyText: Helpers.emptyText }}
+            onChange={this.handleTableChange} />
+        </TabPane>
+        <TabPane tab="Реферальные выплаты" key="2">
+          <ReferralPayouts />
+        </TabPane>
+      </Tabs>
     )
   }
 }
