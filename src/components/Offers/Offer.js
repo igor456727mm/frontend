@@ -383,7 +383,7 @@ class Offer extends Component {
             render: (text, row) => {
               const { pay_type, fields } = row.pay_conditions
               let condition, name, price, commission, site_revshare_percent, revshare_percent, price_from, price_to
-
+              const getPercent = number => Math.round(number * 10000) / 100
               switch (pay_type) {
                 case 'flex':
                   price_from = fields.price_from != null ? fields.price_from : '-'
@@ -407,8 +407,8 @@ class Offer extends Component {
                   condition = <span>Стоимость <span style={{ whiteSpace: 'nowrap' }} >{price}$</span> / Комиссия <span style={{ whiteSpace: 'nowrap' }} >{commission}$</span></span>
                   return condition
                 case 'revshare':
-                  site_revshare_percent = fields.site_revshare_percent != null ? fields.site_revshare_percent * 100 : '-'
-                  revshare_percent = fields.revshare_percent != null ? fields.revshare_percent * 100 : '-'
+                  site_revshare_percent = fields.site_revshare_percent != null ? getPercent(fields.site_revshare_percent) : '-'
+                  revshare_percent = fields.revshare_percent != null ? getPercent(fields.revshare_percent) : '-'
                   condition = <span>Ревшара сайта: <span style={{ whiteSpace: 'nowrap' }} >{site_revshare_percent}%</span> / Ревшара вебмастера: <span style={{ whiteSpace: 'nowrap' }} >{revshare_percent}%</span></span>
                   return condition
               }
