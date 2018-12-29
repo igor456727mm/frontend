@@ -197,10 +197,6 @@ class Personal extends Component {
     )
 
   }
-
-
 }
-
-
 
 export default connect((state) => pick(state, 'user'))(Form.create()(Personal))

@@ -46,7 +46,6 @@ export class Login extends Component {
       <Button onClick={this._getAccess}>{isLoading && Helpers.spinner()} Войти</Button>
     )
   }
-
 }
 
 
@@ -134,36 +133,37 @@ class Users extends Component {
           dataIndex: 'status',
           render: text => Helpers.renderStatus(text, this.state.statuses),
           sorter: true,
-        },
-        {
+        }, {
+          title: 'Персональный менеджер',
+          dataIndex: '',
+          render: (text, row) => {
+            return row.personalManager && row.personalManager.name || null
+          },
+        }, {
           title: 'Кол-во рефералов',
           dataIndex: '',
           render: (text, row) => {
             return row.referralStat && row.referralStat.usersCount || null
           },
-        },
-        {
+        }, {
           title: 'Кол-во активных рефералов',
           dataIndex: '',
           render: (text, row) => {
             return row.referralStat && row.referralStat.activeUsersCount || null
           },
-        },
-        {
+        }, {
           title: 'Реферальный баланс',
           dataIndex: 'referralBalance',
           render: (text, row) => {
             return text
           },
-        },
-        {
+        }, {
           title: 'В холде',
           dataIndex: '',
           render: (text, row) => {
             return row.referralStat && row.referralStat.hold || null
           },
-        },
-        {
+        }, {
           render: (text, row) => (
             <div className="table__actions">
               <span><Link to={`/stats?group=action_day&q[webmaster_id][equal]=${row.id}`} className="ant-btn">Статистика пользователя</Link></span>
@@ -198,7 +198,6 @@ class Users extends Component {
         page: pagination.current || 1,
         'per-page': pagination.pageSize,
         ...filters,
-
       }
     })
     .then(responseUsers => {
@@ -212,7 +211,7 @@ class Users extends Component {
       return api.get('/v1/user-data', {
         params: {
           fields: 'user_id',
-          expand: 'referralStat,referralBalance',
+          expand: 'referralStat,referralBalance,personalManager',
           'q[user_id][in]': userIds.join(','),
           'per-page': pagination.pageSize,
         }
@@ -231,7 +230,12 @@ class Users extends Component {
         if (!userData) {
           console.log(`Нет совпадений поля id для пользователя #${user.id}`)
         }
-        const newUserData = { ...user, referralBalance: userData ? userData.referralBalance : null, referralStat: userData ? userData.referralStat : null }
+        const newUserData = {
+          ...user,
+          referralBalance: userData ? userData.referralBalance : null,
+          referralStat: userData ? userData.referralStat : null,
+          personalManager: userData ? userData.personalManager : null,
+        }
         return newUserData
       })
       this.setState({
