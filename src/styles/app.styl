@@ -1194,9 +1194,6 @@ td.nobreak
 .ant-select-selection__clear + .ant-select-search__field__placeholder
   display: none;
 
-.stats__table
-  tr:last-child > td
-    background-color: #e6f7ff
 .stats__table-leads
   table
     display: block;
@@ -1227,3 +1224,25 @@ td.nobreak
 .app__table
   table
     white-space nowrap
+
+.profile__personal
+  .manager
+    display flex
+    justify-content space-between
+    align-items center
+    height 40px
+    &__title
+      display block
+      color #a4acba
+      font-weight 500
+    &__info
+      display flex
+      justify-content space-between
+      align-items center
+      &-photo
+        width 30px
+        height 30px
+        border-radius 100%
+        margin-right 12px
+  .avatar_upload
+    margin-top 42px
