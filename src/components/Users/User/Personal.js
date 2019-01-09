@@ -36,6 +36,7 @@ class Personal extends Component {
       },
       avatar_upload_image_id: null,
       new_avatar: null,
+      personalManager: null,
     }
   }
 
@@ -50,6 +51,14 @@ class Personal extends Component {
     .then(response => {
       response.data.userData.ref_income_percent = parseFloat(response.data.userData.ref_income_percent) * 100
       this.setState({ data: response.data })
+    })
+    .catch(e => {
+      Helpers.errorHandler(e)
+    })
+
+    api.get(`/v1/user-data/${user_id}?expand=personalManager`)
+    .then(response => {
+      this.setState({ personalManager: response.data.personalManager })
     })
     .catch(e => {
       Helpers.errorHandler(e)
@@ -121,15 +130,14 @@ class Personal extends Component {
   }
 
   render() {
-    const { iconLoading, new_avatar, data, tariffs } = this.state
+    const { iconLoading, new_avatar, data, tariffs, personalManager } = this.state
     const values = this.props.form.getFieldsValue()
     return (
       <div className="block profile__personal">
-        <h2>Общая информация</h2>
-        <br />
         <Form onSubmit={this.handleSubmit}>
           <div className="row">
             <div className="col-md-4">
+              <h2>Общая информация</h2>
               {this.validator('login', 'Логин', <Input size="large" />, [{ required: true }] )}
               {this.validator('email', t('field.email'), <Input size="large" />, [{ required: true }] )}
               {this.validator('status', 'Статус', (
@@ -145,6 +153,13 @@ class Personal extends Component {
               {this.validator('userData.confirmed', '', <Checkbox size="large">Верифицирован</Checkbox> )}
             </div>
             <div className="col-md-4">
+              <div className="manager">
+                <span className="manager__title">Персональный менеджер</span>
+                <div className="manager__info">
+                  {personalManager && personalManager.avatar_image && <img src={personalManager.avatar_image} className="manager__info-photo" /> || null}
+                  {personalManager && personalManager.name && <div className="c__gray2">{personalManager.name}</div> || null}
+                </div>
+              </div>
               {this.validator('name', t('field.uname'), <Input size="large" /> )}
               {this.validator('userData.contacts.phone', t('field.phone'), <Input size="large" /> )}
               {this.validator('userData.contacts.skype', 'Skype', <Input size="large" /> )}
@@ -152,21 +167,22 @@ class Personal extends Component {
               {this.validator('userData.show_ref', '', <Checkbox size="large">Доступ к реферальной системе</Checkbox> )}
             </div>
             <div className="col-md-4">
-              {this.validator('avatar_upload_image_id', t('field.avatar'), (
-                <Upload
-                  onChange={this._onUpload}
-                  name="image"
-                  action={`${scheme}file-s1.${domain}/v1/uploads?access_token=${Cookies.get(cookie_prefix+'_access_token')}`}
-                  showUploadList={false}
-                  listType="picture-card"
-                  className="avatar-uploader"
-                  >
-                  {new_avatar ? <img src={new_avatar} /> : (data.userData && data.userData.avatar_image ? <img src={data.userData.avatar_image} /> : <Icon type={'plus'} /> )}
-                </Upload>
-              ))}
-              {this.validator('userData.about', 'About', <Input.TextArea rows={5} disabled size="large" /> )}
-              {this.validator('userData.ref_income_percent', 'Реф. процент', <InputNumber min={0} max={100} formatter={value => `${value}%`} parser={value => value.replace('%', '')} size="large" /> )}
-
+              <div className="avatar_upload">
+                {this.validator('avatar_upload_image_id', t('field.avatar'), (
+                  <Upload
+                    onChange={this._onUpload}
+                    name="image"
+                    action={`${scheme}file-s1.${domain}/v1/uploads?access_token=${Cookies.get(cookie_prefix+'_access_token')}`}
+                    showUploadList={false}
+                    listType="picture-card"
+                    className="avatar-uploader"
+                    >
+                    {new_avatar ? <img src={new_avatar} /> : (data.userData && data.userData.avatar_image ? <img src={data.userData.avatar_image} /> : <Icon type={'plus'} /> )}
+                  </Upload>
+                ))}
+                {this.validator('userData.about', 'About', <Input.TextArea rows={5} disabled size="large" /> )}
+                {this.validator('userData.ref_income_percent', 'Реф. процент', <InputNumber min={0} max={100} formatter={value => `${value}%`} parser={value => value.replace('%', '')} size="large" /> )}
+              </div>
             </div>
           </div>
 

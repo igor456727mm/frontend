@@ -6,6 +6,19 @@ import moment from 'moment'
 import fileSaver from 'file-saver'
 import SearchSelect from '../../common/Helpers/SearchSelect'
 
+const managerData = {
+  personalManager: {
+    title: 'Персональный менеджер',
+    field: 'personalManagerIds',
+    apiUrl: '/v1/personal-managers',
+  },
+  advertiserManager: {
+    title: 'Менеджер по рекламодателям',
+    field: 'advertiserManagerIds',
+    apiUrl: '/v1/advertiser-managers',
+  },
+}
+
 const { RangePicker } = DatePicker
 
 const options = {
@@ -15,10 +28,19 @@ const options = {
 
 const { TreeNode } = TreeSelect
 
-class PersonalManagers extends React.Component {
+class ManagerSelect extends React.Component {
+  state = {
+    managers: [],
+  }
+
+  componentDidMount = () => {
+    const { managerType } = this.props
+    api.get(managerData[managerType].apiUrl)
+    .then(response => this.setState({ managers: response.data }))
+  }
 
   render() {
-    const { managers } = this.props
+    const { managers } = this.state
     const renderManagers = managers.map(item => <TreeNode value={String(item.id)} title={item.name} key={item.id} />)
     return (
       <TreeSelect
@@ -39,13 +61,7 @@ class Filter extends Component {
     this.state = {
       isLoading: false,
       isVisible: false,
-      managers: [],
     }
-  }
-
-  componentDidMount = () => {
-    api.get('/v1/personal-managers')
-    .then(response => this.setState({ managers: response.data }))
   }
 
   prepareQueryParams = (values) => {
@@ -136,7 +152,7 @@ class Filter extends Component {
   _toggle = () => this.setState({ isVisible: !this.state.isVisible })
 
   render() {
-    const { isVisible, isLoading, managers } = this.state
+    const { isVisible, isLoading } = this.state
     return (
       <div>
         <Button onClick={this._toggle} style={{ marginTop: '26px', borderColor: '#20ae0e', color: '#20ae0e' }} size="large">Выгрузить данные</Button>
@@ -149,7 +165,8 @@ class Filter extends Component {
               {this.validator('created_at', 'Дата', <RangePicker format="DD.MM.YYYY" {...options} /> )}
               {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}
               {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options} treeCheckable={false} /> )}
-              {this.validator('personalManagerIds', 'Персональный менеджер', <PersonalManagers managers={managers} {...options} /> )}
+              {this.validator(managerData.personalManager.field, managerData.personalManager.title, <ManagerSelect managerType="personalManager" {...options} /> )}
+              {this.validator(managerData.advertiserManager.field, managerData.advertiserManager.title, <ManagerSelect managerType="advertiserManager" {...options} /> )}
 
               <Form.Item style={{ marginBottom: 0 }}>
                 <h4>&nbsp;</h4>
