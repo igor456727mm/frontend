@@ -134,7 +134,7 @@ class Personal extends Component {
     const values = this.props.form.getFieldsValue()
     return (
       <div className="block profile__personal">
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit} className="profile__personal-form">
           <div className="row">
             <div className="col-md-4">
               <h2>Общая информация</h2>
