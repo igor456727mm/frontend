@@ -1,57 +1,17 @@
 import React, { Component } from 'react'
-import { Form, Input, Button, message, DatePicker, Modal, TreeSelect } from 'antd'
+import { Form, Input, Button, message, DatePicker, Modal } from 'antd'
 import Helpers, { Filters, t, clean, TreeSelectRemote } from '../../common/Helpers'
 import api from '../../common/Api'
 import moment from 'moment'
 import fileSaver from 'file-saver'
 import SearchSelect from '../../common/Helpers/SearchSelect'
-
-const managerData = {
-  personalManager: {
-    title: 'Персональный менеджер',
-    field: 'personalManagerIds',
-    apiUrl: '/v1/personal-managers',
-  },
-  advertiserManager: {
-    title: 'Менеджер по рекламодателям',
-    field: 'advertiserManagerIds',
-    apiUrl: '/v1/advertiser-managers',
-  },
-}
+import * as Manager from '../../common/Helpers/ManagerSelect'
 
 const { RangePicker } = DatePicker
 
 const options = {
   size: 'large',
   getPopupContainer: () => document.getElementById('content'),
-}
-
-const { TreeNode } = TreeSelect
-
-class ManagerSelect extends React.Component {
-  state = {
-    managers: [],
-  }
-
-  componentDidMount = () => {
-    const { managerType } = this.props
-    api.get(managerData[managerType].apiUrl)
-    .then(response => this.setState({ managers: response.data }))
-  }
-
-  render() {
-    const { managers } = this.state
-    const renderManagers = managers.map(item => <TreeNode value={String(item.id)} title={item.name} key={item.id} />)
-    return (
-      <TreeSelect
-      allowClear
-      multiple
-      {...this.props}
-    >
-    {renderManagers}
-    </TreeSelect>
-    );
-  }
 }
 
 class Filter extends Component {
@@ -165,8 +125,8 @@ class Filter extends Component {
               {this.validator('created_at', 'Дата', <RangePicker format="DD.MM.YYYY" {...options} /> )}
               {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}
               {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options} treeCheckable={false} /> )}
-              {this.validator(managerData.personalManager.field, managerData.personalManager.title, <ManagerSelect managerType="personalManager" {...options} /> )}
-              {this.validator(managerData.advertiserManager.field, managerData.advertiserManager.title, <ManagerSelect managerType="advertiserManager" {...options} /> )}
+              {this.validator(Manager.data.personalManager.field, Manager.data.personalManager.title, <Manager.Select managerType="personalManager" multiple={true} {...options} /> )}
+              {this.validator(Manager.data.advertiserManager.field, Manager.data.advertiserManager.title, <Manager.Select managerType="advertiserManager" multiple={true} {...options} /> )}
 
               <Form.Item style={{ marginBottom: 0 }}>
                 <h4>&nbsp;</h4>

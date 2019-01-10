@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom'
 import Helpers, { Filters, t, pick, clean, disabledDate } from '../../common/Helpers'
 import api from '../../common/Api'
 import { domain, scheme } from '../../config'
+import ChangingManager from '../../common/ChangingManager'
+import * as Manager from '../../common/Helpers/ManagerSelect'
 
 const Icons = {}
 
@@ -104,6 +106,7 @@ class Users extends Component {
       filters: Filters.parse(),
       data: [],
       users: [],
+      personalManagers: [],
       pagination: {
         hideOnSinglePage: true,
         pageSize: 25,
@@ -137,7 +140,16 @@ class Users extends Component {
           title: 'Персональный менеджер',
           dataIndex: '',
           render: (text, row) => {
-            return row.personalManager && row.personalManager.name || null
+            // console.log('row', row);
+            return row.personalManager &&
+            <ChangingManager
+              managerType="personalManager"
+              user_id ={row.id}
+              name={row.personalManager.name}
+              id={row.personalManager.id}
+              managers={this.state.personalManagers}
+            /> || null
+            // return row.personalManager && row.personalManager.name || null
           },
         }, {
           title: 'Кол-во рефералов',
@@ -177,12 +189,15 @@ class Users extends Component {
 
   componentDidMount = () => {
     Helpers.setTitle('menu.users')
-
     this.fetch()
     window.addEventListener(`users.fetch`, this.fetch)
 
     api.get(`/v1/users/statuses`)
     .then(response => this.setState({ statuses: response.data }))
+    api.get(Manager.data.personalManager.apiUrl)
+    .then(response => {
+      this.setState({ personalManagers: response.data })
+    })
   }
 
   componentWillUnmount = () => {
