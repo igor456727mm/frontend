@@ -140,16 +140,15 @@ class Users extends Component {
           title: 'Персональный менеджер',
           dataIndex: '',
           render: (text, row) => {
-            // console.log('row', row);
-            return row.personalManager &&
-            <ChangingManager
-              managerType="personalManager"
-              user_id ={row.id}
-              name={row.personalManager.name}
-              id={row.personalManager.id}
-              managers={this.state.personalManagers}
-            /> || null
-            // return row.personalManager && row.personalManager.name || null
+            return (
+              <ChangingManager
+                managerType="personalManager"
+                id ={row.id}
+                name={row.personalManager && row.personalManager.name || ''}
+                managerId={row.personalManager && row.personalManager.id || null}
+                managers={this.state.personalManagers}
+              />
+            )
           },
         }, {
           title: 'Кол-во рефералов',

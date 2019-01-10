@@ -6,7 +6,8 @@ import Cookies from 'js-cookie'
 import { Link } from 'react-router-dom'
 import Helpers, { Filters, Events, t, pick, clean, disabledDate } from '../../common/Helpers'
 import api from '../../common/Api'
-
+import * as Manager from '../../common/Helpers/ManagerSelect'
+import ChangingManager from '../../common/ChangingManager'
 
 class _Filter extends Component {
 
@@ -60,6 +61,7 @@ class Advertiser extends Component {
       isLoading: false,
       filters: Filters.parse(),
       data: [],
+      advertiserManagers: [],
       pagination: {
         hideOnSinglePage: true,
       },
@@ -81,6 +83,21 @@ class Advertiser extends Component {
           dataIndex: 'created_at',
           render: text => moment.unix(text).format('DD.MM.YYYY HH:mm'),
         },
+        {
+          title: 'Менеджеры',
+          dataIndex: '',
+          render: (text, row) => {
+            return (
+              <ChangingManager
+                managerType="advertiserManager"
+                id ={row.id}
+                name={row.advertiserManager && row.advertiserManager.name || ''}
+                managerId={row.advertiserManager && row.advertiserManager.id || null}
+                managers={this.state.advertiserManagers}
+              />
+            )
+          },
+        },
       ]
     }
   }
@@ -89,6 +106,10 @@ class Advertiser extends Component {
     Helpers.setTitle('Рекламодатели')
 
     this.fetch()
+    api.get(Manager.data.advertiserManager.apiUrl)
+    .then(response => {
+      this.setState({ advertiserManagers: response.data })
+    })
   }
 
   fetch = () => {
@@ -99,6 +120,7 @@ class Advertiser extends Component {
         sort: pagination.sort || '-id',
         page: pagination.current || 1,
         ...filters,
+        expand: 'advertiserManager',
       }
     })
     .then(response => {
