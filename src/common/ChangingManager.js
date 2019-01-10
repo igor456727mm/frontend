@@ -19,7 +19,7 @@ const options = {
 const managerData = {
   personalManager: {
     field: 'personal_manager_id',
-    apiPatchUrl: '/v1/personal-managers/',
+    apiPatchUrl: '/v1/user-data/',
   },
   advertiserManager: {
     field: 'advertiser_manager_id',
