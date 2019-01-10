@@ -16,20 +16,34 @@ const options = {
   getPopupContainer: () => document.getElementById('content'),
 }
 
+const managerData = {
+  personalManager: {
+    field: 'personal_manager_id',
+    apiPatchUrl: '/v1/personal-managers/',
+  },
+  advertiserManager: {
+    field: 'advertiser_manager_id',
+    apiPatchUrl: '/v1/advertisers/',
+  },
+}
+
 class _ChangingManager extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
       showForm: false,
-      name: this.props.name || '',
+      name: '',
+      id: '',
     }
   }
 
   validator = (name, label, input, rules = [], initialValue) => {
-    const { id } = this.props
+    const { managerId } = this.props
+    const { id } = this.state
     const { getFieldDecorator } = this.props.form
-    const options = { rules: rules, initialValue: String(id) }
+    const actualManagerId = id ? String(id) : String(managerId)
+    const options = { rules: rules, initialValue: actualManagerId }
     return (
       <Form.Item className={`form__item-${name}`}>
         {getFieldDecorator(name, options)(input)}
@@ -39,14 +53,14 @@ class _ChangingManager extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { form, user_id, managerType, managers } = this.props
+    const { form, id, managerType, managers } = this.props
     form.validateFieldsAndScroll((err, values) => {
       if (err) return
       values = clean(values)
-      api.patch(`/v1/user-data/${user_id}`, qs.stringify(values))
+      api.patch(`${managerData[managerType].apiPatchUrl}${id}`, qs.stringify(values))
       .then(response => {
-        const newManager = managers.find(el => String(el.id) === String(values.personal_manager_id))
-        this.setState({ showForm: false, name: newManager.name })
+        const newManager = managers.find(el => String(el.id) === String(values[managerData[managerType].field]))
+        this.setState({ showForm: false, name: newManager.name, id: newManager.id })
         message.success(t('Имя менеджера изменено'))
       })
       .catch(e => {
@@ -59,24 +73,25 @@ class _ChangingManager extends Component {
 
   render() {
     const { showForm, name, managers } = this.state
+    const managerName = name ? name : this.props.name
     const { managerType } = this.props
     return (
       <div>
         {!showForm ?
-          <div className="personalManager">
-            <span className="personalManager__name">
-              {name}
+          <div className="manager">
+            <span className="manager__name">
+              {managerName}
             </span>
-            <Button onClick={this.toggle} className="personalManager__btn">{name && <Feather.Settings />}</Button>
+            <Button onClick={this.toggle} className="manager__btn"><Feather.Settings /></Button>
           </div>
         :
-          <div className="personalManager">
+          <div className="manager">
             <Form>
-              {this.validator('personal_manager_id', Manager.data[managerType].title, <Manager.Select getManagers={this.getManagers} managerType={managerType} multiple={false} {...options} /> )}
+              {this.validator(managerData[managerType].field, '', <Manager.Select managerType={managerType} multiple={false} {...options} /> )}
             </Form>
-            <div className="personalManager__btns">
-              <Button onClick={this.toggle} className="personalManager__btn"><Feather.XCircle /></Button>
-              <Button onClick={this.handleSubmit} className="personalManager__btn submit"><Feather.CheckCircle /></Button>
+            <div className="manager__btns">
+              <Button onClick={this.toggle} className="manager__btn"><Feather.XCircle /></Button>
+              <Button onClick={this.handleSubmit} className="manager__btn submit"><Feather.CheckCircle /></Button>
             </div>
           </div>
         }

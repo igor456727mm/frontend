@@ -25489,21 +25489,21 @@ td.nobreak {
 .profile__personal .avatar_upload {
   margin-top: 42px;
 }
-.content .personalManager {
+.content .manager {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.content .personalManager__btns {
+.content .manager__btns {
   margin-left: 10px;
 }
-.content .personalManager__btns .submit {
+.content .manager__btns .submit {
   margin-left: 5px;
 }
-.content .personalManager__btn {
+.content .manager__btn {
   padding: 0 10px;
 }
-.content .personalManager__btn svg {
+.content .manager__btn svg {
   width: 1em;
   height: 1em;
 }
