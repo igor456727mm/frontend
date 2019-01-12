@@ -104,6 +104,13 @@ class ReferralPayouts extends Component {
           sorter: true,
         },
         {
+          title: 'Комментарий',
+          dataIndex: 'comment',
+          render: (text, row) => {
+            return text
+          },
+        },
+        {
           title: 'Подтверждение выплат',
           width: 280,
           render: (text, row) => {

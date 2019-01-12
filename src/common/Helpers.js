@@ -1,6 +1,6 @@
 import api from './Api'
 import React, { Component } from 'react'
-import { Icon, Spin, message } from 'antd'
+import { Icon, Spin, message, DatePicker } from 'antd'
 import qs from 'qs'
 import moment from 'moment'
 import * as Cookies from 'js-cookie'
@@ -143,6 +143,12 @@ const Helpers = {
 
   spinner: () => {
     const indicator = <Icon type="loading" style={{ fontSize: 24 }} spin />
+    return (<div className="spinner"><Spin indicator={indicator} /></div>)
+  },
+
+  controlledSpinner: (type = '', spinning = false) => {
+    const indicator = <Icon type="loading" style={{ fontSize: 20 }} spin />
+    if(type == 'table') return { indicator, spinning: spinning }
     return (<div className="spinner"><Spin indicator={indicator} /></div>)
   },
 
@@ -500,6 +506,45 @@ export class TreeSelectRemote extends Component {
 
 }
 
+export class MonthsPicker extends React.Component {
+  state = {
+    value: null,
+  };
+
+  ranges = () => {
+    return {
+      'Last month': [moment().startOf('month'), moment().endOf('month')],
+      'Last 3 months': [moment().subtract(2, 'months').endOf('day'), moment()],
+      'Last 6 months': [moment().subtract(5, 'months').endOf('day'), moment()],
+      'Last year': [moment().subtract(11, 'months').endOf('day'), moment()],
+    }
+  }
+
+  handlePanelChange = (value) => {
+    this.setState({ value })
+    this.props.onChange(value)
+  }
+
+  onChange = (field, value) => {
+    this.setState({ value: field })
+    this.props.onChange(field)
+  }
+
+  render() {
+    const { value } = this.state;
+    return (
+      <DatePicker.RangePicker
+        placeholder={['Start month', 'End month']}
+        format="MM.YYYY"
+        value={value}
+        mode={['month', 'month']}
+        onPanelChange={this.handlePanelChange}
+        onChange={this.onChange}
+        ranges={this.ranges()}
+      />
+    );
+  }
+}
 
 export const flatten = (obj) => {
  var root = {};

@@ -186,6 +186,7 @@ class Withdrawals extends Component {
       <div style={{ marginTop: '50px' }}>
         <h2>Выплаты</h2>
         <Table
+          className="app__table"
           columns={columns}
           rowKey={item => item.id}
           dataSource={data}
