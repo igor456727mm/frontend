@@ -1,13 +1,8 @@
 import React, { Component } from 'react'
-import { Form, Table, Icon, Divider, Select, Input, Button, message, Popconfirm, Tooltip,  DatePicker, Modal, Popover, TreeSelect } from 'antd'
-import Helpers, { Events, Filters, t, pick, clean, disabledDate, TreeSelectRemote, queryParams } from './Helpers'
+import { Form, Button, message } from 'antd'
+import Helpers, { t, clean } from './Helpers'
 import api from './Api'
-import axios from 'axios'
-import { connect } from 'react-redux'
-import moment from 'moment'
-import locale from 'antd/lib/date-picker/locale/ru_RU'
 import qs from 'qs'
-import _ from 'lodash'
 import * as Feather from 'react-feather'
 import * as Manager from './Helpers/ManagerSelect'
 
@@ -42,7 +37,7 @@ class _ChangingManager extends Component {
     const { managerId } = this.props
     const { id } = this.state
     const { getFieldDecorator } = this.props.form
-    const actualManagerId = id ? String(id) : String(managerId)
+    const actualManagerId = id ? String(id) : String(managerId || '')
     const options = { rules: rules, initialValue: actualManagerId }
     return (
       <Form.Item className={`form__item-${name}`}>

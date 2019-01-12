@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Table, Select, Input, DatePicker, Button, message } from 'antd'
+import { Form, Table, Select, Input, DatePicker, Button, message, Tabs } from 'antd'
 import moment from 'moment'
 import qs from 'qs'
 import { Link } from 'react-router-dom'
@@ -8,10 +8,11 @@ import api from '../../../common/Api'
 
 import Personal from './Personal'
 import Withdrawals from './Withdrawals'
+import Referrals from './Referrals'
 // import Bills from './Bills'
 
 const Icons = {}
-
+const TabPane = Tabs.TabPane
 
 class User extends Component {
 
@@ -32,10 +33,15 @@ class User extends Component {
   render() {
     const { id } = this.state.data
     return (
-      <div>
-        <Personal user_id={id} />
-        <Withdrawals user_id={id} />
-      </div>
+      <Tabs type="card">
+        <TabPane tab="Информация" key="1">
+          <Personal user_id={id} />
+          <Withdrawals user_id={id} />
+        </TabPane>
+        <TabPane tab="Реферальная статистика" key="2">
+          <Referrals user_id={id}/>
+        </TabPane>
+      </Tabs>
     )
   }
 
