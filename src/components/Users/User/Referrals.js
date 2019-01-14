@@ -5,6 +5,7 @@ import qs from 'qs'
 import Helpers, { Events, t, pick, clean, MonthsPicker } from '../../../common/Helpers'
 import api from '../../../common/Api'
 import WithdrawReferral from './WithdrawReferral'
+import ReferralPayouts from './ReferralPayouts'
 
 class _Filter extends Component {
 
@@ -56,6 +57,7 @@ class Referrals extends Component {
       isLoading: false,
       isGettingPayout: false,
       referralBalance: '',
+      referralHold: '',
       pagination: {
         hideOnSinglePage: true,
       },
@@ -89,13 +91,13 @@ class Referrals extends Component {
     this.fetch()
     api.get(`/v1/user-data/${user_id}`, {
       params: {
-        expand: 'referralBalance',
+        expand: 'referralBalance,referralHold',
       }
     })
     .then(response => {
-      console.log('response referralBalance', response.data);
       this.setState({
         referralBalance: response.data.referralBalance,
+        referralHold: response.data.referralHold,
       })
     })
   }
@@ -198,7 +200,7 @@ class Referrals extends Component {
   }
 
   render() {
-    const { data, columns, pagination, isLoading, referralBalance, isGettingPayout } = this.state
+    const { data, columns, pagination, isLoading, referralBalance, isGettingPayout, referralHold } = this.state
     const { user_id } = this.props
     return (
       <div>
@@ -219,9 +221,13 @@ class Referrals extends Component {
           locale={{ emptyText: Helpers.emptyText }}
           onChange={this.handleTableChange}
         />
-        <div style={{ marginTop: '40px' }}>
-          <h2>Реферальный баланс: { referralBalance ? referralBalance : 0 }$ / Реферальный холд: - $</h2>
+        <div className="referralBalance__referralWithdrawals">
+          <h2 className="referralBalance__title">Реферальный баланс: { referralBalance ? referralBalance : 0 }$ / Реферальный холд: { referralHold ? referralHold : 0 }$</h2>
           <WithdrawReferral user_id={user_id} balance={referralBalance} />
+        </div>
+        <div className="referralBalance__payouts">
+          <h2>Выплаты</h2>
+          <ReferralPayouts user_id={user_id} />
         </div>
       </div>
     )

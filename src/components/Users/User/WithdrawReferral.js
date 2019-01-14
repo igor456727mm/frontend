@@ -21,7 +21,6 @@ class WithdrawReferral extends Component {
     const { user_id } = this.props
     api.get(`/v1/wallets?q[user_id][equal]=${user_id}`)
     .then(response => {
-      console.log('wallets', response.data);
       this.setState({ wallets: response.data })
     })
     .catch(Helpers.errorHandler)

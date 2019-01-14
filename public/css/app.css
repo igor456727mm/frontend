@@ -25474,8 +25474,14 @@ td.nobreak {
 .referralBalance__button {
   margin-left: 2em;
 }
-.referralBalance__withdrawals {
-  padding-bottom: 50px;
+.referralBalance__referralWithdrawals {
+  padding: 40px 0;
+}
+.referralBalance__title {
+  padding-bottom: 20px;
+}
+.referralBalance__payouts {
+  padding-bottom: 40px;
 }
 .profile__personal-form {
   margin-top: 20px;
@@ -25519,6 +25525,7 @@ td.nobreak {
 }
 .content .manager__btn {
   padding: 0 10px;
+  margin-left: 10px;
 }
 .content .manager__btn svg {
   width: 1em;
