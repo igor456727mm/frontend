@@ -181,6 +181,7 @@ class Advertiser extends Component {
       <div>
         <Filter onSubmit={this.onFilter} />
         <Table
+          className="app__table"
           rowKey={item => item.id}
           locale={{ emptyText: Helpers.emptyText }}
           onChange={this.handleTableChange}
