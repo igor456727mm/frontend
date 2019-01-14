@@ -427,13 +427,13 @@ background-color:#e6eaee
 }
 
 .h__sidebar-container {
-width:180px;
+min-width:180px;
 border-right:1px solid #dfe2e5;
 height:100%
 }
 
 .h__title {
-margin-right:auto!important;
+// margin-right:auto!important;
 font-size:17px;
 font-weight:500
 }
@@ -505,6 +505,7 @@ left:5px
 }
 
 .h__user img {
+margin-left: auto;
 width:36px;
 height:36px;
 -webkit-border-radius:100%;
@@ -1280,3 +1281,21 @@ td.nobreak
       svg
         width 1em
         height 1em
+
+.header
+  width 100%
+  display flex
+  justify-content space-between
+  align-items center
+  &__title
+    font-size 17px
+    font-weight 500
+  &__weekAdvertiserStat
+    width 50%
+    font-size 17px
+    font-weight 500
+    display flex
+    justify-content space-between
+    align-items center
+    .title
+      color #a4acba

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Table, Select, Input, InputNumber, DatePicker, Button, message, Upload, Icon, Checkbox, Modal, Popconfirm } from 'antd'
+import { Form, Table, Select, Input, InputNumber, DatePicker, Button, message, Upload, Icon, Checkbox, Modal, Popconfirm, Tabs } from 'antd'
 import moment from 'moment'
 import { cookie_prefix } from '../../../package.json'
 import Cookies from 'js-cookie'
@@ -12,8 +12,10 @@ import api from '../../common/Api'
 import * as Feather from 'react-feather'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import NewAdvertiser from './NewAdvertiser'
 
 const Icons = {}
+const TabPane = Tabs.TabPane
 
 class Advertiser extends Component {
 
@@ -114,35 +116,37 @@ class Advertiser extends Component {
 
   render() {
     const { isLoading, iconLoading, isNew } = this.state
-    return (
-      <Form>
-      <div className="content__wrapper">
-        <div className="content__inner offer">
 
-            <div className="block">
-              {this.validator('name', 'Название', <Input size="large" />, [{ required: true }] )}
-            </div>
-
-            <div className="flex" style={{ marginTop: '24px' }}>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
-            </Form.Item>
-
-            {!isNew && (
-              <Form.Item>
-                <Button type="danger" htmlType="submit" size="large" style={{ marginLeft: '24px' }} onClick={this._onDelete}>Удалить</Button>
-              </Form.Item>
-            )}
-
-            </div>
-
-        </div>
-
-      </div>
-
-      </Form>
-    )
+    if (isNew) {
+      return <NewAdvertiser />
+    } else {
+      return (
+        <Tabs type="card">
+          <TabPane tab="Рекламодатель" key="1">
+            <Form>
+              <div className="content__wrapper">
+                <div className="content__inner offer">
+                    <div className="block">
+                      {this.validator('name', 'Название', <Input size="large" />, [{ required: true }] )}
+                    </div>
+                    <div className="flex" style={{ marginTop: '24px' }}>
+                    <Form.Item>
+                      <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
+                    </Form.Item>
+                    <Form.Item>
+                      <Button type="danger" htmlType="submit" size="large" style={{ marginLeft: '24px' }} onClick={this._onDelete}>Удалить</Button>
+                    </Form.Item>
+                    </div>
+                </div>
+              </div>
+            </Form>
+          </TabPane>
+          <TabPane tab="Информация" key="2">
+            Test
+          </TabPane>
+        </Tabs>
+      )
+    }
   }
 }
 

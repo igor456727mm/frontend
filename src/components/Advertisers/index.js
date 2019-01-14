@@ -71,17 +71,46 @@ class Advertiser extends Component {
           dataIndex: 'id',
           sorter: true,
           defaultSortOrder: 'descend',
-        }, {
-          title: 'Название',
-          dataIndex: 'name',
-          sorter: true,
-          render: (text, row) => {
-            return <Link to={`/advertisers/${row.id}`}>{text}</Link>
-          },
-        }, {
+        },
+        {
           title: 'Дата создания',
           dataIndex: 'created_at',
           render: text => moment.unix(text).format('DD.MM.YYYY HH:mm'),
+        },
+        {
+          title: 'Название',
+          dataIndex: 'name',
+          render: (text, row) => {
+            return <Link to={`/advertisers/${row.id}`}>{text}</Link>
+          },
+        },
+        {
+          title: 'Холд',
+          dataIndex: '',
+          render: (text, row) => {
+            return row.hold ? row.hold : null
+          },
+        },
+        {
+          title: 'Баланс',
+          dataIndex: '',
+          render: (text, row) => {
+            return row.balance ? row.balance : null
+          },
+        },
+        {
+          title: 'Не получена выплата (дней)',
+          dataIndex: '',
+          render: (text, row) => {
+            return null
+          },
+        },
+        {
+          title: 'Не загружена сверка (дней)',
+          dataIndex: '',
+          render: (text, row) => {
+            return null
+          },
         },
         {
           title: 'Менеджеры',

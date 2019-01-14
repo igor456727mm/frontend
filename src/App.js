@@ -14,6 +14,7 @@ import Auth, { AuthForm } from './common/Auth'
 import Helpers, { t, pick } from './common/Helpers'
 import { domain, scheme } from './config'
 import Notifications from './components/Notifications'
+import AdvertNotifications from './components/AdvertNotifications'
 
 // компоненты для роутинга
 import Dashboard from './components/Dashboard'
@@ -248,6 +249,21 @@ class App extends Component {
     }
   }
 
+  showAdvertStat = () => {
+    if (window.location.pathname !== '/advertisers') {
+      return null
+    }
+    return (
+      <div className="header__weekAdvertiserStat">
+        <div>
+          <span className="title">Ожидается на этой неделе: </span>
+          <span className="stats">{`${30000}$`} холд / {`${10000}$`} баланс</span>
+        </div>
+        <AdvertNotifications />
+      </div>
+    )
+  }
+
   render() {
 
     const { isLoading, isAuthorized } = this.state
@@ -288,8 +304,6 @@ class App extends Component {
       )
     })
 
-
-
     return (
       <BrowserRouter>
         <Router history={history}>
@@ -308,9 +322,12 @@ class App extends Component {
                        </span>
                      </Dropdown>
                   </div>
-                  <div className="h__title">{t(title)}</div>
-                  <div className="h__user">
-                    <span onClick={Auth.exit}>{t('menu.exit')}</span>
+                  <div className="header">
+                    <div className="header__title">{t(title)}</div>
+                    {this.showAdvertStat()}
+                    <div className="h__user">
+                      <span onClick={Auth.exit}>{t('menu.exit')}</span>
+                    </div>
                   </div>
                 </div>
               </header>
