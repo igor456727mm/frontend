@@ -144,6 +144,7 @@ class Offers extends Component {
           render: text => <img src={text} />,
           width: 190,
         }, {
+          title: 'Оффер',
           dataIndex: 'name',
           className:'nobreak',
           width: 220,
@@ -152,7 +153,6 @@ class Offers extends Component {
           title: 'GEO',
           dataIndex: '',
           render: (text, row) => <Countries country_data={row.country_data} countries={row.countries} />,
-          width: 220,
         },
         {
           title: 'Условия (название/знач./знач.)',
@@ -209,6 +209,8 @@ class Offers extends Component {
           dataIndex: 'priority',
           sorter: true,
         }, {
+          title: 'Категория',
+          dataIndex: '',
           render: (text, row) => {
             const categories = row.categories.map(item => item.name)
             return categories.join(',')
@@ -298,15 +300,11 @@ class Offers extends Component {
   render() {
     const { data, columns, pagination, statuses, isLoading } = this.state
 
-    columns[2].title = t('field.offer')
-
-    columns[7].title = t('field.category')
-
     return (
       <div>
         <Filter onSubmit={this.onFilter} statuses={statuses} />
         <Table
-          className="offers__table"
+          className="offers__table app__table"
           columns={columns}
           rowKey={item => item.id}
           dataSource={data}

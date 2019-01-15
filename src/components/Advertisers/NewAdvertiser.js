@@ -130,7 +130,7 @@ class NewAdvertiser extends Component {
           <div className="col-md-4">
             {this.validator(Manager.data.advertiserManager.field, 'Ответственный менеджер', <Manager.Select managerType="advertiserManager" multiple={false} {...options} /> )}
             {this.validator('wallet_id', 'Кошелёк для выплат', <Select placeholder="Кошелек не выбран" size="large">{_wallets}</Select>, [] )}
-            {this.validator('revise_range', 'Интервал сверок', <RangePicker onChange={this.onReviseRangeChange} disabled={!!paymentDate} size="large" />)}
+            {this.validator('revise_range', 'Интервал сверок', <RangePicker onChange={this.onReviseRangeChange} disabled={!!paymentDate} size="large" style={{ width: "100%" }} />)}
             {this.validator('paymentDate', 'Дата выплат', <DatePicker onChange={this.onPaymentDateChange} disabled={reviseRange.length === 0} disabledDate={this.disabledDate} size="large" />)}
           </div>
         </div>
@@ -139,22 +139,6 @@ class NewAdvertiser extends Component {
         </Form.Item>
       </Form>
     )
-    // return (
-    //   <Form>
-    //     <div className="content__wrapper">
-    //       <div className="content__inner offer">
-    //           <div className="block">
-    //             {this.validator('name', 'Название', <Input size="large" />, [{ required: true }] )}
-    //           </div>
-    //           <div className="flex" style={{ marginTop: '24px' }}>
-    //           <Form.Item>
-    //             <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
-    //           </Form.Item>
-    //           </div>
-    //       </div>
-    //     </div>
-    //   </Form>
-    // )
   }
 }
 
