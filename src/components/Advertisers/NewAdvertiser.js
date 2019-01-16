@@ -27,7 +27,7 @@ const paymentDateHelp = (
       Сначала укажите интервал сверок
     </span>
   )}>
-    <Icon type="question-circle-o" />
+    <Icon type="info-circle-o" />
   </Popover>
 )
 
@@ -70,6 +70,7 @@ class NewAdvertiser extends Component {
     form.validateFieldsAndScroll((err, values) => {
       if (err) return
       console.log('NewAdvertiser form values', values);
+
       this.setState({ iconLoading: true })
       const data = { name: values.name }
       api.post(`/v1/advertisers`, qs.stringify(data))
@@ -136,6 +137,9 @@ class NewAdvertiser extends Component {
         </div>
         <Form.Item>
           <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
+        </Form.Item>
+        <Form.Item>
+          <Button type="danger" htmlType="submit" size="large" style={{ marginLeft: '24px' }} onClick={this._onDelete}>Удалить</Button>
         </Form.Item>
       </Form>
     )
