@@ -75,11 +75,13 @@ class Advertiser extends Component {
         {
           title: 'Дата создания',
           dataIndex: 'created_at',
+          sorter: true,
           render: text => moment.unix(text).format('DD.MM.YYYY HH:mm'),
         },
         {
           title: 'Название',
           dataIndex: 'name',
+          sorter: true,
           render: (text, row) => {
             return <Link to={`/advertisers/${row.id}`}>{text}</Link>
           },

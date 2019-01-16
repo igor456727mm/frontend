@@ -83,7 +83,6 @@ class Notifications extends Component {
       content.push(<Button key={data.length+1} className="btn-grey" onClick={this.delete} style={{ width: '100%' }}>Очистить все</Button>)
     }
 
-    console.log('notifi props', this.props);
     return (
         <div className="h__notifications pointer">
 

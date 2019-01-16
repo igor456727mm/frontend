@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Button, message } from 'antd'
+import { Form, Button, message, Icon } from 'antd'
 import Helpers, { t, clean } from './Helpers'
 import api from './Api'
 import qs from 'qs'
@@ -38,7 +38,10 @@ class _ChangingManager extends Component {
     const { id } = this.state
     const { getFieldDecorator } = this.props.form
     const actualManagerId = id ? String(id) : String(managerId || '')
-    const options = { rules: rules, initialValue: actualManagerId }
+    const options = { rules: rules }
+    if (id || managerId) {
+      options.initialValue = actualManagerId
+    }
     return (
       <Form.Item className={`form__item-${name}`}>
         {getFieldDecorator(name, options)(input)}
@@ -56,7 +59,7 @@ class _ChangingManager extends Component {
       .then(response => {
         const newManager = managers.find(el => String(el.id) === String(values[managerData[managerType].field]))
         this.setState({ showForm: false, name: newManager.name, id: newManager.id })
-        message.success(t('Имя менеджера изменено'))
+        message.success(t(`Имя менеджера изменено на ${newManager.name}`))
       })
       .catch(e => {
         Helpers.errorHandler(e)
@@ -85,8 +88,8 @@ class _ChangingManager extends Component {
               {this.validator(managerData[managerType].field, '', <Manager.Select managerType={managerType} multiple={false} {...options} /> )}
             </Form>
             <div className="manager__btns">
-              <Button onClick={this.toggle} className="manager__btn"><Feather.XCircle /></Button>
-              <Button onClick={this.handleSubmit} className="manager__btn submit"><Feather.CheckCircle /></Button>
+              <Button onClick={this.toggle} className="manager__btn"><Icon type="close-circle-o" /></Button>
+              <Button onClick={this.handleSubmit} className="manager__btn submit"><Icon type="check-circle-o" /></Button>
             </div>
           </div>
         }
