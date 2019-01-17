@@ -356,6 +356,7 @@ class Offer extends Component {
         // description: null,
         status: 'active',
         visible: 1,
+        is_private: 0,
       },
       countries: [],
       categories: [],
@@ -527,6 +528,9 @@ class Offer extends Component {
         // visible
         response.data.visible = response.data.visible == true ? 1 : 0
 
+        // privacy
+        response.data.is_private = response.data.is_private == true ? 1 : 0
+
         this.setState({
           // isLoading: false,
           data: response.data
@@ -615,7 +619,9 @@ class Offer extends Component {
     const { getFieldDecorator } = this.props.form
     const options = { rules: rules }
     if(data.hasOwnProperty(name)) {
-      options.initialValue = data[name]
+
+        options.initialValue = data[name]
+
     } else if(data && name.includes('.')) {
       const tmp = data && flatten(data) || {}
       options.initialValue = tmp[name]
@@ -904,6 +910,7 @@ class Offer extends Component {
 
 
               {this.validator('visible', 'Видимый', <Select size="large"><Select.Option key={1} value={1}>Да</Select.Option><Select.Option key={0} value={0}>Нет</Select.Option></Select> )}
+              {this.validator('is_private', 'Приватность', <Select size="large"><Select.Option value={1}>Приватный</Select.Option><Select.Option value={0}>Публичный</Select.Option></Select> )}
               {this.validator('advertiser_id', 'Рекламодатель', <Select size="large">{_advertisers}</Select> )}
             </div>
 
