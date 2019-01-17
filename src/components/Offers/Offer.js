@@ -737,6 +737,10 @@ class Offer extends Component {
 
   _onDelete = () => {
     const { data } = this.state
+    const confirmation = window.confirm('Оффер будет безвозвратно удалён! Уверены?')
+    if (!confirmation) {
+      return
+    }
     api.delete(`/v1/offers/${data.id}`)
     .then(response => {
       window.location = `/offers`
