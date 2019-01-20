@@ -26,7 +26,7 @@ class Add extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { form } = this.props
+    const { form, addWallet } = this.props
     form.validateFieldsAndScroll((err, values) => {
       if (err) return
       console.log('Wallets form values', values);
@@ -37,7 +37,7 @@ class Add extends Component {
       //   this.setState({ iconLoading: false })
       //   form.resetFields()
       //   message.success(t('wallets.add.message.success'))
-      //   window.dispatchEvent(new Event('wallets.fetch'))
+      //   addWallet()
       // })
       // .catch(e => {
       //   this.setState({ iconLoading: false })
