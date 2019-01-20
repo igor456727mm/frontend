@@ -51,6 +51,7 @@ class Wallets extends Component {
           title: t('field.number'),
           dataIndex: 'data.number',
         }, {
+          title: 'Удаление',
           render: (text, row) => <span className="link" onClick={() => this._onDelete(row.id)}>Удалить</span>
         }
       ]
@@ -75,7 +76,10 @@ class Wallets extends Component {
     })
 
     this.fetch()
-    window.addEventListener('wallets.fetch', this.fetch, false)
+  }
+
+  addWallet = () => {
+    this.fetch()
   }
 
   fetch = (page = 1) => {
@@ -120,7 +124,7 @@ class Wallets extends Component {
     return (
       <div className="row">
         <div className="col-md-4">
-          <Add modules={modules} />
+          <Add addWallet={this.addWallet} />
         </div>
         <div className="col-md-8">
           <Table

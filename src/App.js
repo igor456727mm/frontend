@@ -250,9 +250,12 @@ class App extends Component {
   }
 
   showAdvertStat = () => {
-    if (window.location.pathname !== '/advertisers') {
-      return null
-    }
+    // only for Advertisers page
+    // const pathNames = window.location.pathname.split('/')
+    // const hasAdvertisersPath = pathNames.includes('advertisers')
+    // if (!hasAdvertisersPath) {
+    //   return null
+    // }
     return (
       <div className="header__weekAdvertiserStat">
         <div>

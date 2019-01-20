@@ -34,7 +34,6 @@ export class Select extends React.Component {
   render() {
     const { managers } = this.state
     const { multiple } = this.props
-    console.log('manager select this.props', this.props);
     const renderManagers = managers.map(item => <TreeNode value={String(item.id)} title={item.name} key={item.id} />)
     return (
       <TreeSelect

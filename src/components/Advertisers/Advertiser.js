@@ -14,6 +14,10 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import Wallets from './Wallets/Wallets'
 import * as Manager from '../../common/Helpers/ManagerSelect'
+import OffersShort from './OffersShort'
+import RevisesShort from './RevisesShort'
+import PaymentHistory from './PaymentHistory/PaymentHistory'
+import styles from './Advertisers.module.sass'
 
 const walletsTemp = [
   {
@@ -109,7 +113,7 @@ class Advertiser extends Component {
           break;
         case 'advertiser_manager_id':
           if (data[name]) {
-            console.log('data[name]', data[name]);
+            // console.log('data[name]', data[name]);
             options.initialValue = String(data[name])
           }
           break;
@@ -169,7 +173,6 @@ class Advertiser extends Component {
     const { form } = this.props
     form.validateFieldsAndScroll((err, values) => {
       if (err) return
-      // console.log('NewAdvertiser form values', values);
 
       this.setState({ iconLoading: true })
       if(isNew) {
@@ -183,7 +186,7 @@ class Advertiser extends Component {
           Helpers.errorHandler(e)
         })
       } else {
-        console.log('Advertiser patch form values', this.getData(values));
+        // console.log('Advertiser patch form values', this.getData(values));
         api.patch(`/v1/advertisers/${data.id}`, qs.stringify(this.getData(values)))
         .then(response => {
           this.setState({ iconLoading: false })
@@ -226,53 +229,66 @@ class Advertiser extends Component {
   }
 
   render() {
-    const { isLoading, iconLoading, isNew, paymentPeriod, paymentPeriodPay } = this.state
+    const { isLoading, iconLoading, isNew, paymentPeriod, paymentPeriodPay, data } = this.state
     const _wallets = walletsTemp.map(item => <Select.Option key={item.id} value={item.id}>{item.name} / {item.data && item.data.number}</Select.Option>)
 
     return (
-      <Tabs type="card">
-        <TabPane tab="Рекламодатель" key="1">
-          <Form>
-            <div className="row">
-              <div className="col-md-4">
-                {this.validator('name', 'Название', <Input size="large" />, [{ required: true }])}
-                {this.validator('homepage', 'Сайт', <Input size="large" />)}
-                {this.validator('chat', 'Рабочий чат', <Input size="large" />)}
-                {this.validator('contactName', 'Контактное лицо', <Input size="large" />)}
+      <div className="advertiser">
+        <Tabs type="card">
+          <TabPane tab="Рекламодатель" key="1">
+            <Form>
+              <div className="row">
+                <div className="col-md-4">
+                  {this.validator('name', 'Название', <Input size="large" />, [{ required: true }])}
+                  {this.validator('homepage', 'Сайт', <Input size="large" />)}
+                  {this.validator('chat', 'Рабочий чат', <Input size="large" />)}
+                  {this.validator('contactName', 'Контактное лицо', <Input size="large" />)}
+                </div>
+                <div className="col-md-4">
+                  {this.validator('advertiser_manager_id', 'Ответственный менеджер', <Manager.Select managerType="advertiserManager" multiple={false} {...options} /> )}
+                  {this.validator('wallet_id', 'Кошелёк для выплат', <Select placeholder="Кошелек не выбран" size="large">{_wallets}</Select>, [] )}
+                  {this.validator('paymentPeriod', 'Интервал сверок', <RangePicker onChange={this.onPaymentPeriodChange} disabled={!!paymentPeriodPay} size="large" style={{ width: "100%" }} />)}
+                  {this.validator('paymentPeriodPay', 'Дата выплат', <DatePicker onChange={this.onPaymentDateChange} disabled={paymentPeriod.length === 0} disabledDate={this.disabledDate} size="large" />)}
+                </div>
+                <div className="col-md-4">
+                  <div className={styles.balance}>
+                    <span className={styles.balance__title}>Баланс: </span>
+                    <span className={styles.balance__data}>{`${-30000}$`} холд / {`${-10000}$`} баланс</span>
+                  </div>
+                </div>
               </div>
-              <div className="col-md-4">
-                {this.validator('advertiser_manager_id', 'Ответственный менеджер', <Manager.Select managerType="advertiserManager" multiple={false} {...options} /> )}
-                {this.validator('wallet_id', 'Кошелёк для выплат', <Select placeholder="Кошелек не выбран" size="large">{_wallets}</Select>, [] )}
-                {this.validator('paymentPeriod', 'Интервал сверок', <RangePicker onChange={this.onPaymentPeriodChange} disabled={!!paymentPeriodPay} size="large" style={{ width: "100%" }} />)}
-                {this.validator('paymentPeriodPay', 'Дата выплат', <DatePicker onChange={this.onPaymentDateChange} disabled={paymentPeriod.length === 0} disabledDate={this.disabledDate} size="large" />)}
-              </div>
-            </div>
-            <div className="flex">
-              <Form.Item>
-                <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
-              </Form.Item>
-
-              {!isNew &&
+              <div className="flex">
                 <Form.Item>
-                  <Button type="danger" htmlType="submit" size="large" style={{ marginLeft: '24px' }} onClick={this._onDelete}>Удалить</Button>
+                  <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
                 </Form.Item>
-              }
-            </div>
-          </Form>
-        </TabPane>
-        <TabPane tab="Платежные данные" key="2">
-          <Wallets />
-        </TabPane>
-        <TabPane tab="Информация" key="3">
-          Список офферов
-          История оплат
-          Сверки
-        </TabPane>
-      </Tabs>
+
+                {!isNew &&
+                  <Form.Item>
+                    <Popconfirm title="Удалить рекламодателя?" onConfirm={this._onDelete} okText="Да" cancelText="Нет">
+                      <Button type="danger" htmlType="button" size="large" style={{ marginLeft: '24px' }}>Удалить</Button>
+                    </Popconfirm>
+                  </Form.Item>
+                }
+              </div>
+            </Form>
+          </TabPane>
+          <TabPane tab="Платежные данные" key="2">
+            <Wallets />
+          </TabPane>
+          <TabPane tab="Список офферов" key="3">
+            <OffersShort advertiser_id={data.id} />
+          </TabPane>
+          <TabPane tab="Сверки" key="4">
+            <RevisesShort advertiser_id={data.id} />
+          </TabPane>
+          <TabPane tab="История оплат" key="5">
+            <PaymentHistory advertiser_id={data.id} />
+          </TabPane>
+        </Tabs>
+      </div>
     )
 
   }
 }
 
 export default Form.create()(Advertiser)
-// export default connect((state) => pick(state, 'config'))(Form.create()(Advertiser))
