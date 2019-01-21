@@ -124,7 +124,7 @@ class Wallets extends Component {
     return (
       <div className="row">
         <div className="col-md-4">
-          <Add addWallet={this.addWallet} />
+          <Add modules={modules} addWallet={this.addWallet} />
         </div>
         <div className="col-md-8">
           <Table

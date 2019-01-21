@@ -737,10 +737,6 @@ class Offer extends Component {
 
   _onDelete = () => {
     const { data } = this.state
-    const confirmation = window.confirm('Оффер будет безвозвратно удалён! Уверены?')
-    if (!confirmation) {
-      return
-    }
     api.delete(`/v1/offers/${data.id}`)
     .then(response => {
       window.location = `/offers`
@@ -885,7 +881,10 @@ class Offer extends Component {
 
               {!isNew && (
                 <Form.Item>
-                  <Button type="danger" htmlType="submit" size="large" style={{ marginLeft: '24px' }} onClick={this._onDelete}>Удалить</Button>
+                  <Popconfirm title="Оффер будет безвозвратно удалён! Уверены?" onConfirm={this._onDelete} okText="Да" cancelText="Нет">
+                    <Button type="danger" htmlType="submit" size="large" style={{ marginLeft: '24px' }}>Удалить</Button>
+                  </Popconfirm>
+
                 </Form.Item>
               )}
 
