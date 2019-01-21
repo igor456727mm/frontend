@@ -303,6 +303,46 @@ class _Action extends Component {
 }
 const Action = Form.create()(_Action)
 
+class _Filter extends Component {
+
+  constructor(props) {
+    super(props)
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault()
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      this.props.onSubmit(clean(values))
+    })
+  }
+
+  validator = (name, label, input) => {
+    const { getFieldDecorator } = this.props.form
+    const options = {  }
+    return (
+      <Form.Item className={`filter__field-${name}`}>
+        {label && <h4>{label}</h4>}
+        {getFieldDecorator(name, options)(input)}
+      </Form.Item>
+    )
+  }
+
+  render() {
+    return (
+      <div className="filter">
+        <Form>
+          {this.validator('email', 'email', <Input size="large" /> )}
+          <Form.Item>
+            <h4>&nbsp;</h4>
+            <Button onClick={this.handleSubmit} type="primary" htmlType="submit" size="large">{t('button.show')}</Button>
+          </Form.Item>
+        </Form>
+      </div>
+    )
+  }
+}
+const Filter = Form.create()(_Filter)
+
 class IndividualConditions extends Component {
 
   constructor(props) {
@@ -421,7 +461,46 @@ class IndividualConditions extends Component {
         pagination
       })
     })
+    .catch(e => {
+      this.setState({
+        isLoading: false,
+      })
+      Helpers.errorHandler(e)
+    })
     Filters.toUrl(filters)
+  }
+
+  filterByEmail = values => {
+    const { pagination } = this.state
+    const { email } = values
+    if (!email) {
+      this.fetch()
+      return
+    }
+    this.setState({ isLoading: true })
+    api.get('/v1/user-offer-individual-conditions', {
+      params: {
+        sort: '-id',
+        expand: 'user',
+        'per-page': 999,
+        'q[offer_id][equal]': this.props.offer_id
+      }
+    })
+    .then(response => {
+      const filteredData = response.data.filter(cond => email === cond.user.email)
+      pagination.total = filteredData.length
+      this.setState({
+        isLoading: false,
+        data: filteredData,
+        pagination
+      })
+    })
+    .catch(e => {
+      this.setState({
+        isLoading: false,
+      })
+      Helpers.errorHandler(e)
+    })
   }
 
   handleTableChange = ({ current: page }, filters, { columnKey, order }) => {
@@ -430,18 +509,15 @@ class IndividualConditions extends Component {
     this.setState({ pagination }, this.fetch)
   }
 
-  onFilter = (values) => {
-    const filters = Filters.prepare(values)
-    this.setState({ filters }, this.fetch)
-  }
-
   render() {
     const { statuses, modules, isLoading } = this.state
     const props = pick(this.state, 'data:dataSource', 'columns', 'pagination')
     return (
       <div className="offer__individual" style={{ marginTop: '30px'}}>
         <h3>Индивидуальные условия</h3>
+        <Filter onSubmit={this.filterByEmail} />
         <Table
+          loading={isLoading}
           rowKey={(item,i) => `${item.user_id},${item.offer_id}`}
           locale={{ emptyText: Helpers.emptyText }}
           onChange={this.handleTableChange}
