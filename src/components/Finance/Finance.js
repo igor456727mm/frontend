@@ -8,6 +8,7 @@ import Helpers, { t, pick, queryParams, parseQueryFiltersValues, disabledDate } 
 import api from '../../common/Api'
 import SearchSelect from '../../common/Helpers/SearchSelect'
 import ReferralPayouts from './ReferralPayouts'
+import IncomeStatement from './IncomeStatement'
 
 const TabPane = Tabs.TabPane
 
@@ -229,6 +230,9 @@ class Withdrawals extends Component {
         </TabPane>
         <TabPane tab="Реферальные выплаты" key="2">
           <ReferralPayouts />
+        </TabPane>
+        <TabPane tab="Отчеты о доходах" key="3">
+          <IncomeStatement />
         </TabPane>
       </Tabs>
     )
