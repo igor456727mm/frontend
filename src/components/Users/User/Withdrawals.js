@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import Helpers, { t, pick, queryParams, parseQueryFiltersValues, disabledDate, Events } from '../../../common/Helpers'
 import api from '../../../common/Api'
 import SearchSelect from '../../../common/Helpers/SearchSelect'
+import ChangingText from '../../../common/ChangingText/ChangingText'
 
 class Withdrawals extends Component {
 
@@ -63,7 +64,9 @@ class Withdrawals extends Component {
           title: 'Комментарий',
           dataIndex: 'comment',
           render: (text, row) => {
-            if(row.status !== 'pending') return text
+            if(row.status !== 'pending') {
+              return <ChangingText onTextEdit={this.onTextEdit(row.id, 'comment')} text={text}/>
+            }
             return (
               <input name="comment" className="ant-input" placeholder="Комментарий" defaultValue={text} />
             )
@@ -72,10 +75,16 @@ class Withdrawals extends Component {
           title: 'Комментарий вебу',
           dataIndex: 'webmaster_comment',
           render: (text, row) => {
-            if(row.status !== 'pending') return text
+            if(row.status !== 'pending') {
+              return <ChangingText onTextEdit={this.onTextEdit(row.id, 'webmaster_comment')} text={text}/>
+            }
+            // if(row.status !== 'pending') return text
             return (
               <input name="webmaster_comment" className="ant-input" placeholder="Комментарий вебу" defaultValue={text} />
             )
+            // return (
+            //   <input name="webmaster_comment" className="ant-input" placeholder="Комментарий вебу" defaultValue={text} />
+            // )
           }
         }, {
           width: 280,
@@ -176,6 +185,20 @@ class Withdrawals extends Component {
     .then(response => {
       this.fetch()
       Events.dispatch('user.fetch')
+    })
+    .catch(Helpers.errorHandler)
+  }
+
+  onTextEdit = (id, field) => text => {
+    if(!text) {
+      message.error('Введите комментарий')
+      return
+    }
+
+    api.patch(`/v1/withdrawals/${id}`, qs.stringify({ [field]: text }))
+    .then(response => {
+      message.success(`Комментарий изменен`)
+      this.fetch()
     })
     .catch(Helpers.errorHandler)
   }
