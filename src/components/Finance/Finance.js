@@ -135,6 +135,7 @@ class Withdrawals extends Component {
   }
 
   componentDidMount = () => {
+    Helpers.setTitle('menu.finance')
     this.fetch()
     window.addEventListener('finance.fetch', this.fetch, false)
 

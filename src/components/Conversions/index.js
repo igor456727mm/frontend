@@ -213,6 +213,7 @@ class Leads extends Component {
   }
 
   componentDidMount = () => {
+    Helpers.setTitle('menu.conversions')
     this.fetch()
     Events.follow('leads.fetch', this.fetch)
 
