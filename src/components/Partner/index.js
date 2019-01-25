@@ -93,7 +93,7 @@ class Advertiser extends Component {
   }
 
   componentDidMount = () => {
-    Helpers.setTitle('menu.news')
+    Helpers.setTitle('Модули партнеров')
 
     this.fetch()
     Events.follow(`news.fetch`, this.fetch)

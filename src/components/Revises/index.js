@@ -98,6 +98,7 @@ class Revises extends Component {
   }
 
   componentDidMount = () => {
+    Helpers.setTitle('menu.revises')
     this.fetch()
     Events.follow('leads.fetch', this.fetch)
 

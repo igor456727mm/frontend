@@ -38,6 +38,7 @@ class Stats extends Component {
 
 
   componentDidMount = () => {
+    Helpers.setTitle('menu.stats')
     this.fetch()
     Events.follow('stats.fetch', this.fetch)
   }

@@ -7,6 +7,7 @@ import * as Cookies from 'js-cookie'
 import RcTreeSelect, { TreeNode } from 'but1head-rc-tree-select'
 import store from '../reducers'
 import * as Feather from 'react-feather'
+import additionalTranslationsRu from './translations/ru.json'
 
 const Helpers = {
 
@@ -255,7 +256,10 @@ export const parseQueryFiltersValues = (name) => {
 // translator
 export const t = (key) => {
   const { current, translations } = store.getState().lang
-  return translations[current] && translations[current][key] || key
+  // if (!(translations[current] && translations[current][key] || (current === 'ru' && additionalTranslationsRu[key]))) {
+  //   console.log(`Перевод ${key} отсутствует!`)
+  // }
+  return translations[current] && translations[current][key] || (current === 'ru' && additionalTranslationsRu[key]) || key
 }
 
 // get specifed keys from object (default:custom)

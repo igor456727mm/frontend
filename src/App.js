@@ -340,15 +340,15 @@ class App extends Component {
                   {/* <li><NavLink to="/news">{icons.news} {t('menu.news')}</NavLink></li> */}
                   <li><NavLink to="/platforms">{icons.platforms} {t('menu.platforms')}</NavLink></li>
                   <li><NavLink to="/offers">{icons.products} {t('menu.offers')}</NavLink></li>
-                  <li><NavLink to="/news">{icons.products} {t('menu.news')}</NavLink></li>
+                  <li><NavLink to="/news"><Icon style={{ fontSize: '18px', marginRight: '15px' }} type="sound" /> {t('menu.news')}</NavLink></li>
                   {/* <li><NavLink to="/promo">{icons.promo} {t('menu.promo')}</NavLink></li> */}
                   <li><NavLink to="/stats">{icons.stats} {t('menu.stats')}</NavLink></li>
                   <li><NavLink to="/conversions">{icons.stats} {t('menu.conversions')}</NavLink></li>
                   <li><NavLink to="/revises">{icons.stats} {t('menu.revises')}</NavLink></li>
-                  <li><NavLink to="/users">{icons.support} {t('menu.users')}</NavLink></li>
+                  <li><NavLink to="/users"><Icon style={{ fontSize: '18px', marginRight: '15px' }} type="team" /> {t('menu.users')}</NavLink></li>
                   <li><NavLink to="/finance">{icons.finance} {t('menu.finance')}</NavLink></li>
-                  <li><NavLink to="/advertisers">Рекламодатели</NavLink></li>
-                  <li><NavLink to="/partner">Модули партнеров</NavLink></li>
+                  <li><NavLink to="/advertisers"><Icon style={{ fontSize: '18px', marginRight: '15px' }} type="global" /> Рекламодатели</NavLink></li>
+                  {/* <li><NavLink to="/partner"> Модули партнеров</NavLink></li> */}
                   <li><NavLink to="/tickets" className="relative">{icons.support} {t('menu.support')} {unreadMessages > 0 && <span className="badge">{unreadMessages}</span>}</NavLink></li>
                 </ul>
                 <div className="sidebar__copyright">
