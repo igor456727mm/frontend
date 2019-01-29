@@ -25553,6 +25553,7 @@ td.nobreak {
 }
 .header .h__user {
   display: flex;
+  align-items: center;
 }
 .header .h__user_data {
   margin-left: 20px;
