@@ -38,6 +38,7 @@ import Revises from './components/Revises'
 import Advertisers from './components/Advertisers'
 import Advertiser from './components/Advertisers/Advertiser'
 import Partner from './components/Partner'
+import styles from './App.module.sass'
 
 const NoMatch = ({ location }) => (
   <div>
@@ -214,7 +215,7 @@ class App extends Component {
 
   _onUserLogin = () => {
     this.setState({ isAuthorized: true })
-    // Helpers.checkUserData()
+    Helpers.checkUserData()
     //Helpers.checkUserPlatforms()
     //Helpers.checkUserWallets()
     //Helpers.checkTicketMessages()
@@ -262,7 +263,6 @@ class App extends Component {
           <span className="title">Ожидается на этой неделе: </span>
           <span className="stats">{`${30000}$`} холд / {`${10000}$`} баланс</span>
         </div>
-        <AdvertNotifications />
       </div>
     )
   }
@@ -272,8 +272,7 @@ class App extends Component {
     const { isLoading, isAuthorized } = this.state
     const { lang } = this.props
     const { title } = this.props.config
-    const { unreadMessages } = this.props.user
-
+    const { unreadMessages, login, user_id, avatar_image } = this.props.user
     if(isLoading) {
       return (
         <div className="__center">
@@ -307,6 +306,14 @@ class App extends Component {
       )
     })
 
+    const menu_user = (
+      <Menu>
+        <Menu.Item onClick={Auth.exit}>
+          <span>{t('menu.exit')}</span>
+        </Menu.Item>
+      </Menu>
+    )
+
     return (
       <BrowserRouter>
         <Router history={history}>
@@ -329,7 +336,17 @@ class App extends Component {
                     <div className="header__title">{t(title)}</div>
                     {this.showAdvertStat()}
                     <div className="h__user">
-                      <span onClick={Auth.exit}>{t('menu.exit')}</span>
+                      <AdvertNotifications />
+                      <Dropdown overlay={menu_user} trigger={['click']}>
+                        <div className="flex pointer">
+                          <div className="h__user_data">
+                            <strong>{login}</strong>
+                            <strong>ID {user_id}</strong>
+                          </div>
+                          <img src={avatar_image} />
+                          <Feather.ChevronDown />
+                        </div>
+                      </Dropdown>
                     </div>
                   </div>
                 </div>

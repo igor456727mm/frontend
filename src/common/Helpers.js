@@ -31,27 +31,15 @@ const Helpers = {
   },
 
   checkUserData: () => {
-    const user_id = Cookies.get('user_id')
-    api.get(`/v1/user-data/${user_id}?expand=user,personalManager`)
+    const cabinet_user_id = Cookies.get('cabinet_user_id')
+    api.get(`/v1/user-data/${cabinet_user_id}?expand=user`)
     .then((response) => {
-      const balance = response.data && response.data.balance || 0.00
-      const hold = response.data && response.data.hold || 0
-      const { personalManager } = response.data
       window.store.dispatch({
         type: "USER_SET_DATA",
         params: {
-          user_id: user_id,
-          balance: balance,
-          hold: hold,
-          email: response.data.user.email,
-          name: response.data.name,
-          default_revshare_percent: response.data.default_revshare_percent,
+          user_id: cabinet_user_id,
+          login: response.data.login,
           avatar_image: response.data.avatar_image || 'img/avatar.jpg',
-          manager: {
-            avatar: personalManager.avatar_image,
-            name: personalManager.name,
-            skype: personalManager.contacts.skype,
-          }
         }
       })
     })

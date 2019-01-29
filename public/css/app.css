@@ -25542,7 +25542,6 @@ td.nobreak {
   font-weight: 500;
 }
 .header__weekAdvertiserStat {
-  width: 50%;
   font-size: 17px;
   font-weight: 500;
   display: flex;
@@ -25551,4 +25550,12 @@ td.nobreak {
 }
 .header__weekAdvertiserStat .title {
   color: #a4acba;
+}
+.header .h__user {
+  display: flex;
+}
+.header .h__user_data {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
 }
