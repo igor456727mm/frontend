@@ -34,8 +34,6 @@ class Wallets extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: [],
-      modules: [],
       pagination: {
         hideOnSinglePage: true,
       },
@@ -44,95 +42,42 @@ class Wallets extends Component {
           title: t('field.name'),
           dataIndex: 'name',
         }, {
-          title: t('field.type'),
-          dataIndex: 'wallet_module_id',
-          render: text => this.state.modules[text] && this.state.modules[text].name,
-        }, {
           title: t('field.number'),
           dataIndex: 'data.number',
         }, {
           title: 'Удаление',
-          render: (text, row) => <span className="link" onClick={() => this._onDelete(row.id)}>Удалить</span>
+          render: (text, row) => <span className="link" onClick={() => this.onDelete(row.id)}>Удалить</span>
         }
       ]
     }
   }
 
-  handleTableChange = (pagination, filters, sorter) => {
-    const pager = { ...this.state.pagination }
-    pager.current = pagination.current;
-    this.setState({ pagination: pager })
-    this.fetch(pagination.current)
-  }
-
-  componentDidMount = () => {
-    api.get('/v1/wallet-modules')
+  onDelete = id => {
+    const { wallets, getWallets } = this.props
+    console.log('delete wallet', id);
+    api.delete(`/v1/finances/wallets/${id}`)
     .then(response => {
-      const modules = {}
-      console.log('wallet-modules resp before', response.data);
-      response.data.forEach(item => modules[item.id] = item)
-      // console.log('wallet-modules modules', modules);
-      this.setState({ modules: modules })
+      console.log('response delete wallet', response);
+      getWallets()
     })
-
-    this.fetch()
-  }
-
-  addWallet = () => {
-    this.fetch()
-  }
-
-  fetch = (page = 1) => {
-    // this.setState({ isLoading: true })
-    // api.get('/v1/wallets', {
-    //   params: {
-    //     sort: '-id',
-    //     page: page,
-    //     expand: 'wallet,module',
-    //   }
-    // })
-    // .then(response => {
-    //   console.log('wallets response', response.data);
-    //   this.setState({
-    //     isLoading: false,
-    //     data: walletsTemp,
-    //     pagination: {
-    //       ...this.state.pagination,
-    //     }
-    //   })
-      // this.setState({
-      //   isLoading: false,
-      //   data: response.data,
-      //   pagination: {
-      //     ...this.state.pagination,
-      //     total: parseInt(response.headers['x-pagination-total-count'])
-      //   }
-      // })
-    // })
-  }
-
-  _onDelete = (id) => {
-    // api.delete(`/v1/wallets/${id}`)
-    // .then(response => {
-    //   this.fetch()
-    // })
-    // .catch(Helpers.errorHandler)
+    .catch(Helpers.errorHandler)
   }
 
   render() {
-    const { data, columns, pagination, statuses, isLoading, modules } = this.state
+    const { data, columns, isLoading, pagination } = this.state
+    const { wallets, updateWallets } = this.props
     return (
       <div className="row">
         <div className="col-md-4">
-          <Add modules={modules} addWallet={this.addWallet} />
+          <Add updateWallets={updateWallets} />
         </div>
         <div className="col-md-8">
           <Table
             className="app__table"
             columns={columns}
             rowKey={item => item.id}
-            dataSource={data}
             pagination={pagination}
+            dataSource={wallets}
             loading={isLoading}
             locale={{ emptyText: Helpers.emptyText }}
             onChange={this.handleTableChange}

@@ -19,19 +19,6 @@ import RevisesShort from './RevisesShort'
 import PaymentHistory from './PaymentHistory/PaymentHistory'
 import styles from './Advertisers.module.sass'
 
-const walletsTemp = [
-  {
-    id: 1407,
-    name: 'кошелек 1',
-    data: {number: "Z596596954969"},
-  },
-  {
-    id: 1408,
-    name: 'кошелек 2',
-    data: {number: "Z746593814969"},
-  },
-]
-
 const { TabPane } = Tabs
 const { RangePicker } = DatePicker
 
@@ -46,7 +33,7 @@ const paymentDateHelp = (
       Сначала укажите интервал сверок
     </span>
   )}>
-    <Icon type="info-circle-o" />
+    <Icon type="question-circle-o" />
   </Popover>
 )
 
@@ -72,6 +59,7 @@ class Advertiser extends Component {
   componentDidMount = () => {
     Helpers.setTitle('Рекламодатель')
     this.fetch()
+    this.getWallets()
   }
 
   fetch = () => {
@@ -79,7 +67,11 @@ class Advertiser extends Component {
     const { isNew } = this.state
     this.setState({ isLoading: true })
     if(!isNew) {
-      api.get(`/v1/advertisers/${id}`)
+      api.get(`/v1/advertisers/${id}`, {
+        params: {
+          expand: 'uuid,hold,balance',
+        }
+      })
       .then(response => {
         // console.log('advertiser get', response.data);
         const { data } = response
@@ -100,6 +92,51 @@ class Advertiser extends Component {
     } else {
       this.setState({ isLoading: false })
     }
+  }
+
+  getWallets = () => {
+    const { id } = this.state.data
+    this.setState({ isLoading: true })
+    api.get('/v1/finances/wallets', {
+      params: {
+        'q[advertiserId][equal]': id,
+        sort: '-id',
+      }
+    })
+    .then(response => {
+      console.log('advertiser wallets response', response.data);
+      this.setState({
+        isLoading: false,
+        wallets: response.data,
+      })
+    })
+    .catch(Helpers.errorHandler)
+  }
+
+  updateWallets = (values) => {
+    const { id, uuid } = this.state.data
+    const { name, wallet_id } = values
+    console.log('this.state', this.state);
+    console.log('updateWallets values', values);
+    const data = {
+      name: values.name,
+      ownerId: uuid,
+      walletModuleId: values.walletModuleId,
+      data: {
+        number: values.number
+      }
+    }
+    this.setState({ iconLoading: true })
+    api.post(`/v1/finances/wallets`, qs.stringify(data))
+    .then(response => {
+      this.setState({ iconLoading: false })
+      message.success(t('Кошелек добавлен'))
+      this.getWallets()
+    })
+    .catch(e => {
+      this.setState({ iconLoading: false })
+      Helpers.errorHandler(e)
+    })
   }
 
   validator = (name, label, input, rules = [], initialValue) => {
@@ -229,8 +266,7 @@ class Advertiser extends Component {
   }
 
   render() {
-    const { isLoading, iconLoading, isNew, paymentPeriod, paymentPeriodPay, data } = this.state
-    const _wallets = walletsTemp.map(item => <Select.Option key={item.id} value={item.id}>{item.name} / {item.data && item.data.number}</Select.Option>)
+    const { isLoading, iconLoading, isNew, paymentPeriod, paymentPeriodPay, data, wallets } = this.state
 
     return (
       <div className="advertiser">
@@ -246,14 +282,13 @@ class Advertiser extends Component {
                 </div>
                 <div className="col-md-4">
                   {this.validator('advertiser_manager_id', 'Ответственный менеджер', <Manager.Select managerType="advertiserManager" multiple={false} {...options} /> )}
-                  {this.validator('wallet_id', 'Кошелёк для выплат', <Select placeholder="Кошелек не выбран" size="large">{_wallets}</Select>, [] )}
                   {this.validator('paymentPeriod', 'Интервал сверок', <RangePicker onChange={this.onPaymentPeriodChange} disabled={!!paymentPeriodPay} size="large" style={{ width: "100%" }} />)}
                   {this.validator('paymentPeriodPay', 'Дата выплат', <DatePicker onChange={this.onPaymentDateChange} disabled={paymentPeriod.length === 0} disabledDate={this.disabledDate} size="large" />)}
                 </div>
                 <div className="col-md-4">
                   <div className={styles.balance}>
                     <span className={styles.balance__title}>Баланс: </span>
-                    <span className={styles.balance__data}>{`${-30000}$`} холд / {`${-10000}$`} баланс</span>
+                    <span className={styles.balance__data}>{`${data.hold}$`} холд / {`${data.balance}$`} баланс</span>
                   </div>
                 </div>
               </div>
@@ -273,7 +308,7 @@ class Advertiser extends Component {
             </Form>
           </TabPane>
           <TabPane tab="Платежные данные" key="2">
-            <Wallets />
+            <Wallets wallets={wallets} getWallets={this.getWallets} updateWallets={this.updateWallets} advertiser_id={data.id} />
           </TabPane>
           <TabPane tab="Список офферов" key="3">
             <OffersShort advertiser_id={data.id} />
@@ -282,7 +317,7 @@ class Advertiser extends Component {
             <RevisesShort advertiser_id={data.id} />
           </TabPane>
           <TabPane tab="История оплат" key="5">
-            <PaymentHistory advertiser_id={data.id} />
+            <PaymentHistory wallets={wallets} advertiser_id={data.id} />
           </TabPane>
         </Tabs>
       </div>
