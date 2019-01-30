@@ -90,14 +90,15 @@ class Advertiser extends Component {
           title: 'Холд',
           dataIndex: '',
           render: (text, row) => {
-            return row.hold ? row.hold : null
+            return row.hold ? `${row.hold}$` : null
           },
         },
         {
           title: 'Баланс',
           dataIndex: '',
           render: (text, row) => {
-            return row.balance ? row.balance : null
+            console.log('row', row);
+            return row.balance ? `${row.balance}$` : null
           },
         },
         {
@@ -151,10 +152,11 @@ class Advertiser extends Component {
         sort: pagination.sort || '-id',
         page: pagination.current || 1,
         ...filters,
-        expand: 'advertiserManager',
+        expand: 'advertiserManager,hold,balance',
       }
     })
     .then(response => {
+      console.log('response', response.data);
       pagination.total = parseInt(response.headers['x-pagination-total-count'])
       this.setState({
         isLoading: false,

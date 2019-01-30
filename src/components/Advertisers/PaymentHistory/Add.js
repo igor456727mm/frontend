@@ -1,21 +1,18 @@
 import React, { Component } from 'react'
-import { Form, Input, Button, Select, message, InputNumber, DatePicker } from 'antd'
+import { Form, Input, Button, Select, message, InputNumber, DatePicker, Popover, Icon } from 'antd'
 import qs from 'qs'
 import api from '../../../common/Api'
 import Helpers, { t } from '../../../common/Helpers'
 
-const walletsTemp = [
-  {
-    id: 1407,
-    name: 'кошелек 1',
-    data: {number: "Z596596954969"},
-  },
-  {
-    id: 1408,
-    name: 'кошелек 2',
-    data: {number: "Z746593814969"},
-  },
-]
+const paymentSumHelp = (
+  <Popover placement="right" content={(
+    <span>
+      Если сумма отрицательная - то это пополнение счета. Если положительная - списание.
+    </span>
+  )}>
+    <Icon type="question-circle-o" />
+  </Popover>
+)
 
 class Add extends Component {
 
@@ -31,7 +28,7 @@ class Add extends Component {
     const options = { rules: rules }
     return (
       <Form.Item>
-        {label && <h4>{label}</h4>}
+        {label && <h4>{label} {name === 'sum' ? paymentSumHelp : null}</h4>}
         {getFieldDecorator(name, options)(input)}
       </Form.Item>
     )
@@ -39,44 +36,39 @@ class Add extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { form, addPayment } = this.props
+    const { form, updatePayment } = this.props
     form.validateFieldsAndScroll((err, values) => {
       if (err) return
       console.log('Заказать выплату values', values);
-      // this.setState({ iconLoading: true })
-      // values.data = JSON.stringify(values.data)
-      // api.post(`/v1/wallets`, qs.stringify(values))
-      // .then(response => {
-      //   this.setState({ iconLoading: false })
-      //   form.resetFields()
-      //   message.success(t('wallets.add.message.success'))
-      //   addPayment()
-      // })
-      // .catch(e => {
-      //   this.setState({ iconLoading: false })
-      //   Helpers.errorHandler(e)
-      // })
+      const data = {
+        walletId: values.wallet_id,
+        sum: values.sum,
+        data: {
+          comment: values.comment,
+          date: values.paymentDate.unix(),
+        }
+      }
+      console.log('data', data);
+      this.setState({ iconLoading: true })
+      api.post(`/v1/finances/withdrawals`, qs.stringify(data))
+      .then(response => {
+        this.setState({ iconLoading: false })
+        form.resetFields()
+        message.success('Оплата добавлена')
+        updatePayment()
+      })
+      .catch(e => {
+        this.setState({ iconLoading: false })
+        Helpers.errorHandler(e)
+      })
     })
   }
 
-  // renderWalletNumber = () => {
-  //   const { form, modules } = this.props
-  //   const { wallet_module_id } = form.getFieldsValue()
-  //   if(!wallet_module_id) return
-  //   const { rules } = modules[wallet_module_id]
-  //   return rules.required.map((field, i) => {
-  //     const message = modules[wallet_module_id].error_messages[`/${field}`].pattern
-  //     return (
-  //       <div key={i}>
-  //         {this.validator(`data[${field}]`, rules.properties[field].title, <Input size="large" />, [{ required: true, pattern: rules.properties[field].pattern, message: message }] )}
-  //       </div>
-  //     )
-  //   })
-  // }
-
   render() {
     const { iconLoading } = this.state
-    const _wallets = walletsTemp.map(item => <Select.Option key={item.id} value={item.id}>{item.name} / {item.data && item.data.number}</Select.Option>)
+    const { wallets } = this.props
+    console.log('add wallets', wallets);
+    const _wallets = wallets.map(item => <Select.Option key={item.id} value={item.id}>{item.name} / {item.data && item.data.number}</Select.Option>)
 
     return (
       <div className="widget__wallets-add">
@@ -84,6 +76,7 @@ class Add extends Component {
         <Form onSubmit={this.handleSubmit}>
           {this.validator('sum', 'Сумма', <InputNumber size="large" />, [{ required: true }] )}
           {this.validator('wallet_id', 'Кошелёк', <Select placeholder="Кошелек не выбран" size="large">{_wallets}</Select>, [{ required: true }] )}
+          {this.validator('comment', 'Комментарий', <Input size="large" /> )}
           {this.validator('paymentDate', 'Дата оплаты', <DatePicker size="large" />, [{ required: true }] )}
           <Form.Item>
             <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>Добавить</Button>

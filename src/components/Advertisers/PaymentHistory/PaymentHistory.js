@@ -20,16 +20,28 @@ class PaymentHistory extends Component {
       },
       columns: [
         {
+          title: 'Дата создания',
+          dataIndex: 'createdAt',
+          sorter: true,
+          render: text => moment.unix(text).format('DD.MM.YYYY HH:mm'),
+        },
+        {
           title: 'Сумма',
           dataIndex: 'sum',
-          render: (text, row) => text,
+          render: (text, row) => {
+            const currency ='$'
+            return `${Number(text).toFixed(2)}${currency}`
+          },
         },
         {
           title: 'Кошелек',
           dataIndex: '',
           render: (text, row) => {
-            const name = row.wallet && row.wallet.name
-            const number = row.wallet && row.wallet.data && row.wallet.data.number
+            // console.log('row', row);
+            const wallet = this.props.wallets.find(el => String(el.id) === String(row.walletId))
+            // console.log('wallet', wallet);
+            const name = wallet && wallet.name
+            const number = wallet && wallet.data && wallet.data.number
             return number ? `${name} / ${number}` : name
           }
         },
@@ -40,69 +52,83 @@ class PaymentHistory extends Component {
         },
         {
           title: 'Дата поступления',
-          dataIndex: 'date',
-          render: (text, row) => moment.unix(text).format('DD.MM.YYYY (HH:mm)'),
+          dataIndex: '',
+          render: (text, row) => row.data && row.data.date && moment.unix(row.data.date).format('DD.MM.YYYY') || '',
         },
         {
           title: 'Дней задержки',
           dataIndex: 'days',
           render: (text, row) => text,
         },
+        {
+          title: 'Комментарий',
+          dataIndex: '',
+          render: (text, row) => row.data && row.data.comment,
+        },
       ]
     }
   }
 
-  handleTableChange = (pagination, filters, sorter) => {
-    const pager = { ...this.state.pagination }
-    pager.current = pagination.current;
-    this.setState({ pagination: pager })
-    this.fetch(pagination.current)
+  // handleTableChange = (pagination, filters, sorter) => {
+  //   const pager = { ...this.state.pagination }
+  //   pager.current = pagination.current;
+  //   this.setState({ pagination: pager })
+  //   this.fetch(pagination.current)
+  // }
+
+  handleTableChange = ({ current: page }, filters, { columnKey, order }) => {
+    const sort = (order && columnKey) && (order == 'ascend' ? columnKey : `-${columnKey}`)
+    console.log('sort !!', sort);
+    const pagination = { ...this.state.pagination, current: page, sort: sort }
+    console.log('pagination !!', pagination);
+    this.setState({ pagination }, this.fetch)
   }
 
   componentDidMount = () => {
     this.fetch()
   }
 
-  addPayment = () => {
+  updatePayment = () => {
     this.fetch()
   }
 
   fetch = (page = 1) => {
-    const { filters } = this.state
+    const { filters, pagination } = this.state
     const { advertiser_id } = this.props
-    // this.setState({ isLoading: true })
-    // api.get('/v1/offers', {
-    //   params: {
-    //     sort: '-id',
-    //     page: page,
-    //     'per-page': 10,
-    //     'q[advertiser_id][equal]': advertiser_id,
-    //     expand: 'countries,categories,actions',
-    //     ...filters
-    //   }
-    // })
-    // .then(response => {
-    //   console.log('get /offers', response.data);
-    //   this.setState({
-    //     isLoading: false,
-    //     data: response.data,
-    //     pagination: {
-    //       ...this.state.pagination,
-    //       total: parseInt(response.headers['x-pagination-total-count'])
-    //     }
-    //   })
-    // })
+    this.setState({ isLoading: true })
+    console.log('filters', filters, pagination);
+    api.get('/finances/withdrawals', {
+      params: {
+        sort: pagination.sort || '-id',
+        page: page,
+        'per-page': pagination.pageSize,
+        'q[advertiserId][equal]': advertiser_id,
+        ...filters
+      }
+    })
+    .then(response => {
+      console.log('get PaymentHistory response', response.data);
+      this.setState({
+        isLoading: false,
+        data: response.data,
+        pagination: {
+          ...pagination,
+          total: parseInt(response.headers['x-pagination-total-count'])
+        }
+      })
+    })
   }
 
   render() {
     const { data, columns, pagination, isLoading } = this.state
+    const { wallets } = this.props
 
     return (
       <div className="row">
-        <div className="col-md-4">
-          <Add addPayment={this.addPayment}/>
+        <div className="col-md-3">
+          <Add wallets={wallets} updatePayment={this.updatePayment}/>
         </div>
-        <div className="col-md-8">
+        <div className="col-md-9">
           <Table
             className={styles.table}
             columns={columns}
