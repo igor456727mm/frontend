@@ -164,14 +164,13 @@ class Advertiser extends Component {
           options.initialValue = data.data[name]
           break;
         case 'paymentPeriod':
-          // console.log('paymentPeriod', name, data.data, data.data);
           if (data.data && data.data.paymentPeriodStart && data.data.paymentPeriodEnd) {
             options.initialValue = [moment.unix(data.data.paymentPeriodStart), moment.unix(data.data.paymentPeriodEnd)]
           }
           break;
         case 'paymentPeriodPay':
-          if (data.data) {
-            options.initialValue = moment.unix(data.data[name])
+          if (data.data && data.data.paymentPeriodPay !== 0) {
+            options.initialValue = moment.unix(data.data.paymentPeriodPay)
           }
           break;
         default:
