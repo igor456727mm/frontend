@@ -273,7 +273,7 @@ class App extends Component {
     const { lang } = this.props
     const { title } = this.props.config
     const { unreadMessages, login, user_id, avatar_image } = this.props.user
-    console.log('avatar_image', avatar_image);
+
     if(isLoading) {
       return (
         <div className="__center">
