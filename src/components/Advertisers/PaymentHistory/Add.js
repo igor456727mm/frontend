@@ -66,7 +66,7 @@ class Add extends Component {
 
   render() {
     const { iconLoading } = this.state
-    const { wallets } = this.props
+    const { wallets=[] } = this.props
     console.log('add wallets', wallets);
     const _wallets = wallets.map(item => <Select.Option key={item.id} value={item.id}>{item.name} / {item.data && item.data.number}</Select.Option>)
 
