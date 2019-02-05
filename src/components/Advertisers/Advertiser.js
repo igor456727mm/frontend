@@ -73,7 +73,7 @@ class Advertiser extends Component {
         }
       })
       .then(response => {
-        // console.log('advertiser get', response.data);
+        console.log('advertiser get', response.data);
         const { data } = response
         const paymentPeriod = (data.data && data.data.paymentPeriodStart && data.data.paymentPeriodEnd) ?
           [moment.unix(data.data.paymentPeriodStart), moment.unix(data.data.paymentPeriodEnd)] : []

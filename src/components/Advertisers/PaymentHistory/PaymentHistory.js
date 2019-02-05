@@ -46,9 +46,17 @@ class PaymentHistory extends Component {
           }
         },
         {
-          title: 'Период',
+          title: 'Платежный период',
           dataIndex: 'paymentPeriod',
-          render: (text, row) => text,
+          render: (text, row) => {
+            if (!text) {
+              return null
+            }
+            const { startDate, endDate } = text
+            const fromDate = startDate && moment.unix(startDate).format('DD.MM.YYYY')
+            const toDate = endDate && moment.unix(endDate).format('DD.MM.YYYY')
+            return `${fromDate} - ${toDate}`
+          },
         },
         {
           title: 'Дата поступления',
@@ -57,8 +65,16 @@ class PaymentHistory extends Component {
         },
         {
           title: 'Дней задержки',
-          dataIndex: 'days',
-          render: (text, row) => text,
+          dataIndex: 'overdue',
+          render: (text, row) => {
+            if (text === null) {
+              return null
+            }
+            if (text === 0) {
+              return text
+            }
+            return Math.ceil(moment.duration(text, 'seconds').asDays())
+          },
         },
         {
           title: 'Комментарий',
@@ -103,7 +119,8 @@ class PaymentHistory extends Component {
         page: page,
         'per-page': pagination.pageSize,
         'q[advertiserId][equal]': advertiser_id,
-        ...filters
+        ...filters,
+        expand: 'overdue,paymentPeriod',
       }
     })
     .then(response => {
