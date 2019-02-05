@@ -97,22 +97,33 @@ class Advertiser extends Component {
           title: 'Баланс',
           dataIndex: '',
           render: (text, row) => {
-            console.log('row', row);
             return row.balance ? `${row.balance}$` : null
           },
         },
         {
           title: 'Не получена выплата (дней)',
-          dataIndex: '',
+          dataIndex: 'paymentOverdue',
           render: (text, row) => {
-            return null
+            if (text === null) {
+              return null
+            }
+            if (text === 0) {
+              return text
+            }
+            return Math.ceil(moment.duration(text, 'seconds').asDays())
           },
         },
         {
           title: 'Не загружена сверка (дней)',
-          dataIndex: '',
+          dataIndex: 'reviseOverdue',
           render: (text, row) => {
-            return null
+            if (text === null) {
+              return null
+            }
+            if (text === 0) {
+              return text
+            }
+            return Math.ceil(moment.duration(text, 'seconds').asDays())
           },
         },
         {
@@ -152,7 +163,7 @@ class Advertiser extends Component {
         sort: pagination.sort || '-id',
         page: pagination.current || 1,
         ...filters,
-        expand: 'advertiserManager,hold,balance',
+        expand: 'advertiserManager,hold,balance,reviseOverdue,paymentOverdue',
       }
     })
     .then(response => {
