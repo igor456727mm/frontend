@@ -54,17 +54,25 @@ class RevisesShort extends Component {
           title: 'Скачать',
           dataIndex: 'url',
           render: (text, row) => {
-            // console.log('text', text);
             return text ? <Button href={text} style={{ padding: '5px 10px'}}><Feather.DownloadCloud /></Button> : null
           }
         },
         {
-          title: 'Дата загрузки',
+          title: 'Дата',
           dataIndex: '',
         },
         {
           title: 'Дней задержки',
-          dataIndex: ''
+          dataIndex: 'overdue',
+          render: (text, row) => {
+            if (text === null) {
+              return null
+            }
+            if (text === 0) {
+              return text
+            }
+            return Math.ceil(moment.duration(text, 'seconds').asDays())
+          },
         },
       ]
     }
@@ -89,8 +97,7 @@ class RevisesShort extends Component {
         ...filters,
         'per-page': pagination.pageSize || 10,
         'q[advertiser_id][equal]': advertiser_id,
-        //currency_id: 1,
-        //expand: 'stream,action,city,country,currency,offer,device,platform,webmaster,user,offer.advertiser',
+        expand: 'overdue',
       }
     })
     .then(response => {
