@@ -121,7 +121,7 @@ class PaymentHistory extends Component {
 
   render() {
     const { data, columns, pagination, isLoading } = this.state
-    const { wallets } = this.props
+    const { wallets=[] } = this.props
 
     return (
       <div className="row">

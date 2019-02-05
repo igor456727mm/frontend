@@ -48,7 +48,7 @@ class Withdraw extends Component {
 
   render() {
     const { iconLoading } = this.state
-    const { wallets } = this.props.user
+    const { wallets=[] } = this.props.user
     const _wallets = wallets.map(item => <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>)
     return (
       <div className="block widget__finance-withdraw">

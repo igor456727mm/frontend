@@ -69,7 +69,7 @@ class Advertiser extends Component {
     if(!isNew) {
       api.get(`/v1/advertisers/${id}`, {
         params: {
-          expand: 'uuid,hold,balance',
+          expand: 'uuid,hold,balance,data',
         }
       })
       .then(response => {
