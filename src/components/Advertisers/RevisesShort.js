@@ -58,8 +58,17 @@ class RevisesShort extends Component {
           }
         },
         {
-          title: 'Дата',
+          title: 'Период',
           dataIndex: '',
+          render: (text, row) => {
+            const { date_from, date_to } = row
+            if (!date_from || !date_to) {
+              return null
+            }
+            const fromDate = moment.unix(date_from).format('DD.MM.YYYY')
+            const toDate = moment.unix(date_to).format('DD.MM.YYYY')
+            return `${fromDate} - ${toDate}`
+          }
         },
         {
           title: 'Дней задержки',
