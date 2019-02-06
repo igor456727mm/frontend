@@ -38,6 +38,7 @@ import Revises from './components/Revises'
 import Advertisers from './components/Advertisers'
 import Advertiser from './components/Advertisers/Advertiser'
 import Partner from './components/Partner'
+import HitActions from './components/HitActions'
 import styles from './App.module.sass'
 
 const NoMatch = ({ location }) => (
@@ -171,6 +172,10 @@ const routes = [
     path: '/partner',
     component: Partner,
     exact: true
+  },
+  {
+    path: '/hit-actions',
+    component: HitActions,
   },
 ]
 
