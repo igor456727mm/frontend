@@ -59,7 +59,7 @@ class PaymentHistory extends Component {
           },
         },
         {
-          title: 'Дата поступления',
+          title: 'Дата оплаты',
           dataIndex: '',
           render: (text, row) => row.data && row.data.date && moment.unix(row.data.date).format('DD.MM.YYYY') || '',
         },
