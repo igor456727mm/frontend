@@ -146,18 +146,24 @@ class Leads extends Component {
         }, {
           title: 'Доход веба',
           dataIndex: 'income',
-          render: (text) => `${text}$`
+          render: (text, row) => {
+            return `${Number(text).toFixed(2)}$`
+          },
         }, {
           title: 'Комиссия ПП',
           dataIndex: 'commission',
-          render: (text) => `${text}$`
+          render: (text, row) => {
+            return `${Number(text).toFixed(2)}$`
+          },
         }, {
           title: 'Доход из сверки',
           dataIndex: 'revised_income',
-          render: (text) => `${text}$`
+          render: (text, row) => {
+            return `${Number(text).toFixed(2)}$`
+          },
         }, {
           title: 'Разница',
-          render: (text, row) => (row.revised_income - (row.income + row.commission)).toFixed(2) + '$'
+          render: (text, row) => (Number(row.revised_income) - (Number(row.income) + Number(row.commission))).toFixed(2) + '$'
         }, {
           title: 'Статус сверки',
           dataIndex: 'revise_status',
@@ -218,10 +224,11 @@ class Leads extends Component {
         ...filters,
         'per-page': pagination.pageSize,
         currency_id: 1,
-        expand: 'stream,action,city,country,currency,offer,device,platform,webmaster,user,offer.advertiser',
+        expand: 'stream,action,offer,webmaster,user',
       }
     })
     .then(response => {
+      // console.log('response /v1/hit-actions', response.data);
       this.setState(state => {
         const { pagination } = state
         pagination.total = parseInt(response.headers['x-pagination-total-count'])
