@@ -132,8 +132,8 @@ class Leads extends Component {
           render: (text, { created_at }) => created_at && moment.unix(created_at).format('DD.MM.YY HH:mm')
         }, {
           title: 'Оффер',
-          dataIndex: 'offer_id',
-          render: (text, row) => text && <a href={`/offers/${row.offer.id}`} target="_blank" style={{ width: '200px', display: 'inline-block' }}>{row.offer.name}</a> || '-'
+          dataIndex: '',
+          render: (text, row) => row.offer && <a href={`/offers/${row.offer.id}`} target="_blank" style={{ width: '200px', display: 'inline-block' }}>{row.offer.name}</a> || '-'
         }, {
           title: 'Рекламодатель',
           render: (text, row) => row.offer && row.offer.advertiser && row.offer.advertiser.name || '-'
@@ -176,20 +176,23 @@ class Leads extends Component {
           dataIndex: 'stream_id',
         }, {
           title: 'Вебмастер',
-          dataIndex: 'webmaster_id',
-          render: (text, row) => row.webmaster && <a href={`/users/${text}`}>(#{row.webmaster.id}) {row.webmaster.email}</a> || text
+          dataIndex: '',
+          render: (text, row) => row.webmaster && <a href={`/users/${row.webmaster.user_id}`}>(#{row.webmaster.user_id}) {row.webmaster.login}</a> || '-'
         }, {
           title: 'Sub1',
-          dataIndex: 'sub_id_1'
+          dataIndex: '',
+          render: (text, row) => row.sub_id && row.sub_id.sub_id_1 || '-',
         }, {
           title: 'Sub2',
-          dataIndex: 'sub_id_2'
+          dataIndex: '',
+          render: (text, row) => row.sub_id && row.sub_id.sub_id_2 || '-',
         }, {
           title: 'Sub3',
-          dataIndex: 'sub_id_3'
+          dataIndex: '',
+          render: (text, row) => row.sub_id && row.sub_id.sub_id_3 || '-',
         }, {
           title: 'ID конверсии',
-          dataIndex: 'lead_id',
+          dataIndex: 'aid',
         }, {
           title: 'Hit ID',
           dataIndex: 'hit_id',
@@ -199,7 +202,7 @@ class Leads extends Component {
   }
 
   componentDidMount = () => {
-    Helpers.setTitle('menu.conversions')
+    Helpers.setTitle('hit actions')
     this.fetch()
     Events.follow('leads.fetch', this.fetch)
 
@@ -224,7 +227,7 @@ class Leads extends Component {
         ...filters,
         'per-page': pagination.pageSize,
         currency_id: 1,
-        expand: 'stream,action,offer,webmaster,user',
+        expand: 'stream,action,offer,webmaster,user,offer.advertiser',
       }
     })
     .then(response => {
