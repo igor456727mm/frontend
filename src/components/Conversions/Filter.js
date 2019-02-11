@@ -9,6 +9,7 @@ import moment from 'moment'
 import locale from 'antd/lib/date-picker/locale/ru_RU'
 import qs from 'qs'
 import SearchSelect from '../../common/Helpers/SearchSelect'
+import ReviseStatus from '../../common/ReviseStatus/ReviseStatus'
 import Revise from './Revise'
 import GetData from './GetData'
 
@@ -18,25 +19,6 @@ const { RangePicker } = DatePicker
 const options = {
   size: 'large',
   getPopupContainer: () => document.getElementById('content'),
-}
-
-const { TreeNode } = TreeSelect
-
-class ReviseStatus extends React.Component {
-
-  render() {
-    const { reviseStatuses } = this.props
-    const renderStatuses = Object.keys(reviseStatuses).map(item => <TreeNode value={item} title={reviseStatuses[item]} key={item} />)
-    return (
-      <TreeSelect
-      allowClear
-      multiple
-      {...this.props}
-    >
-    {renderStatuses}
-    </TreeSelect>
-    );
-  }
 }
 
 export const initialFilter = {
@@ -56,7 +38,6 @@ class _Filter extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
-      console.log('submit', values);
       this.props.onSubmit(clean(values))
     })
   }
@@ -101,7 +82,7 @@ class _Filter extends Component {
             <div className="col-md-2">
               {this.validator('webmaster_id', 'Пользователь', <SearchSelect target="users" {...options} /> )}
               <div className="filter__separator"></div>
-              <GetData />
+              <GetData reviseStatuses={reviseStatuses} />
             </div>
             <div className="col-md-2">
               <Form.Item>
