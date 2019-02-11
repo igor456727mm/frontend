@@ -3,34 +3,19 @@ import { NavLink } from 'react-router-dom'
 import { Icon, Button, Popover } from 'antd'
 import axios from 'axios'
 import moment from 'moment'
-
 import Helpers from '../common/Helpers'
 import api from '../common/Api'
 
-const dataInit = [
-  {
-    title: 'Сегодня сверка с рекламодателем Huffs',
-    text: '/дополнительная информация/',
-  },
-  {
-    title: 'Просрочена загрузка сверки',
-    text: '/дополнительная информация/',
-  },
-  {
-    title: 'Просрочена выплата от Huffs',
-    text: '/дополнительная информация/',
-  },
-]
-
 moment.locale('ru')
+
+const apiUrl = 'https://w-api.gambling.pro/v1/notifications'
 
 class Notifications extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      // count: 0,
-      count: 3,
+      count: 0,
       visible: false,
       data: [],
     }
@@ -42,25 +27,23 @@ class Notifications extends Component {
   hide = () => this.setState({ visible: false })
 
   componentDidMount() {
-    // this.fetch()
-
-    this.setState({ count: 3, data: dataInit })
+    this.fetch()
   }
 
   fetch = () => {
-    api.get('/v1/notifications')
+    api.get(apiUrl)
     .then((response) => {
       this.setState({ count: response.data.length, data: response.data })
     })
+    .catch(Helpers.errorHandler)
   }
 
   delete = () => {
-    // api.delete('/v1/notifications')
-    // .then((response) => {
-    //   this.setState({ count: 0, data: [], visible: false })
-    // })
-
-    this.setState({ count: 0, data: [], visible: false })
+    api.delete(apiUrl)
+    .then((response) => {
+      this.setState({ count: 0, data: [], visible: false })
+    })
+    .catch(Helpers.errorHandler)
   }
 
   render() {
@@ -69,8 +52,7 @@ class Notifications extends Component {
     let content = <div className="h__notifications-empty">Нет уведомлений</div>
     if(data.length > 0) {
       content = data.map((item, i) => {
-        // const date = moment.unix(item.created_at).format('DD.MM.YY (HH:mm)')
-        const date = moment().format('DD.MM.YY (HH:mm)')
+        const date = moment.unix(item.created_at).format('DD.MM.YY (HH:mm)')
         return (
           <div key={i} className="h__notifications-item" key={i}>
             <div className="h__notifications-date">{date}</div>
