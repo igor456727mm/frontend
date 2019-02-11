@@ -18,6 +18,11 @@ class Notifications extends Component {
       count: 0,
       visible: false,
       data: [],
+      isLoading: false,
+      pagination: {
+        currentPage: 1,
+        totalPages: null,
+      },
     }
 
   }
@@ -31,45 +36,69 @@ class Notifications extends Component {
   }
 
   fetch = () => {
-    api.get(apiUrl)
-    .then((response) => {
-      this.setState({ count: response.data.length, data: response.data })
+    const { pagination: { currentPage, totalPages }, isLoading } = this.state
+    if (totalPages && currentPage > totalPages) {
+      return
+    }
+    this.setState({ isLoading: true })
+    api.get(apiUrl, {
+      params: {
+        page: currentPage,
+      }
     })
-    .catch(Helpers.errorHandler)
+    .then((response) => {
+      const { data, pagination } = this.state
+      const count = Number(response.headers['x-pagination-total-count'])
+      const totalPages = Number(response.headers['x-pagination-page-count'])
+      const newData = currentPage === 1 ? response.data : [...data, ...response.data]
+      const newCurrentPage = totalPages ? currentPage + 1 : 1
+      this.setState({ count, data: newData, pagination: { totalPages, currentPage: newCurrentPage }, isLoading: false })
+    })
+    .catch(e => {
+      Helpers.errorHandler(e)
+      this.setState({ isLoading: false })
+    })
   }
 
   delete = () => {
+    this.setState({ isLoading: true })
     api.delete(apiUrl)
     .then((response) => {
-      this.setState({ count: 0, data: [], visible: false })
+      this.setState({ count: 0, data: [], visible: false, isLoading: false })
     })
-    .catch(Helpers.errorHandler)
+    .catch(e => {
+      Helpers.errorHandler(e)
+      this.setState({ isLoading: false })
+    })
   }
 
   render() {
-    const { count, visible, data } = this.state
-
-    let content = <div className="h__notifications-empty">Нет уведомлений</div>
-    if(data.length > 0) {
-      content = data.map((item, i) => {
-        const date = moment.unix(item.created_at).format('DD.MM.YY (HH:mm)')
-        return (
-          <div key={i} className="h__notifications-item" key={i}>
-            <div className="h__notifications-date">{date}</div>
-            <div className="h__notifications-title">{item.title}</div>
-            <div className="h__notifications-text">{item.text}</div>
-          </div>
-        )
-      })
-
-      content.push(<Button key={data.length+1} className="btn-grey" onClick={this.delete} style={{ width: '100%' }}>Очистить все</Button>)
+    const { count, visible, data, isLoading } = this.state
+    if (data.length === 0) {
+      return (<div className="h__notifications-empty">Нет уведомлений</div>)
     }
+    const content = data.map((item, i) => {
+      const date = moment.unix(item.created_at).format('DD.MM.YY (HH:mm)')
+      return (
+        <div key={i} className="h__notifications-item" key={i}>
+          <div className="h__notifications-date">{date}</div>
+          <div className="h__notifications-title">{item.title}</div>
+          <div className="h__notifications-text">{item.text}</div>
+        </div>
+      )
+    })
+    const contentToRender = (
+      <div>
+        {content}
+        <Button key={data.length+1} loading={isLoading} onClick={this.fetch} style={{ width: '100%' }}>Загрузить еще</Button>
+        <Button key={data.length+2} loading={isLoading} type="danger" onClick={this.delete} style={{ width: '100%', marginTop: '10px' }}>Очистить все</Button>
+      </div>
+    )
 
     return (
         <div className="h__notifications pointer">
-
           <Popover
-            content={content}
+            content={contentToRender}
             trigger="click"
             visible={visible}
             onVisibleChange={this.handleVisibleChange}
