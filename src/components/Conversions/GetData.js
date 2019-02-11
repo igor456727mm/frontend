@@ -6,6 +6,7 @@ import moment from 'moment'
 import fileSaver from 'file-saver'
 import SearchSelect from '../../common/Helpers/SearchSelect'
 import * as Manager from '../../common/Helpers/ManagerSelect'
+import ReviseStatus from '../../common/ReviseStatus/ReviseStatus'
 
 const { RangePicker } = DatePicker
 
@@ -113,6 +114,7 @@ class Filter extends Component {
 
   render() {
     const { isVisible, isLoading } = this.state
+    const { reviseStatuses } = this.props
     return (
       <div>
         <Button onClick={this._toggle} style={{ marginTop: '26px', borderColor: '#20ae0e', color: '#20ae0e' }} size="large">Выгрузить данные</Button>
@@ -127,6 +129,7 @@ class Filter extends Component {
               {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options} treeCheckable={false} /> )}
               {this.validator(Manager.data.personalManager.field, Manager.data.personalManager.title, <Manager.Select managerType="personalManager" multiple={true} {...options} /> )}
               {this.validator(Manager.data.advertiserManager.field, Manager.data.advertiserManager.title, <Manager.Select managerType="advertiserManager" multiple={true} {...options} /> )}
+              {this.validator('reviseStatuses', 'Статус сверки', <ReviseStatus reviseStatuses={reviseStatuses} {...options} /> )}
 
               <Form.Item style={{ marginBottom: 0 }}>
                 <h4>&nbsp;</h4>
