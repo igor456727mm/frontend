@@ -74,9 +74,6 @@ class Notifications extends Component {
 
   render() {
     const { count, visible, data, isLoading } = this.state
-    if (data.length === 0) {
-      return (<div className="h__notifications-empty">Нет уведомлений</div>)
-    }
     const content = data.map((item, i) => {
       const date = moment.unix(item.created_at).format('DD.MM.YY (HH:mm)')
       return (
@@ -87,7 +84,10 @@ class Notifications extends Component {
         </div>
       )
     })
-    const contentToRender = (
+    const contentToRender = data.length === 0 ?
+    (<div className="h__notifications-empty">Нет уведомлений</div>)
+    :
+    (
       <div>
         {content}
         <Button key={data.length+1} loading={isLoading} onClick={this.fetch} style={{ width: '100%' }}>Загрузить еще</Button>

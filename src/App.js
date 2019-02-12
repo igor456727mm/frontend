@@ -190,6 +190,7 @@ class App extends Component {
     super(props)
     this.state = {
       isLoading: true,
+      weeklyExpectations: [],
     }
   }
 
@@ -206,6 +207,15 @@ class App extends Component {
         type: 'LOAD_LANG_LIST',
         list: response.data.map(item => pick(item, 'name', 'code'))
       })
+    })
+
+    // weeklyExpectations
+    api.get(`/v1/finances/advertisers/weekly-expectations`)
+    .then(response => {
+      this.setState({ weeklyExpectations: response.data })
+    })
+    .catch(e => {
+      Helpers.errorHandler(e)
     })
 
     // auth
@@ -256,17 +266,12 @@ class App extends Component {
   }
 
   showAdvertStat = () => {
-    // only for Advertisers page
-    // const pathNames = window.location.pathname.split('/')
-    // const hasAdvertisersPath = pathNames.includes('advertisers')
-    // if (!hasAdvertisersPath) {
-    //   return null
-    // }
+    const { weeklyExpectations: { balance, hold } } = this.state
     return (
       <div className="header__weekAdvertiserStat">
         <div>
           <span className="title">Ожидается на этой неделе: </span>
-          <span className="stats">{`${30000}$`} холд / {`${10000}$`} баланс</span>
+          <span className="stats">{`${hold}$`} холд / {`${balance}$`} баланс</span>
         </div>
       </div>
     )
