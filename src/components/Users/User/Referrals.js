@@ -183,10 +183,11 @@ class Referrals extends Component {
   onOrderPayout = () => {
     this.setState({ isGettingPayout: true })
     const { user_id } = this.props
+    const { referralBalance } = this.state
     const data = {
       currency_id: 1,
-      user_id
-      // comment: 'Э деньги давай',
+      user_id,
+      sum: referralBalance,
     }
     api.post(`/v1/referral-withdrawals`, qs.stringify(data))
     .then(response => {

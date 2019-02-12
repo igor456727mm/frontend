@@ -28,9 +28,13 @@ class WithdrawReferral extends Component {
 
   validator = (name, label, input, rules = [], style = {}, initialValue) => {
     const { getFieldDecorator } = this.props.form
+    const { balance } = this.props
     const options = { rules: rules }
     if(initialValue) {
       options.initialValue = initialValue
+    }
+    if(name === 'sum') {
+      options.initialValue = balance
     }
     return (
       <Form.Item style={style}>
@@ -51,6 +55,7 @@ class WithdrawReferral extends Component {
       const data = {
         currency_id: 1,
         user_id,
+        sum,
         comment: `Заказана выплата ${sum}$ на кошелек ${wallet.name} / ${wallet.data.number}`,
       }
       api.post(`/v1/referral-withdrawals`, qs.stringify(data))
@@ -72,7 +77,7 @@ class WithdrawReferral extends Component {
     return (
       <Form onSubmit={this.handleSubmit} className="flex referralBalance__withdrawals">
         <div style={{ fontSize: '16px' }}>Заказать выплату</div>
-        {this.validator('sum', '', <InputNumber size="large" placeholder={balance} />, [{ required: true }], { margin: '0 20px' } )}
+        {this.validator('sum', '', <InputNumber size="large" />, [{ required: true }], { margin: '0 20px' } )}
         {this.validator('wallet_id', '', <Select placeholder="Кошелек не выбран" style={{ width: '200px' }} size="large">{_wallets}</Select>, [{ required: true }], { margin: '0 20px 0 0' } )}
         <Form.Item className="form__item-last">
           <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>Заказать</Button>
