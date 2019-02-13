@@ -32,7 +32,7 @@ import Offer from './components/Offers/Offer'
 
 import Users from './components/Users/Users'
 import User from './components/Users/User'
-import Conversions from './components/Conversions'
+// import Conversions from './components/Conversions'
 import Revises from './components/Revises'
 
 import Advertisers from './components/Advertisers'
@@ -112,7 +112,7 @@ const routes = [
   },
   {
     path: '/conversions',
-    component: Conversions,
+    component: HitActions,
   },
   {
     path: '/revises',
