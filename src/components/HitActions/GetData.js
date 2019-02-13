@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, Button, message, DatePicker, Modal } from 'antd'
+import { Form, Input, Button, message, DatePicker, Modal, Checkbox } from 'antd'
 import Helpers, { Filters, t, clean, TreeSelectRemote } from '../../common/Helpers'
 import api from '../../common/Api'
 import moment from 'moment'
@@ -32,7 +32,8 @@ class Filter extends Component {
     keys.forEach(key => {
       const val = values[key]
       const isArray = Array.isArray(val)
-      if(!val || skip.includes(key) || isArray && !val.length) return
+      if(val === false) return filters[key] = val
+      if(!(val) || skip.includes(key) || isArray && !val.length) return
       if(isArray) {
         if(['created_at', 'date'].includes(key)) {
           const start = val[0] && val[0].startOf('day').unix()
@@ -72,7 +73,6 @@ class Filter extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
-      clean(values)
       const queryParams = this.prepareQueryParams(values)
       this.setState({ isLoading: true })
 
@@ -100,7 +100,10 @@ class Filter extends Component {
 
   validator = (name, label, input) => {
     const { getFieldDecorator } = this.props.form
-    const options = {  }
+    const options = { }
+    if (name === 'forAdvertiser') {
+      options.initialValue = false
+    }
     return (
       <Form.Item className={`filter__field-${name}`}>
         <h4>{label}</h4>
@@ -121,13 +124,12 @@ class Filter extends Component {
           footer={null}
           onCancel={this._toggle}>
             <Form>
-
               {this.validator('created_at', 'Дата', <RangePicker format="DD.MM.YYYY" {...options} /> )}
               {this.validator('offer_id', 'Оффер', <TreeSelectRemote target="/v1/offers" {...options}/> )}
               {this.validator('advertiser_id', 'Рекламодатель', <TreeSelectRemote target="/v1/advertisers" {...options} treeCheckable={false} /> )}
               {this.validator(Manager.data.personalManager.field, Manager.data.personalManager.title, <Manager.Select managerType="personalManager" multiple={true} {...options} /> )}
               {this.validator(Manager.data.advertiserManager.field, Manager.data.advertiserManager.title, <Manager.Select managerType="advertiserManager" multiple={true} {...options} /> )}
-
+              {this.validator('forAdvertiser', '', <Checkbox size="large">Для рекламодателей</Checkbox>)}
               <Form.Item style={{ marginBottom: 0 }}>
                 <h4>&nbsp;</h4>
                 <Button type="primary" size="large" loading={isLoading} onClick={this.handleSubmit}>
