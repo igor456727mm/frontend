@@ -175,6 +175,10 @@ class Advertiser extends Component {
         pagination
       })
     })
+    .catch(e => {
+      this.setState({ isLoading: false })
+      Helpers.errorHandler(e)
+    })
     Filters.toUrl(filters)
   }
 
