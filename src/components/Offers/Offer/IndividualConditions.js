@@ -87,8 +87,9 @@ class _Action extends Component {
           offer_id: offer_id,
           visible: values.visible ? 1 : 0,
           //have_access: values.have_access ? 1 : 0,
-          pay_conditions: tmp.data.pay_conditions
+          pay_conditions: tmp.data.pay_conditions,
         }
+
         params.pay_conditions[values.action_id] = values.pay_conditions
         params.pay_conditions = JSON.stringify(params.pay_conditions)
         api.patch(`/v1/user-offer-individual-conditions/${key}`, qs.stringify(params))
@@ -110,10 +111,20 @@ class _Action extends Component {
           //have_access: values.have_access ? 1 : 0,
           pay_conditions: {},
         }
+        if (values.active_from) {
+          params.active_from = values.active_from.unix()
+        }
         params.pay_conditions[values.action_id] = values.pay_conditions
         params.pay_conditions = JSON.stringify(params.pay_conditions)
         api.post(`/v1/user-offer-individual-conditions`, qs.stringify(params))
         .then(response => {
+          this.setState({ iconLoading: false })
+          message.success(t('Цель добавлена'))
+          Events.dispatch('individualconditions.fetch')
+          form.resetFields()
+          this._toggle()
+        })
+        .catch(e => {
           this.setState({ iconLoading: false })
           message.success(t('Цель добавлена'))
           Events.dispatch('individualconditions.fetch')
@@ -270,6 +281,8 @@ class _Action extends Component {
                   <Select.Option value="revshare">Revshare</Select.Option>
                 </Select>
               ))}
+
+              {this.validator('active_from', 'Дата отложенной ставки', <DatePicker showTime format="YYYY-MM-DD HH:mm" showTime={{ format: 'HH:mm' }} size="large" /> )}
 
               {fields}
 
