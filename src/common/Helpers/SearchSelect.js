@@ -52,9 +52,13 @@ class RemoteSelect extends React.Component {
   }
 
   getReqParams = (value, data) => {
+    const { target } = this.props
       const reqParams = {
         'per-page': 999,
         'fields': `${data.fields[0]},${data.fields[1]}`,
+      }
+      if(target === 'streams') {
+        reqParams.with_deleted = 1
       }
       if(isNaN(value)) {
         reqParams[`q[${data.fields[1]}][like]`] = value
@@ -69,6 +73,7 @@ class RemoteSelect extends React.Component {
     const { target } = this.props
     const dataReq = this.getDataReq(target)
     const reqParams = this.getReqParams(value, dataReq)
+
     api.get(dataReq.apiUrl, { params: reqParams })
     .then(response => {
       const data = response.data.map(item => {
