@@ -7,7 +7,7 @@ import Helpers, { t } from '../../../common/Helpers'
 const paymentSumHelp = (
   <Popover placement="right" content={(
     <span>
-      Если сумма отрицательная - то это пополнение счета. Если положительная - списание.
+      Если сумма положительная - то это пополнение счета. Если отрицательная - списание.
     </span>
   )}>
     <Icon type="question-circle-o" />
@@ -39,16 +39,14 @@ class Add extends Component {
     const { form, updatePayment } = this.props
     form.validateFieldsAndScroll((err, values) => {
       if (err) return
-      console.log('Заказать выплату values', values);
       const data = {
         walletId: values.wallet_id,
-        sum: values.sum,
+        sum: values.sum >= 0 ? -values.sum : values.sum * (-1),
         data: {
           comment: values.comment,
           date: values.paymentDate.unix(),
         }
       }
-      console.log('data', data);
       this.setState({ iconLoading: true })
       api.post(`/v1/finances/withdrawals`, qs.stringify(data))
       .then(response => {
@@ -67,7 +65,6 @@ class Add extends Component {
   render() {
     const { iconLoading } = this.state
     const { wallets=[] } = this.props
-    console.log('add wallets', wallets);
     const _wallets = wallets.map(item => <Select.Option key={item.id} value={item.id}>{item.name} / {item.data && item.data.number}</Select.Option>)
 
     return (

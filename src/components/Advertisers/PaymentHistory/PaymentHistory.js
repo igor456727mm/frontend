@@ -18,6 +18,7 @@ class PaymentHistory extends Component {
         hideOnSinglePage: true,
         pageSize: 10,
       },
+      statuses: [],
       columns: [
         {
           title: 'Дата создания',
@@ -30,6 +31,15 @@ class PaymentHistory extends Component {
           dataIndex: 'sum',
           render: (text, row) => {
             const currency ='$'
+            const number = Number(text)
+            return `${(number >= 0 ? -number : number * (-1)).toFixed(2)}${currency}`
+          },
+        },
+        {
+          title: 'Баланс после оплаты',
+          dataIndex: 'balanceAfter',
+          render: (text, row) => {
+            const currency ='$'
             return `${Number(text).toFixed(2)}${currency}`
           },
         },
@@ -37,13 +47,18 @@ class PaymentHistory extends Component {
           title: 'Кошелек',
           dataIndex: '',
           render: (text, row) => {
-            // console.log('row', row);
             const wallet = this.props.wallets.find(el => String(el.id) === String(row.walletId))
-            // console.log('wallet', wallet);
             const name = wallet && wallet.name
             const number = wallet && wallet.data && wallet.data.number
             return number ? `${name} / ${number}` : name
           }
+        },
+        {
+          title: 'Статус',
+          dataIndex: 'status',
+          render: (text, row) => {
+            return this.state.statuses[text] || text
+          },
         },
         {
           title: 'Платежный период',
@@ -94,14 +109,14 @@ class PaymentHistory extends Component {
 
   handleTableChange = ({ current: page }, filters, { columnKey, order }) => {
     const sort = (order && columnKey) && (order == 'ascend' ? columnKey : `-${columnKey}`)
-    console.log('sort !!', sort);
     const pagination = { ...this.state.pagination, current: page, sort: sort }
-    console.log('pagination !!', pagination);
     this.setState({ pagination }, this.fetch)
   }
 
   componentDidMount = () => {
     this.fetch()
+    api.get('/v1/finances/withdrawals/statuses')
+    .then(response => this.setState({ statuses: response.data }))
   }
 
   updatePayment = () => {
@@ -112,7 +127,6 @@ class PaymentHistory extends Component {
     const { filters, pagination } = this.state
     const { advertiser_id } = this.props
     this.setState({ isLoading: true })
-    console.log('filters', filters, pagination);
     api.get('/finances/withdrawals', {
       params: {
         sort: pagination.sort || '-id',
@@ -120,7 +134,7 @@ class PaymentHistory extends Component {
         'per-page': pagination.pageSize,
         'q[advertiserId][equal]': advertiser_id,
         ...filters,
-        expand: 'overdue,paymentPeriod',
+        expand: 'overdue,paymentPeriod,balanceAfter',
       }
     })
     .then(response => {
