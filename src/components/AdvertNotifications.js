@@ -5,10 +5,11 @@ import axios from 'axios'
 import moment from 'moment'
 import Helpers from '../common/Helpers'
 import api from '../common/Api'
+import { domain, scheme } from '../config'
 
 moment.locale('ru')
 
-const apiUrl = 'https://w-api.gambling.pro/v1/notifications'
+const apiUrl = `${scheme}w-api.${domain}/v1/notifications`
 
 class Notifications extends Component {
 
