@@ -36,7 +36,7 @@ class _MessageForm extends Component {
       if (err) return
       values.ticket_id = this.props.ticket_id
       this.setState({ iconLoading: true })
-      api.post(`v1/ticket-messages`, qs.stringify(values))
+      api.post(`v1/ticket-messages`, qs.stringify(values), { params: { expand: 'user' } })
       .then(response => {
         this.setState({ iconLoading: false })
         form.resetFields()
@@ -138,7 +138,7 @@ class Ticket extends Component {
     let { avatar_image, user_id } = this.props.user
     return messages.map(item => {
       //const isSelf = [1, 256].includes(item.user_id)
-      const isSelf = item.user.role !== 'webmaster'
+      const isSelf = item.user && item.user.role !== 'webmaster'
       const cls = isSelf && 'ticket__message-self' || ''
       const img = isSelf && avatar_image || '/img/support.jpg'
       return (
@@ -146,7 +146,7 @@ class Ticket extends Component {
           <div className="ticket__message-avatar" style={{ backgroundImage: `url(${img})`}}></div>
           <div className="ticket__message-text">
             {item.text}
-            <div>#{item.user.id} {item.user.login}</div>
+            <div>#{item.user && item.user.id} {item.user && item.user.login}</div>
           </div>
         </div>
       )
