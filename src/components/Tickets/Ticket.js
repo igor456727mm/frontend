@@ -29,8 +29,11 @@ class _MessageForm extends Component {
     )
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault()
+  handleSubmit = (e, type) => {
+    if (type !== 'input') {
+      e.preventDefault()
+    }
+
     const { form } = this.props
     form.validateFieldsAndScroll((err, values) => {
       if (err) return
@@ -49,13 +52,29 @@ class _MessageForm extends Component {
     })
   }
 
+  inputHandler = e => {
+    const {form} = this.props
+    if (e.keyCode === 13 && e.ctrlKey) {
+      form.setFieldsValue({
+        text: e.target.value + '\n',
+      });
+      return;
+    } else if (e.keyCode === 13 && !e.ctrlKey) {
+      this.handleSubmit(e,'input');
+      return;
+    }
+    form.setFieldsValue({
+      text: e.target.value,
+    });
+  }
+
   render() {
     const { iconLoading } = this.state
     return (
-      <Form className="flex ticket__message-form" onSubmit={this.handleSubmit}>
-        {this.validator('text', <Input.TextArea placeholder={'Введите сообщение.\nEnter - новая строка'} size="large" style={{ height: '350px' }}/>, [{ required: true, min: 3, message: ' ' }] )}
+      <Form className="flex ticket__message-form">
+        {this.validator('text', <Input.TextArea onKeyDown={this.inputHandler} placeholder={'Введите сообщение.\nCtrl+Enter - новая строка\nEnter - отправить сообщение'} size="large" style={{ height: '350px' }}/>, [{ required: true, min: 3, message: ' ' }] )}
         <Form.Item>
-          <Button type="primary" htmlType="submit" size="large" loading={iconLoading}>{t('button.send')}</Button>
+          <Button type="primary" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.send')}</Button>
         </Form.Item>
       </Form>
     )
