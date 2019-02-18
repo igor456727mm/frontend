@@ -52,16 +52,16 @@ class _Edit extends Component {
     form.validateFieldsAndScroll((err, values) => {
       if (err) return
       values = clean(values)
-      values.action_index_ids = action_index_id || selectedActionIndexIds && selectedActionIndexIds.join(',')
+      values.actionIndexIds = action_index_id || selectedActionIndexIds && selectedActionIndexIds.join(',')
       this.setState({ iconLoading: true })
-      api.post('/v1/conversions/change-financial-data', qs.stringify(values))
+      api.post('/v1/hit-actions/change-financial-data', qs.stringify(values))
       .then(response => {
-        if (response.data && response.data[values.action_index_ids] && response.data[values.action_index_ids].success === false) {
-          throw new Error(`Error changing financial data for ${values.action_index_ids}`);
+        if (response.data && response.data[values.actionIndexIds] && response.data[values.actionIndexIds].success === false) {
+          throw new Error(`Error changing financial data for ${values.actionIndexIds}`);
         }
         this.setState({ iconLoading: false, isVisible: false })
         Events.dispatch('leads.fetch')
-        message.success(t('Конверсия сохранена'))
+        message.success(t('Конверсии сохранены'))
       })
       .catch(e => {
         this.setState({ iconLoading: false })
@@ -86,7 +86,7 @@ class _Edit extends Component {
           <Form>
             {this.validator('income', 'Доход вебмастера', <Input size="large" /> )}
             {this.validator('commission', 'Комиссия ПП', <Input size="large" /> )}
-            {this.validator('revised_income', 'Доход из сверки', <Input size="large" /> )}
+            {this.validator('revisedIncome', 'Доход из сверки', <Input size="large" /> )}
             <Form.Item className="form__item-last">
               <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit} loading={iconLoading}>{t('button.save')}</Button>
             </Form.Item>
@@ -231,7 +231,6 @@ class Leads extends Component {
       }
     })
     .then(response => {
-      // console.log('response /v1/hit-actions', response.data);
       this.setState(state => {
         const { pagination } = state
         pagination.total = parseInt(response.headers['x-pagination-total-count'])
@@ -290,17 +289,21 @@ class Leads extends Component {
     console.log('selectedActionIndexIds', selectedActionIndexIds);
   }
 
-  _onConfirm = (id, index) => {
-    const { data } = this.state
-    data[index].status = 'confirmed'
-    this.setState({ data })
-    api.post('/v1/conversions/confirm', qs.stringify({ action_index_ids: id }))
-    .catch(Helpers.errorHandler)
-  }
+  // _onConfirm = (id, index) => {
+  //   const { data } = this.state
+  //   data[index].status = 'confirmed'
+  //   this.setState({ data })
+  //   api.post('/v1/conversions/confirm', qs.stringify({ action_index_ids: id }))
+  //   .catch(Helpers.errorHandler)
+  // }
 
   _onMultipleConfirm = () => {
     const { selectedActionIndexIds: ids } = this.state
-    api.post('/v1/conversions/confirm', qs.stringify({ action_index_ids: ids.join(',') }))
+    const data = {
+      actionIndexIds: ids.join(','),
+      revisedIncome: 0.1,
+    }
+    api.post('/v1/hit-actions/change-financial-data', qs.stringify(data))
     .then(response => {
       this.fetch()
       this.setState({ selectedActionIndexIds: [], selectedRowKeys: [] })
@@ -308,17 +311,21 @@ class Leads extends Component {
     .catch(Helpers.errorHandler)
   }
 
-  _onReject = (id, index) => {
-    const { data } = this.state
-    data[index].status = 'rejected'
-    this.setState({ data })
-    api.post('/v1/conversions/reject', qs.stringify({ action_index_ids: id }))
-    .catch(Helpers.errorHandler)
-  }
+  // _onReject = (id, index) => {
+  //   const { data } = this.state
+  //   data[index].status = 'rejected'
+  //   this.setState({ data })
+  //   api.post('/v1/conversions/reject', qs.stringify({ action_index_ids: id }))
+  //   .catch(Helpers.errorHandler)
+  // }
 
   _onMultipleReject = () => {
     const { selectedActionIndexIds: ids } = this.state
-    api.post('/v1/conversions/reject', qs.stringify({ action_index_ids: ids.join(',') }))
+    const data = {
+      actionIndexIds: ids.join(','),
+      revisedIncome: 0,
+    }
+    api.post('/v1/hit-actions/change-financial-data', qs.stringify(data))
     .then(response => {
       this.fetch()
       this.setState({ selectedActionIndexIds: [], selectedRowKeys: [] })
@@ -326,15 +333,15 @@ class Leads extends Component {
     .catch(Helpers.errorHandler)
   }
 
-  _onDelete = (id, index) => {
-    api.delete(`/v1/conversions/${id}`)
-    .then(response => {
-      const { data } = this.state
-      data.splice(index, 1);
-      this.setState({ data })
-    })
-    .catch(Helpers.errorHandler)
-  }
+  // _onDelete = (id, index) => {
+  //   api.delete(`/v1/conversions/${id}`)
+  //   .then(response => {
+  //     const { data } = this.state
+  //     data.splice(index, 1);
+  //     this.setState({ data })
+  //   })
+  //   .catch(Helpers.errorHandler)
+  // }
 
   render() {
     const { data, columns, pagination, isLoading, selectedRowKeys, selectedActionIndexIds } = this.state
@@ -371,7 +378,7 @@ class Leads extends Component {
 
           <div className="stats__table-leads-btns">
             <Edit selectedActionIndexIds={selectedActionIndexIds} data={{ income: 0, commission: 0, revised_income: 0 }} />
-            <Button onClick={this._onMultipleConfirm}>Принять</Button>
+            <Button onClick={this._onMultipleConfirm}>В холд</Button>
             <Button onClick={this._onMultipleReject}>Отклонить</Button>
           </div>
 
