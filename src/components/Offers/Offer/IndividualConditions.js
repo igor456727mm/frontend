@@ -87,7 +87,7 @@ class _Action extends Component {
           offer_id: offer_id,
           visible: values.visible ? 1 : 0,
           //have_access: values.have_access ? 1 : 0,
-          pay_conditions: tmp.data.pay_conditions,
+          pay_conditions: tmp.data.pay_conditions || {},
         }
 
         params.pay_conditions[values.action_id] = values.pay_conditions
@@ -147,7 +147,8 @@ class _Action extends Component {
 
     api.get(`/v1/user-offer-individual-conditions/${key}`)
     .then(response => {
-      const count = Object.keys(response.data.pay_conditions).length
+      const payConditions = response.data.pay_conditions ? response.data.pay_conditions : {}
+      const count = Object.keys(payConditions).length
 
       if(count > 1) {
         // many
@@ -190,7 +191,7 @@ class _Action extends Component {
 
   render() {
     const { isVisible, iconLoading, isEdit } = this.state
-    const { data, form, currency_id, actions } = this.props
+    const { data, form, currency_id, actions = [], is_private } = this.props
     const currency = '$'
 
     let fields = null
@@ -271,8 +272,8 @@ class _Action extends Component {
           <h1>{isEdit ? `Редактирование индивид. цели` : 'Добавление индивид. цели'}</h1>
 
             <Form>
-              {this.validator('action_id', 'Цель', <Select onChange={this._onChangeActionId} disabled={isEdit} size="large">{_actions}</Select>, [{ required: true }] )}
-              {this.validator('user_id', 'Пользователь', <SearchSelect disabled={isEdit} target="users" />, [{ required: true }] )}
+              {this.validator('action_id', 'Цель', <Select onChange={this._onChangeActionId} disabled={isEdit && !is_private} size="large">{_actions}</Select>, [{ required: true }] )}
+              {this.validator('user_id', 'Пользователь', <SearchSelect disabled={isEdit && !is_private} target="users" />, [{ required: true }] )}
               {this.validator('pay_conditions.name', t('field.name'), <Input size="large" placeholder={placeholders.name} /> )}
               {this.validator('pay_conditions.pay_type', 'Ставка', (
                 <Select size="large">
@@ -376,7 +377,16 @@ class IndividualConditions extends Component {
           title: 'Условия',
           dataIndex: '',
           render: (text, row) => {
-            if(!row.pay_conditions) return
+            if(!row.pay_conditions) {
+              return (
+                <Action
+                  data={{user_id: row.user_id }}
+                  offer_id={id}
+                  actions={this.props.actions}
+                  is_private={this.props.is_private}
+                  />
+              )
+            }
             return Object.keys(row.pay_conditions).map((k, i) => {
               const name = row.pay_conditions[k] && row.pay_conditions[k].name || this.actionFieldById(k, 'name')
               return (

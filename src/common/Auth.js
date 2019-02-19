@@ -21,9 +21,9 @@ const Auth = {
     if(!refresh_token) return Auth.exit('refresh_token отсутствует')
     return await axios.post(`${scheme}${domain}/auth/?act=refreshAccessToken`, qs.stringify({ access_token: refresh_token }))
     .then(response => {
-      const { access_token } = response.data
-      if(!access_token) return Auth.exit('обновление токена не дало access_token')
-      Cookies.set(`${cookie_prefix}_access_token`, access_token, { expires: 1 / 24 })
+      const { access_token } = response.data;
+      if(!access_token) return Auth.exit('обновление токена не дало access_token');
+      Cookies.set(`${cookie_prefix}_access_token`, access_token, { expires: 1 / 24 });
       return access_token
     })
     .catch(() => {
@@ -34,11 +34,11 @@ const Auth = {
     return await axios.post(`${scheme}${domain}/auth/?act=getAccessToken`, qs.stringify({ login: login, password: password }))
     .then(response => {
       const { access_token, refresh_token, user_id, role } = response.data
-      if(!access_token || !refresh_token || !['admin', 'manager'].includes(role)) return false
-      Cookies.set(`${cookie_prefix}_access_token`, access_token, { expires: 1 / 24 })
-      Cookies.set(`${cookie_prefix}_refresh_token`, refresh_token, { expires: 30 })
-      Cookies.set(`${cookie_prefix}_user_id`, user_id, { expires: 365 })
-      Cookies.set(`${cookie_prefix}_role`, role, { expires: 365 })
+      if(!access_token || !refresh_token || !['admin', 'manager'].includes(role)) return false;
+      Cookies.set(`${cookie_prefix}_access_token`, access_token, { expires: 1 / 24 });
+      Cookies.set(`${cookie_prefix}_refresh_token`, refresh_token, { expires: 30 });
+      Cookies.set(`${cookie_prefix}_user_id`, user_id, { expires: 365 });
+      Cookies.set(`${cookie_prefix}_role`, role, { expires: 365 });
       return true
     })
     .catch(e => {
@@ -51,12 +51,12 @@ const Auth = {
     keys.forEach(key => {
       Cookies.remove(key, { domain: `.${domain}` })
       Cookies.remove(key)
-    })
+    });
     window.dispatchEvent(new Event('user.exit'))
     // if(window.location.hostname !== 'localhost') window.location = `${scheme}${domain}`
     return false
   }
-}
+};
 class _AuthForm extends Component {
 
   constructor(props) {
@@ -67,9 +67,9 @@ class _AuthForm extends Component {
   }
 
   handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     this.props.form.validateFieldsAndScroll( async (err, values) => {
-      if(err) return
+      if(err) return;
       Object.keys(values).forEach(key => (values[key] === undefined || !values[key]) && delete values[key])
       this.setState({ iconLoading: true })
       const isAuthorized = await Auth.login(values.login, values.password)
@@ -80,7 +80,7 @@ class _AuthForm extends Component {
         this.setState({ iconLoading: false })
       }
     })
-  }
+  };
 
   validator = (name, input, rules = []) => {
     const { getFieldDecorator } = this.props.form
@@ -90,7 +90,7 @@ class _AuthForm extends Component {
         {getFieldDecorator(name, options)(input)}
       </Form.Item>
     )
-  }
+  };
 
   render() {
     return (
@@ -106,7 +106,7 @@ class _AuthForm extends Component {
     )
   }
 }
-export const AuthForm = Form.create()(_AuthForm)
+export const AuthForm = Form.create()(_AuthForm);
 
 
 export default Auth

@@ -87,17 +87,17 @@ class RevisesShort extends Component {
     }
   }
 
-  componentDidMount = () => {
-    this.fetch()
+  componentDidMount() {
+    this.fetch();
 
     api.get('/v1/conversions/statuses')
     .then(response => this.setState({ statuses: response.data }))
   }
 
   fetch = () => {
-    const { filters, pagination } = this.state
-    const { advertiser_id } = this.props
-    this.setState({ isLoading: true })
+    const { filters, pagination } = this.state;
+    const { advertiser_id } = this.props;
+    this.setState({ isLoading: true });
 
     api.get('/v1/hit-action-revises', {
       params: {

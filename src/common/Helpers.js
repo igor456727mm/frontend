@@ -31,7 +31,7 @@ const Helpers = {
   },
 
   checkUserData: () => {
-    const cabinet_user_id = Cookies.get('cabinet_user_id')
+    const cabinet_user_id = Cookies.get('cabinet_user_id');
     api.get(`/v1/user-data/${cabinet_user_id}?expand=user`)
     .then((response) => {
       window.store.dispatch({

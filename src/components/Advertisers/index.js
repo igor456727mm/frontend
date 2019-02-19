@@ -1,30 +1,33 @@
-import React, { Component } from 'react'
-import { Form, Table, Select, Input, DatePicker, Button, message } from 'antd'
+import React, {Component} from 'react'
+import {Form, Table, Select, Input, DatePicker, Button, message, Tabs} from 'antd'
 import moment from 'moment'
 import qs from 'qs'
 import Cookies from 'js-cookie'
-import { Link } from 'react-router-dom'
-import Helpers, { Filters, Events, t, pick, clean, disabledDate } from '../../common/Helpers'
+import {Link} from 'react-router-dom'
+import Helpers, {Filters, Events, t, pick, clean, disabledDate} from '../../common/Helpers'
 import api from '../../common/Api'
 import * as Manager from '../../common/Helpers/ManagerSelect'
 import ChangingManager from '../../common/ChangingManager'
+import AdvertisersLogEvents from './AdvertisersLogEvents'
+
+const {TabPane} = Tabs
 
 class _Filter extends Component {
-
+  
   constructor(props) {
     super(props)
   }
-
+  
   handleSubmit = (e) => {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
       this.props.onSubmit(clean(values))
     })
   }
-
+  
   validator = (name, label, input) => {
-    const { getFieldDecorator } = this.props.form
-    const options = { initialValue: Filters.value(name) }
+    const {getFieldDecorator} = this.props.form
+    const options = {initialValue: Filters.value(name)}
     return (
       <Form.Item className={`filter__field-${name}`}>
         {label && <h4>{label}</h4>}
@@ -32,15 +35,16 @@ class _Filter extends Component {
       </Form.Item>
     )
   }
-
+  
   render() {
     return (
       <div className="filter">
         <Form>
-          {this.validator('name', t('field.name'), <Input size="large" /> )}
+          {this.validator('name', t('field.name'), <Input size="large"/>)}
           <Form.Item>
             <h4>&nbsp;</h4>
-            <Button onClick={this.handleSubmit} type="primary" htmlType="submit" size="large">{t('button.show')}</Button>
+            <Button onClick={this.handleSubmit} type="primary" htmlType="submit"
+                    size="large">{t('button.show')}</Button>
           </Form.Item>
           <Form.Item>
             <h4>&nbsp;</h4>
@@ -51,10 +55,11 @@ class _Filter extends Component {
     )
   }
 }
+
 const Filter = Form.create()(_Filter)
 
 class Advertiser extends Component {
-
+  
   constructor(props) {
     super(props)
     this.state = {
@@ -133,7 +138,7 @@ class Advertiser extends Component {
             return (
               <ChangingManager
                 managerType="advertiserManager"
-                id ={row.id}
+                id={row.id}
                 name={row.advertiserManager && row.advertiserManager.name || ''}
                 managerId={row.advertiserManager && row.advertiserManager.id || null}
                 managers={this.state.advertiserManagers}
@@ -144,20 +149,20 @@ class Advertiser extends Component {
       ]
     }
   }
-
+  
   componentDidMount = () => {
     Helpers.setTitle('Рекламодатели')
-
+    
     this.fetch()
     api.get(Manager.data.advertiserManager.apiUrl)
-    .then(response => {
-      this.setState({ advertiserManagers: response.data })
-    })
+      .then(response => {
+        this.setState({advertiserManagers: response.data})
+      })
   }
-
+  
   fetch = () => {
-    const { filters, pagination } = this.state
-    this.setState({ isLoading: true })
+    const {filters, pagination} = this.state
+    this.setState({isLoading: true})
     api.get('/v1/advertisers', {
       params: {
         sort: pagination.sort || '-id',
@@ -166,47 +171,51 @@ class Advertiser extends Component {
         expand: 'advertiserManager,hold,balance,reviseOverdue,paymentOverdue',
       }
     })
-    .then(response => {
-      console.log('response', response.data);
-      pagination.total = parseInt(response.headers['x-pagination-total-count'])
-      this.setState({
-        isLoading: false,
-        data: response.data,
-        pagination
+      .then(response => {
+        pagination.total = parseInt(response.headers['x-pagination-total-count'])
+        this.setState({
+          isLoading: false,
+          data: response.data,
+          pagination
+        })
       })
-    })
-    .catch(e => {
-      this.setState({ isLoading: false })
-      Helpers.errorHandler(e)
-    })
+      .catch(e => {
+        this.setState({isLoading: false})
+        Helpers.errorHandler(e)
+      })
     Filters.toUrl(filters)
   }
-
-  handleTableChange = ({ current: page }, filters, { columnKey, order }) => {
+  
+  handleTableChange = ({current: page}, filters, {columnKey, order}) => {
     const sort = (order && columnKey) && (order == 'ascend' ? columnKey : `-${columnKey}`)
-    const pagination = { ...this.state.pagination, current: page, sort: sort }
-    this.setState({ pagination }, this.fetch)
+    const pagination = {...this.state.pagination, current: page, sort: sort}
+    this.setState({pagination}, this.fetch)
   }
-
+  
   onFilter = (values) => {
     const filters = Filters.prepare(values)
-    this.setState({ filters }, this.fetch)
+    this.setState({filters}, this.fetch)
   }
-
+  
   render() {
-    const { isLoading } = this.state
+    const {isLoading} = this.state
     const props = pick(this.state, 'data:dataSource', 'columns', 'pagination', 'isLoading:loading')
     return (
-      <div>
-        <Filter onSubmit={this.onFilter} />
-        <Table
-          className="app__table"
-          rowKey={item => item.id}
-          locale={{ emptyText: Helpers.emptyText }}
-          onChange={this.handleTableChange}
-          {...props}
+      <Tabs type="card">
+        <TabPane tab="Рекламодатели" key="1">
+          <Filter onSubmit={this.onFilter}/>
+          <Table
+            className="app__table"
+            rowKey={item => item.id}
+            locale={{emptyText: Helpers.emptyText}}
+            onChange={this.handleTableChange}
+            {...props}
           />
-      </div>
+        </TabPane>
+        <TabPane tab="Лог событий" key="2">
+          <AdvertisersLogEvents/>
+        </TabPane>
+      </Tabs>
     )
   }
 }

@@ -1,18 +1,11 @@
 import React, { Component } from 'react'
-import { Form, Table, Select, Input, DatePicker, Button, message } from 'antd'
+import { Form, Table, Input, Button, message } from 'antd'
 import moment from 'moment'
 import qs from 'qs'
-import Cookies from 'js-cookie'
 import { Link } from 'react-router-dom'
-import Helpers, { Filters, Events, t, pick, clean, disabledDate } from '../../common/Helpers'
-import SearchSelect from '../../common/Helpers/SearchSelect'
+import Helpers, { Filters, t, pick, clean } from '../../common/Helpers'
 import api from '../../common/Api'
 import * as Feather from 'react-feather'
-
-const options = {
-  size: 'large',
-  getPopupContainer: () => document.getElementById('content'),
-}
 
 class _Filter extends Component {
 
@@ -29,8 +22,7 @@ class _Filter extends Component {
 
   validator = (name, label, input) => {
     const { getFieldDecorator } = this.props.form
-    // const options = { initialValue: Filters.value(name) }
-    const options = {  }
+    const options = { }
     return (
       <Form.Item className={`filter__field-${name}`}>
         {label && <h4>{label}</h4>}
@@ -43,7 +35,7 @@ class _Filter extends Component {
     return (
       <div className="filter">
         <Form>
-          {this.validator('user_id', 'Пользователь', <SearchSelect target="users" {...options} /> )}
+          {this.validator('id', 'Id', <Input size="large" /> )}
           <Form.Item>
             <h4>&nbsp;</h4>
             <Button onClick={this.handleSubmit} type="primary" htmlType="submit" size="large">{t('button.show')}</Button>
@@ -55,7 +47,7 @@ class _Filter extends Component {
 }
 const Filter = Form.create()(_Filter)
 
-class OfferRequests extends Component {
+class EventsLog extends Component {
 
   constructor(props) {
     super(props)
@@ -68,31 +60,44 @@ class OfferRequests extends Component {
       },
       columns: [
         {
+          title: 'Id',
+          dataIndex: 'id',
+          sorter: true,
+          render: (text, row) => text,
+        },
+        {
           title: 'Дата создания',
           dataIndex: 'created_at',
           sorter: true,
           defaultSortOrder: 'descend',
-          render: (text, { created_at }) => created_at && moment.unix(created_at).format('DD.MM.YY HH:mm'),
+          render: text => moment.unix(text).format('DD.MM.YYYY HH:mm'),
         },
         {
-          title: 'Оффер (id)',
-          dataIndex: 'offer_id',
-          sorter: true,
-          render: (text, row) => <Link to={`/offers/${text}`}>{text}</Link>,
-        },
-        {
-          title: 'Пользователь',
-          dataIndex: 'user_id',
-          render: (text, row) => <Link to={`/users/${text}`}>{`${row.user.name}`}</Link>,
-        },
-        {
-          title: 'Комментарий',
-          dataIndex: 'comment',
-        },
-        {
-          title: 'Разрешить доступ',
+          title: 'Рекламодатель',
           dataIndex: '',
-          render: (text, row) => <Button  onClick={this.onConfirm(row.offer_id, row.user_id, row.user.name)} style={{ padding: '5px 10px'}}><Feather.CheckCircle /></Button>,
+          render: (text, row) => {
+            return <Link to={`/advertisers/${row.advertiser_id}`}>{row.advertiser ? row.advertiser.name : row.advertiser_id}</Link>
+          },
+        },
+        {
+          title: 'Заголовок',
+          dataIndex: 'title',
+          sorter: true,
+          render: (text, row) => {
+            return text
+          },
+        },
+        {
+          title: 'Событие',
+          dataIndex: 'text',
+          render: (text, row) => {
+            return text
+          },
+        },
+        {
+          title: 'Прочитано',
+          dataIndex: '',
+          render: (text, row) => <Button onClick={this.onConfirm(row.id)} style={{ padding: '5px 10px'}}><Feather.CheckCircle /></Button>,
         },
       ]
     }
@@ -102,34 +107,16 @@ class OfferRequests extends Component {
     this.fetch()
   }
 
-  onConfirm = (offer_id, user_id, userName) => () => {
-    const key = `${user_id},${offer_id}`
-    const data = {
-      user_id,
-      offer_id,
-      have_access: 1,
-    }
-
-    api.post(`/v1/user-offer-individual-conditions`, qs.stringify(data))
-    .then(response => {
-      message.success(`Доступ к офферу #${offer_id} для пользователя ${userName} разрешен`)
-      return api.delete(`/v1/access-requests/${key}`)
-    })
-    .then(response => {
-      this.fetch()
-    })
-    .catch(e => Helpers.errorHandler(e))
-  }
-
   fetch = () => {
     const { filters, pagination } = this.state
     this.setState({ isLoading: true })
-    api.get('/v1/access-requests', {
+
+    api.get(`/v1/advertiser-events`, {
       params: {
         sort: pagination.sort || '-created_at',
         page: pagination.current || 1,
         ...filters,
-        expand: 'user',
+        expand: 'advertiser',
       }
     })
     .then(response => {
@@ -140,8 +127,20 @@ class OfferRequests extends Component {
         pagination
       })
     })
+    .catch(e => {
+      this.setState({ isLoading: false })
+      Helpers.errorHandler(e)
+    })
+  }
+
+  onConfirm = eventId => () => {
+
+    api.delete(`/v1/advertiser-events/${eventId}`)
+    .then(response => {
+      message.success(`Событие ${eventId} прочитано`)
+      this.fetch()
+    })
     .catch(e => Helpers.errorHandler(e))
-    Filters.toUrl(filters)
   }
 
   handleTableChange = ({ current: page }, filters, { columnKey, order }) => {
@@ -156,12 +155,14 @@ class OfferRequests extends Component {
   }
 
   render() {
+    const { isLoading } = this.state
     const props = pick(this.state, 'data:dataSource', 'columns', 'pagination', 'isLoading:loading')
     return (
       <div>
         <Filter onSubmit={this.onFilter} />
         <Table
-          rowKey={(item, i) => `${item.user_id}${item.offer_id}${i}`}
+          className="app__table"
+          rowKey={item => item.id}
           locale={{ emptyText: Helpers.emptyText }}
           onChange={this.handleTableChange}
           {...props}
@@ -171,4 +172,4 @@ class OfferRequests extends Component {
   }
 }
 
-export default OfferRequests
+export default EventsLog
