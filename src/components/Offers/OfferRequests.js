@@ -68,8 +68,16 @@ class OfferRequests extends Component {
       },
       columns: [
         {
+          title: 'Дата создания',
+          dataIndex: 'created_at',
+          sorter: true,
+          defaultSortOrder: 'descend',
+          render: (text, { created_at }) => created_at && moment.unix(created_at).format('DD.MM.YY HH:mm'),
+        },
+        {
           title: 'Оффер (id)',
           dataIndex: 'offer_id',
+          sorter: true,
           render: (text, row) => <Link to={`/offers/${text}`}>{text}</Link>,
         },
         {
@@ -118,7 +126,7 @@ class OfferRequests extends Component {
     this.setState({ isLoading: true })
     api.get('/v1/access-requests', {
       params: {
-        sort: pagination.sort || '-id',
+        sort: pagination.sort || '-created_at',
         page: pagination.current || 1,
         ...filters,
         expand: 'user',
