@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Table, Select, Input, DatePicker, Button, message } from 'antd'
+import { Form, Table, Select, Input, DatePicker, Button, message, Tabs } from 'antd'
 import moment from 'moment'
 import qs from 'qs'
 import Cookies from 'js-cookie'
@@ -8,6 +8,9 @@ import Helpers, { Filters, Events, t, pick, clean, disabledDate } from '../../co
 import api from '../../common/Api'
 import * as Manager from '../../common/Helpers/ManagerSelect'
 import ChangingManager from '../../common/ChangingManager'
+import AdvertisersLogEvents from './AdvertisersLogEvents'
+
+const { TabPane } = Tabs
 
 class _Filter extends Component {
 
@@ -167,7 +170,6 @@ class Advertiser extends Component {
       }
     })
     .then(response => {
-      console.log('response', response.data);
       pagination.total = parseInt(response.headers['x-pagination-total-count'])
       this.setState({
         isLoading: false,
@@ -197,16 +199,21 @@ class Advertiser extends Component {
     const { isLoading } = this.state
     const props = pick(this.state, 'data:dataSource', 'columns', 'pagination', 'isLoading:loading')
     return (
-      <div>
-        <Filter onSubmit={this.onFilter} />
-        <Table
-          className="app__table"
-          rowKey={item => item.id}
-          locale={{ emptyText: Helpers.emptyText }}
-          onChange={this.handleTableChange}
-          {...props}
-          />
-      </div>
+      <Tabs type="card">
+        <TabPane tab="Рекламодатели" key="1">
+          <Filter onSubmit={this.onFilter} />
+          <Table
+            className="app__table"
+            rowKey={item => item.id}
+            locale={{ emptyText: Helpers.emptyText }}
+            onChange={this.handleTableChange}
+            {...props}
+            />
+        </TabPane>
+        <TabPane tab="Лог событий" key="2">
+          <AdvertisersLogEvents />
+        </TabPane>
+      </Tabs>
     )
   }
 }
