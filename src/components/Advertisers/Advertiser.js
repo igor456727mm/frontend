@@ -17,6 +17,7 @@ import * as Manager from '../../common/Helpers/ManagerSelect'
 import OffersShort from './OffersShort'
 import RevisesShort from './RevisesShort'
 import PaymentHistory from './PaymentHistory/PaymentHistory'
+import AdvertiserLogEvents from './AdvertiserLogEvents'
 import styles from './Advertisers.module.sass'
 
 const { TabPane } = Tabs
@@ -317,6 +318,9 @@ class Advertiser extends Component {
           </TabPane>
           <TabPane tab="История оплат" key="5">
             <PaymentHistory wallets={wallets} advertiser_id={data.id} />
+          </TabPane>
+          <TabPane tab="Лог событий" key="6">
+            <AdvertiserLogEvents advertiser_id={data.id} />
           </TabPane>
         </Tabs>
       </div>
