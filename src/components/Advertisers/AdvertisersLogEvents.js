@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form, Table, Input, Button, message } from 'antd'
 import moment from 'moment'
 import qs from 'qs'
+import { Link } from 'react-router-dom'
 import Helpers, { Filters, t, pick, clean } from '../../common/Helpers'
 import api from '../../common/Api'
 import * as Feather from 'react-feather'
@@ -61,6 +62,7 @@ class EventsLog extends Component {
         {
           title: 'Id',
           dataIndex: 'id',
+          sorter: true,
           render: (text, row) => text,
         },
         {
@@ -69,6 +71,13 @@ class EventsLog extends Component {
           sorter: true,
           defaultSortOrder: 'descend',
           render: text => moment.unix(text).format('DD.MM.YYYY HH:mm'),
+        },
+        {
+          title: 'Рекламодатель',
+          dataIndex: '',
+          render: (text, row) => {
+            return <Link to={`/advertisers/${row.advertiser_id}`}>{row.advertiser ? row.advertiser.name : row.advertiser_id}</Link>
+          },
         },
         {
           title: 'Заголовок',
@@ -100,14 +109,14 @@ class EventsLog extends Component {
 
   fetch = () => {
     const { filters, pagination } = this.state
-    const { advertiser_id } = this.props
     this.setState({ isLoading: true })
 
-    api.get(`/v1/advertiser-events?q[advertiser_id][equal]=${advertiser_id}`, {
+    api.get(`/v1/advertiser-events`, {
       params: {
         sort: pagination.sort || '-created_at',
         page: pagination.current || 1,
         ...filters,
+        expand: 'advertiser',
       }
     })
     .then(response => {

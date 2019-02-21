@@ -74,7 +74,6 @@ class Advertiser extends Component {
         }
       })
       .then(response => {
-        console.log('advertiser get', response.data);
         const { data } = response
         const paymentPeriod = (data.data && data.data.paymentPeriodStart && data.data.paymentPeriodEnd) ?
           [moment.unix(data.data.paymentPeriodStart), moment.unix(data.data.paymentPeriodEnd)] : []
@@ -105,7 +104,6 @@ class Advertiser extends Component {
       }
     })
     .then(response => {
-      console.log('advertiser wallets response', response.data);
       this.setState({
         isLoading: false,
         wallets: response.data,
@@ -117,8 +115,6 @@ class Advertiser extends Component {
   updateWallets = (values) => {
     const { id, uuid } = this.state.data
     const { name, wallet_id } = values
-    console.log('this.state', this.state);
-    console.log('updateWallets values', values);
     const data = {
       name: values.name,
       ownerId: uuid,
@@ -151,7 +147,6 @@ class Advertiser extends Component {
           break;
         case 'advertiser_manager_id':
           if (data[name]) {
-            // console.log('data[name]', data[name]);
             options.initialValue = String(data[name])
           }
           break;
@@ -178,7 +173,6 @@ class Advertiser extends Component {
           options.initialValue = data[name]
       }
     }
-    // console.log('options', options);
     // if(data.hasOwnProperty(name)) options.initialValue = data[name]
     return (
       <Form.Item className={`form__item-${name}`}>
@@ -223,7 +217,6 @@ class Advertiser extends Component {
           Helpers.errorHandler(e)
         })
       } else {
-        // console.log('Advertiser patch form values', this.getData(values));
         api.patch(`/v1/advertisers/${data.id}`, qs.stringify(this.getData(values)))
         .then(response => {
           this.setState({ iconLoading: false })
