@@ -130,6 +130,12 @@ class Leads extends Component {
           sorter: true,
           width: 150,
           render: (text, { created_at }) => created_at && moment.unix(created_at).format('DD.MM.YY HH:mm')
+        },{
+          title: 'Дата изменения',
+          dataIndex: 'updated_at',
+          sorter: true,
+          width: 150,
+          render: (text, { updated_at }) => updated_at && moment.unix(updated_at).format('DD.MM.YY HH:mm')
         }, {
           title: 'Оффер',
           dataIndex: '',
@@ -196,6 +202,10 @@ class Leads extends Component {
         }, {
           title: 'Hit ID',
           dataIndex: 'hit_id',
+        },
+        {
+          title: 'Комментарий',
+          dataIndex: 'comment',
         },
       ]
     }
