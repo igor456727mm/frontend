@@ -125,6 +125,16 @@ class Leads extends Component {
       selectedActionIndexIds: [],
       columns: [
         {
+          title: 'Номер',
+          dataIndex: '',
+          render: (text, row, index) => {
+            const { pagination: { current, pageSize } } = this.state
+            const currentPage = current ? current : 1
+            const ordinalNumber = (currentPage - 1) * pageSize + (index + 1)
+            return ordinalNumber
+          },
+        },
+        {
           title: 'Дата создания',
           dataIndex: 'created_at',
           sorter: true,
