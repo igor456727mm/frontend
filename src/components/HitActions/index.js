@@ -241,7 +241,6 @@ class Leads extends Component {
       }
     })
     .then(response => {
-      console.log('get /v1/hit-actions', response.data);
       this.setState(state => {
         const { pagination } = state
         pagination.total = parseInt(response.headers['x-pagination-total-count'])
