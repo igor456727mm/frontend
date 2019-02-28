@@ -784,6 +784,7 @@ class Offer extends Component {
     const _countries = countries.map(item => <Select.Option key={item.id} value={item.id} name={item.name}>{item.name}</Select.Option>)
     const _advertisers = advertisers.map(item => <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>)
     const values = this.props.form.getFieldsValue()
+    const is_private = data.is_private === 1
     return (
       <Form>
       <div className="content__wrapper">
@@ -866,6 +867,7 @@ class Offer extends Component {
               <IndividualConditions
                 offer_id={data.id}
                 actions={actions}
+                is_private={is_private}
                 />
             ) || null}
 
