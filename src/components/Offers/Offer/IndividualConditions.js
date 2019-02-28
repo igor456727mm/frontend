@@ -190,7 +190,7 @@ class _Action extends Component {
 
   render() {
     const { isVisible, iconLoading, isEdit } = this.state
-    const { data, form, currency_id, actions } = this.props
+    const { data, form, currency_id, actions = [], is_private } = this.props
     const currency = '$'
 
     let fields = null
@@ -271,8 +271,8 @@ class _Action extends Component {
           <h1>{isEdit ? `Редактирование индивид. цели` : 'Добавление индивид. цели'}</h1>
 
             <Form>
-              {this.validator('action_id', 'Цель', <Select onChange={this._onChangeActionId} disabled={isEdit} size="large">{_actions}</Select>, [{ required: true }] )}
-              {this.validator('user_id', 'Пользователь', <SearchSelect disabled={isEdit} target="users" />, [{ required: true }] )}
+              {this.validator('action_id', 'Цель', <Select onChange={this._onChangeActionId} disabled={isEdit && !is_private} size="large">{_actions}</Select>, [{ required: true }] )}
+              {this.validator('user_id', 'Пользователь', <SearchSelect disabled={isEdit && !is_private} target="users" />, [{ required: true }] )}
               {this.validator('pay_conditions.name', t('field.name'), <Input size="large" placeholder={placeholders.name} /> )}
               {this.validator('pay_conditions.pay_type', 'Ставка', (
                 <Select size="large">
@@ -376,7 +376,16 @@ class IndividualConditions extends Component {
           title: 'Условия',
           dataIndex: '',
           render: (text, row) => {
-            if(!row.pay_conditions) return
+            if(!row.pay_conditions) {
+              return (
+                <Action
+                  data={{ }}
+                  offer_id={id}
+                  actions={this.props.actions}
+                  is_private={this.props.is_private}
+                  />
+              )
+            }
             return Object.keys(row.pay_conditions).map((k, i) => {
               const name = row.pay_conditions[k] && row.pay_conditions[k].name || this.actionFieldById(k, 'name')
               return (
