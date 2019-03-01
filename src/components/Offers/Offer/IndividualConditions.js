@@ -87,7 +87,7 @@ class _Action extends Component {
           offer_id: offer_id,
           visible: values.visible ? 1 : 0,
           //have_access: values.have_access ? 1 : 0,
-          pay_conditions: tmp.data.pay_conditions,
+          pay_conditions: tmp.data.pay_conditions || {},
         }
 
         params.pay_conditions[values.action_id] = values.pay_conditions
@@ -379,7 +379,7 @@ class IndividualConditions extends Component {
             if(!row.pay_conditions) {
               return (
                 <Action
-                  data={{ }}
+                  data={{user_id: row.user_id }}
                   offer_id={id}
                   actions={this.props.actions}
                   is_private={this.props.is_private}
