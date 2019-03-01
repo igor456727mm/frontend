@@ -147,7 +147,8 @@ class _Action extends Component {
 
     api.get(`/v1/user-offer-individual-conditions/${key}`)
     .then(response => {
-      const count = Object.keys(response.data.pay_conditions).length
+      const payConditions = response.data.pay_conditions ? response.data.pay_conditions : {}
+      const count = Object.keys(payConditions).length
 
       if(count > 1) {
         // many
