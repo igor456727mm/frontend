@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Table, Select, Input, DatePicker, Button, message } from 'antd'
 import moment from 'moment'
-import qs from 'qs'
 import * as Cookies from 'js-cookie'
 import { Link } from 'react-router-dom'
 import Helpers, { Filters, t, pick, clean, disabledDate } from '../../common/Helpers'
@@ -9,8 +8,7 @@ import api from '../../common/Api'
 import { domain, scheme } from '../../config'
 import ChangingManager from '../../common/ChangingManager'
 import * as Manager from '../../common/Helpers/ManagerSelect'
-
-const Icons = {}
+import {isEqual} from 'lodash'
 
 export class Login extends Component {
 
@@ -55,6 +53,27 @@ class _Filter extends Component {
 
   constructor(props) {
     super(props)
+    this.state = {
+      totalReferralBalance: 0,
+      totalHold: 0,
+    }
+  }
+  
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const {dataSource} = this.props;
+
+    if (dataSource.length && !isEqual(prevProps.dataSource, dataSource)) {
+      let totalReferralBalance = 0, totalHold = 0;
+      dataSource.forEach(data => {
+        totalReferralBalance = totalReferralBalance + Number(data.referralBalance);
+        totalHold = totalHold + Number(data.referralStat.hold || 0);
+      })
+      
+      this.setState({
+        totalReferralBalance,
+        totalHold
+      })
+    }
   }
 
   handleSubmit = (e) => {
@@ -76,7 +95,8 @@ class _Filter extends Component {
   }
 
   render() {
-    const { statuses } = this.props
+    const { totalReferralBalance, totalHold } = this.state;
+    const { statuses } = this.props;
     const _statuses = Object.keys(statuses).map(item => <Select.Option key={item} value={item}>{statuses[item]}</Select.Option>)
     return (
       <div className="filter filter__users">
@@ -85,6 +105,8 @@ class _Filter extends Component {
           {this.validator('login', t('field.login'), <Input size="large" /> )}
           {this.validator('email', t('field.email'), <Input size="large" /> )}
           {this.validator('status', t('field.status'), <Select placeholder={t('field.all')} size="large" allowClear>{_statuses}</Select> )}
+          <p>Суммарно на балансе: {totalReferralBalance}$</p>
+          <p>Суммарно в холде: {totalHold}$</p>
           <Form.Item>
             <h4>&nbsp;</h4>
             <Button onClick={this.handleSubmit} type="primary" htmlType="submit" size="large">{t('button.show')}</Button>
@@ -163,17 +185,25 @@ class Users extends Component {
             return row.referralStat && row.referralStat.activeUsersCount || null
           },
         }, {
-          title: 'Реферальный баланс',
-          dataIndex: 'referralBalance',
-          render: (text, row) => {
-            return text
-          },
-        }, {
           title: 'В холде',
           dataIndex: '',
           render: (text, row) => {
             return row.referralStat && row.referralStat.hold || null
           },
+        }, {
+          title: 'Реферальный баланс',
+          dataIndex: 'referralBalance',
+          render: (text, row) => {
+            return text
+          },
+          sorter: true,
+        }, {
+          title: 'Холд',
+          dataIndex: 'referralStat',
+          render: (text, row) => {
+            return row.referralStat.hold || '0.00'
+          },
+          sorter: true,
         }, {
           render: (text, row) => (
             <div className="table__actions">
@@ -276,7 +306,7 @@ class Users extends Component {
     const props = pick(this.state, 'data:dataSource', 'columns', 'pagination', 'isLoading:loading')
     return (
       <div>
-        <Filter onSubmit={this.onFilter} statuses={statuses} />
+        <Filter onSubmit={this.onFilter} dataSource={props.dataSource} statuses={statuses} />
         <Table
           className="app__table"
           rowKey={item => item.id}
