@@ -59,21 +59,14 @@ class _Filter extends Component {
     }
   }
   
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const {dataSource} = this.props;
-
-    if (dataSource.length && !isEqual(prevProps.dataSource, dataSource)) {
-      let totalReferralBalance = 0, totalHold = 0;
-      dataSource.forEach(data => {
-        totalReferralBalance = totalReferralBalance + Number(data.referralBalance);
-        totalHold = totalHold + Number(data.referralStat.hold || 0);
-      })
-      
-      this.setState({
-        totalReferralBalance,
-        totalHold
-      })
-    }
+  componentDidMount() {
+    api.get('/v1/user-data/total-hold-and-balance')
+      .then(({data}) => {
+        this.setState({
+          totalReferralBalance: data.balance,
+          totalHold: data.hold
+        });
+      });
   }
 
   handleSubmit = (e) => {
@@ -185,23 +178,29 @@ class Users extends Component {
             return row.referralStat && row.referralStat.activeUsersCount || null
           },
         }, {
+          title: 'Реферальный баланс',
+          dataIndex: 'referralBalance',
+          render: (text, row) => {
+            return text
+          },
+        }, {
           title: 'В холде',
           dataIndex: '',
           render: (text, row) => {
             return row.referralStat && row.referralStat.hold || null
           },
         }, {
-          title: 'Реферальный баланс',
-          dataIndex: 'referralBalance',
+          title: 'Баланс',
+          dataIndex: 'balance',
           render: (text, row) => {
-            return text
+            return row.balance
           },
           sorter: true,
         }, {
           title: 'Холд',
-          dataIndex: 'referralStat',
+          dataIndex: 'hold',
           render: (text, row) => {
-            return row.referralStat.hold || '0.00'
+            return row.hold || '0.00'
           },
           sorter: true,
         }, {
@@ -218,7 +217,7 @@ class Users extends Component {
 
   componentDidMount = () => {
     Helpers.setTitle('menu.users')
-    this.fetch()
+    this.fetch();
     window.addEventListener(`users.fetch`, this.fetch)
 
     api.get(`/v1/users/statuses`)
@@ -227,11 +226,11 @@ class Users extends Component {
     .then(response => {
       this.setState({ personalManagers: response.data })
     })
-  }
+  };
 
   componentWillUnmount = () => {
     window.removeEventListener(`users.fetch`, this.fetch)
-  }
+  };
 
   fetch = () => {
     const { filters, pagination } = this.state
@@ -250,11 +249,11 @@ class Users extends Component {
       this.setState({
         users: responseUsers.data,
         pagination: {...pagination, total }
-      })
-      const userIds = responseUsers.data.map(user => user.id)
+      });
+      const userIds = responseUsers.data.map(user => user.id);
       return api.get('/v1/user-data', {
         params: {
-          fields: 'user_id',
+          fields: 'user_id,balance,hold',
           expand: 'referralStat,referralBalance,personalManager',
           'q[user_id][in]': userIds.join(','),
           'per-page': pagination.pageSize,
@@ -263,25 +262,27 @@ class Users extends Component {
     })
     .then(responseUsersData => {
       const { users } = this.state
-      const usersData = responseUsersData.data
+      const usersData = responseUsersData.data;
+
       if (users.length !== usersData.length) {
         console.log(`Внимание! Не для каждого id нашлась пара, проверьте получаемые данные.`)
       }
       const data = users.map(user => {
         const userData = usersData.find(el => {
-          return user.id == el.user_id
-        })
+          return user.id === el.user_id
+        });
         if (!userData) {
           console.log(`Нет совпадений поля id для пользователя #${user.id}`)
         }
-        const newUserData = {
+        return {
           ...user,
+          hold: userData ? userData.hold : null,
+          balance: userData ? userData.balance : null,
           referralBalance: userData ? userData.referralBalance : null,
           referralStat: userData ? userData.referralStat : null,
           personalManager: userData ? userData.personalManager : null,
         }
-        return newUserData
-      })
+      });
       this.setState({
         isLoading: false,
         data,
@@ -302,7 +303,7 @@ class Users extends Component {
   }
 
   render() {
-    const { statuses, isLoading, pagination } = this.state
+    const { statuses, isLoading, pagination } = this.state;
     const props = pick(this.state, 'data:dataSource', 'columns', 'pagination', 'isLoading:loading')
     return (
       <div>
