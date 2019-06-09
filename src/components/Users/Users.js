@@ -1,50 +1,46 @@
-import React, { Component } from 'react'
-import { Form, Table, Select, Input, DatePicker, Button, message } from 'antd'
-import moment from 'moment'
-import * as Cookies from 'js-cookie'
-import { Link } from 'react-router-dom'
-import Helpers, { Filters, t, pick, clean, disabledDate } from '../../common/Helpers'
-import api from '../../common/Api'
-import { domain, scheme } from '../../config'
-import ChangingManager from '../../common/ChangingManager'
-import * as Manager from '../../common/Helpers/ManagerSelect'
-import {isEqual} from 'lodash'
+import React, { Component } from 'react';
+import { Form, Table, Select, Input, DatePicker, Button } from 'antd';
+import moment from 'moment';
+import * as Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
+import Helpers, { Filters, t, pick, clean, disabledDate } from '../../common/Helpers';
+import api from '../../common/Api';
+import { domain, scheme } from '../../config';
+import ChangingManager from '../../common/ChangingManager';
+import * as Manager from '../../common/Helpers/ManagerSelect';
 
 export class Login extends Component {
-
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       isLoading: false,
     }
   }
 
   _getAccess = () => {
-    const { user_id } = this.props
-    this.setState({ isLoading: true })
+    const { user_id } = this.props;
+    this.setState({ isLoading: true });
     api.post(`/v1/users/${user_id}/generate-access-token`)
     .then(response => {
-      const params = { expires: 1 / 24, domain: `.${domain}` }
+      const params = { expires: 1 / 24, domain: `.${domain}` };
 
-      Cookies.set('access_token', response.data.access_token, params)
-      Cookies.set('refresh_token', 1, params)
-      Cookies.set('user_id', user_id, params)
-      Cookies.set('isManager', 1, params)
+      Cookies.set('access_token', response.data.access_token, params);
+      Cookies.set('refresh_token', 1, params);
+      Cookies.set('user_id', user_id, params);
+      Cookies.set('isManager', 1, params);
 
-      this.setState({ isLoading: false })
+      this.setState({ isLoading: false });
       window.open(`${scheme}my.${domain}`, '_blank')
     })
     .catch(e => {
-      this.setState({ isLoading: false })
+      this.setState({ isLoading: false });
       Helpers.errorHandler(e)
     })
-  }
+  };
 
   render() {
-    const { isLoading } = this.state
-    return (
-      <Button onClick={this._getAccess}>{isLoading && Helpers.spinner()} Войти</Button>
-    )
+    const { isLoading } = this.state;
+    return <Button onClick={this._getAccess}>{isLoading && Helpers.spinner()} Войти</Button>;
   }
 }
 
@@ -52,9 +48,9 @@ export class Login extends Component {
 class _Filter extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      totalReferralBalance: 0,
+      totalBalance: 0,
       totalHold: 0,
     }
   }
@@ -63,34 +59,34 @@ class _Filter extends Component {
     api.get('/v1/user-data/total-hold-and-balance')
       .then(({data}) => {
         this.setState({
-          totalReferralBalance: data.balance,
+          totalBalance: data.balance,
           totalHold: data.hold
         });
       });
   }
 
   handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       this.props.onSubmit(clean(values))
     })
-  }
+  };
 
   validator = (name, label, input) => {
-    const { getFieldDecorator } = this.props.form
-    const options = { initialValue: Filters.value(name) }
+    const { getFieldDecorator } = this.props.form;
+    const options = { initialValue: Filters.value(name) };
     return (
       <Form.Item className={`filter__field-${name}`}>
         {label && <h4>{label}</h4>}
         {getFieldDecorator(name, options)(input)}
       </Form.Item>
     )
-  }
+  };
 
   render() {
-    const { totalReferralBalance, totalHold } = this.state;
+    const { totalBalance, totalHold } = this.state;
     const { statuses } = this.props;
-    const _statuses = Object.keys(statuses).map(item => <Select.Option key={item} value={item}>{statuses[item]}</Select.Option>)
+    const _statuses = Object.keys(statuses).map(item => <Select.Option key={item} value={item}>{statuses[item]}</Select.Option>);
     return (
       <div className="filter filter__users">
         <Form>
@@ -98,7 +94,7 @@ class _Filter extends Component {
           {this.validator('login', t('field.login'), <Input size="large" /> )}
           {this.validator('email', t('field.email'), <Input size="large" /> )}
           {this.validator('status', t('field.status'), <Select placeholder={t('field.all')} size="large" allowClear>{_statuses}</Select> )}
-          <p>Суммарно на балансе: {totalReferralBalance}$</p>
+          <p>Суммарно на балансе: {totalBalance}$</p>
           <p>Суммарно в холде: {totalHold}$</p>
           <Form.Item>
             <h4>&nbsp;</h4>
@@ -109,7 +105,7 @@ class _Filter extends Component {
     )
   }
 }
-const Filter = Form.create()(_Filter)
+const Filter = Form.create()(_Filter);
 
 class Users extends Component {
 
@@ -192,16 +188,12 @@ class Users extends Component {
         }, {
           title: 'Баланс',
           dataIndex: 'balance',
-          render: (text, row) => {
-            return row.balance
-          },
+          render: (text, row) => row.balance || '0.00',
           sorter: true,
         }, {
           title: 'Холд',
           dataIndex: 'hold',
-          render: (text, row) => {
-            return row.hold || '0.00'
-          },
+          render: (text, row) => row.hold || '0.00',
           sorter: true,
         }, {
           render: (text, row) => (
