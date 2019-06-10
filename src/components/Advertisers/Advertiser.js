@@ -205,7 +205,7 @@ class Advertiser extends Component {
         contactName: values.contactName,
         chat: values.chat,
         homepage: values.homepage,
-        currencyId: values.currencyId,
+        currencyId: values.currencyId || '',
         currencyRate: values.currencyRate,
         currencyRateCoef: values.currencyRateCoef,
       },

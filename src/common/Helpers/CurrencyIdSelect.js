@@ -20,7 +20,6 @@ export class Select extends React.Component {
 	
 	componentDidMount = () => {
 		const {currencyIdType} = this.props;
-		console.log(data[currencyIdType].apiUrl, '>>>url')
 		api.get(data[currencyIdType].apiUrl, {
 			params: {
 				'per-page': 999
