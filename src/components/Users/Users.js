@@ -94,8 +94,8 @@ class _Filter extends Component {
           {this.validator('login', t('field.login'), <Input size="large" /> )}
           {this.validator('email', t('field.email'), <Input size="large" /> )}
           {this.validator('status', t('field.status'), <Select placeholder={t('field.all')} size="large" allowClear>{_statuses}</Select> )}
-          <p>Суммарно на балансе: {totalBalance}$</p>
-          <p>Суммарно в холде: {totalHold}$</p>
+          <div className='ant-row'>Суммарно на балансе: {totalBalance}$</div>
+          <div className='ant-row'>Суммарно в холде: {totalHold}$</div>
           <Form.Item>
             <h4>&nbsp;</h4>
             <Button onClick={this.handleSubmit} type="primary" htmlType="submit" size="large">{t('button.show')}</Button>
