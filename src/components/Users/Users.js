@@ -1,52 +1,46 @@
-import React, { Component } from 'react'
-import { Form, Table, Select, Input, DatePicker, Button, message } from 'antd'
-import moment from 'moment'
-import qs from 'qs'
-import * as Cookies from 'js-cookie'
-import { Link } from 'react-router-dom'
-import Helpers, { Filters, t, pick, clean, disabledDate } from '../../common/Helpers'
-import api from '../../common/Api'
-import { domain, scheme } from '../../config'
-import ChangingManager from '../../common/ChangingManager'
-import * as Manager from '../../common/Helpers/ManagerSelect'
-
-const Icons = {}
+import React, { Component } from 'react';
+import { Form, Table, Select, Input, DatePicker, Button } from 'antd';
+import moment from 'moment';
+import * as Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
+import Helpers, { Filters, t, pick, clean, disabledDate } from '../../common/Helpers';
+import api from '../../common/Api';
+import { domain, scheme } from '../../config';
+import ChangingManager from '../../common/ChangingManager';
+import * as Manager from '../../common/Helpers/ManagerSelect';
 
 export class Login extends Component {
-
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       isLoading: false,
     }
   }
 
   _getAccess = () => {
-    const { user_id } = this.props
-    this.setState({ isLoading: true })
+    const { user_id } = this.props;
+    this.setState({ isLoading: true });
     api.post(`/v1/users/${user_id}/generate-access-token`)
     .then(response => {
-      const params = { expires: 1 / 24, domain: `.${domain}` }
+      const params = { expires: 1 / 24, domain: `.${domain}` };
 
-      Cookies.set('access_token', response.data.access_token, params)
-      Cookies.set('refresh_token', 1, params)
-      Cookies.set('user_id', user_id, params)
-      Cookies.set('isManager', 1, params)
+      Cookies.set('access_token', response.data.access_token, params);
+      Cookies.set('refresh_token', 1, params);
+      Cookies.set('user_id', user_id, params);
+      Cookies.set('isManager', 1, params);
 
-      this.setState({ isLoading: false })
+      this.setState({ isLoading: false });
       window.open(`${scheme}my.${domain}`, '_blank')
     })
     .catch(e => {
-      this.setState({ isLoading: false })
+      this.setState({ isLoading: false });
       Helpers.errorHandler(e)
     })
-  }
+  };
 
   render() {
-    const { isLoading } = this.state
-    return (
-      <Button onClick={this._getAccess}>{isLoading && Helpers.spinner()} Войти</Button>
-    )
+    const { isLoading } = this.state;
+    return <Button onClick={this._getAccess}>{isLoading && Helpers.spinner()} Войти</Button>;
   }
 }
 
@@ -54,30 +48,45 @@ export class Login extends Component {
 class _Filter extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
+    this.state = {
+      totalBalance: 0,
+      totalHold: 0,
+    }
+  }
+  
+  componentDidMount() {
+    api.get('/v1/user-data/total-hold-and-balance')
+      .then(({data}) => {
+        this.setState({
+          totalBalance: data.balance,
+          totalHold: data.hold
+        });
+      });
   }
 
   handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       this.props.onSubmit(clean(values))
     })
-  }
+  };
 
   validator = (name, label, input) => {
-    const { getFieldDecorator } = this.props.form
-    const options = { initialValue: Filters.value(name) }
+    const { getFieldDecorator } = this.props.form;
+    const options = { initialValue: Filters.value(name) };
     return (
       <Form.Item className={`filter__field-${name}`}>
         {label && <h4>{label}</h4>}
         {getFieldDecorator(name, options)(input)}
       </Form.Item>
     )
-  }
+  };
 
   render() {
-    const { statuses } = this.props
-    const _statuses = Object.keys(statuses).map(item => <Select.Option key={item} value={item}>{statuses[item]}</Select.Option>)
+    const { totalBalance, totalHold } = this.state;
+    const { statuses } = this.props;
+    const _statuses = Object.keys(statuses).map(item => <Select.Option key={item} value={item}>{statuses[item]}</Select.Option>);
     return (
       <div className="filter filter__users">
         <Form>
@@ -85,6 +94,8 @@ class _Filter extends Component {
           {this.validator('login', t('field.login'), <Input size="large" /> )}
           {this.validator('email', t('field.email'), <Input size="large" /> )}
           {this.validator('status', t('field.status'), <Select placeholder={t('field.all')} size="large" allowClear>{_statuses}</Select> )}
+          <p>Суммарно на балансе: {totalBalance}$</p>
+          <p>Суммарно в холде: {totalHold}$</p>
           <Form.Item>
             <h4>&nbsp;</h4>
             <Button onClick={this.handleSubmit} type="primary" htmlType="submit" size="large">{t('button.show')}</Button>
@@ -94,7 +105,7 @@ class _Filter extends Component {
     )
   }
 }
-const Filter = Form.create()(_Filter)
+const Filter = Form.create()(_Filter);
 
 class Users extends Component {
 
@@ -175,6 +186,16 @@ class Users extends Component {
             return row.referralStat && row.referralStat.hold || null
           },
         }, {
+          title: 'Баланс',
+          dataIndex: 'balance',
+          render: (text, row) => row.balance || '0.00',
+          sorter: true,
+        }, {
+          title: 'Холд',
+          dataIndex: 'hold',
+          render: (text, row) => row.hold || '0.00',
+          sorter: true,
+        }, {
           render: (text, row) => (
             <div className="table__actions">
               <span><Link to={`/stats?group=action_day&q[webmaster_id][equal]=${row.id}`} className="ant-btn">Статистика пользователя</Link></span>
@@ -188,7 +209,7 @@ class Users extends Component {
 
   componentDidMount = () => {
     Helpers.setTitle('menu.users')
-    this.fetch()
+    this.fetch();
     window.addEventListener(`users.fetch`, this.fetch)
 
     api.get(`/v1/users/statuses`)
@@ -197,11 +218,11 @@ class Users extends Component {
     .then(response => {
       this.setState({ personalManagers: response.data })
     })
-  }
+  };
 
   componentWillUnmount = () => {
     window.removeEventListener(`users.fetch`, this.fetch)
-  }
+  };
 
   fetch = () => {
     const { filters, pagination } = this.state
@@ -220,11 +241,11 @@ class Users extends Component {
       this.setState({
         users: responseUsers.data,
         pagination: {...pagination, total }
-      })
-      const userIds = responseUsers.data.map(user => user.id)
+      });
+      const userIds = responseUsers.data.map(user => user.id);
       return api.get('/v1/user-data', {
         params: {
-          fields: 'user_id',
+          fields: 'user_id,balance,hold',
           expand: 'referralStat,referralBalance,personalManager',
           'q[user_id][in]': userIds.join(','),
           'per-page': pagination.pageSize,
@@ -233,25 +254,27 @@ class Users extends Component {
     })
     .then(responseUsersData => {
       const { users } = this.state
-      const usersData = responseUsersData.data
+      const usersData = responseUsersData.data;
+
       if (users.length !== usersData.length) {
         console.log(`Внимание! Не для каждого id нашлась пара, проверьте получаемые данные.`)
       }
       const data = users.map(user => {
         const userData = usersData.find(el => {
-          return user.id == el.user_id
-        })
+          return user.id === el.user_id
+        });
         if (!userData) {
           console.log(`Нет совпадений поля id для пользователя #${user.id}`)
         }
-        const newUserData = {
+        return {
           ...user,
+          hold: userData ? userData.hold : null,
+          balance: userData ? userData.balance : null,
           referralBalance: userData ? userData.referralBalance : null,
           referralStat: userData ? userData.referralStat : null,
           personalManager: userData ? userData.personalManager : null,
         }
-        return newUserData
-      })
+      });
       this.setState({
         isLoading: false,
         data,
@@ -272,11 +295,11 @@ class Users extends Component {
   }
 
   render() {
-    const { statuses, isLoading, pagination } = this.state
+    const { statuses, isLoading, pagination } = this.state;
     const props = pick(this.state, 'data:dataSource', 'columns', 'pagination', 'isLoading:loading')
     return (
       <div>
-        <Filter onSubmit={this.onFilter} statuses={statuses} />
+        <Filter onSubmit={this.onFilter} dataSource={props.dataSource} statuses={statuses} />
         <Table
           className="app__table"
           rowKey={item => item.id}
