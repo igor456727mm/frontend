@@ -7,24 +7,24 @@ import { domain, scheme } from '../config'
 
 const api = axios.create({
   baseURL: `${scheme}a-api.${domain}`,
-})
+});
 
 const utcOffset = moment().utcOffset()
 
 // добавление токена при request!
 api.interceptors.request.use(config => {
-  const role = Cookies.get(`${cookie_prefix}_role`)
-  const access_token = Cookies.get(`${cookie_prefix}_access_token`)
-  config.headers['Authorization'] = `Bearer ${access_token}`
-  config.headers['Accept-Language'] = Cookies.get('lang')
-  config.headers['Time-Offset'] = utcOffset
+  const role = Cookies.get(`${cookie_prefix}_role`);
+  const access_token = Cookies.get(`${cookie_prefix}_access_token`);
+  config.headers['Authorization'] = `Bearer ${access_token}`;
+  config.headers['Accept-Language'] = Cookies.get('lang');
+  config.headers['Time-Offset'] = utcOffset;
 
-  if(role === 'manager') config.baseURL = `${scheme}m-api.${domain}`
+  if(role === 'manager') config.baseURL = `${scheme}m-api.${domain}`;
 
   return config
 }, error => {
   return Promise.reject(error)
-})
+});
 
 // выход при status 401
 api.interceptors.response.use(response => {
@@ -32,20 +32,20 @@ api.interceptors.response.use(response => {
 }, async (error) => {
 
   if(error.response && error.response.status == 401) {
-    const Authorization = error.config.headers['Authorization'].length > 16
+    const Authorization = error.config.headers['Authorization'].length > 16;
     if(!Authorization) { // проба на переполучение токена
       const access_token = await Auth.refreshToken()
-      error.config.headers['Authorization'] = `Bearer ${access_token}`
+      error.config.headers['Authorization'] = `Bearer ${access_token}`;
       return axios.request(error.config)
     } else {
       Auth.exit('401 доступ запрещен')
     }
   } else if(error.response && error.response.status == 429) {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1000));
       return axios.request(error.config)
   }
   // if 429 send 2nd
   return Promise.reject(error)
-})
+});
 
 export default api

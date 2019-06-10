@@ -75,9 +75,9 @@ const icons = {
   platforms: (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15"><title>  Icon</title><desc>  Created with Sketch.</desc><g fill="none"><g style={{'strokeWidth':2, stroke: '#7F8FA4'}}><g transform="translate(-30 -505)translate(31 506)"><rect x="3" y="3" width="11" height="10" rx="1"/><polyline points="0 6 0 0 8 0" strokeLinejoin="round"/></g></g></g></svg>
   )
-}
+};
 
-const history = createHistory()
+const history = createHistory();
 const routes = [
   {
     path: '/',
@@ -177,12 +177,12 @@ const routes = [
     path: '/hit-actions',
     component: HitActions,
   },
-]
+];
 
 const getUrlParam = (key) => {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(key)
-}
+};
 
 class App extends Component {
 
@@ -226,7 +226,7 @@ class App extends Component {
       this.setState({ isAuthorized: false })
     }, false)
 
-  }
+  };
 
   _onUserLogin = () => {
     this.setState({ isAuthorized: true })
@@ -245,7 +245,7 @@ class App extends Component {
     api.get('/v1/manager-access/models')
     */
 
-  }
+  };
 
   _onChangeLang = (e) => {
     const { lang } = this.props
@@ -263,7 +263,7 @@ class App extends Component {
     } else {
       this.props.dispatch({ type: 'CHANGE_LANG', key: key })
     }
-  }
+  };
 
   showAdvertStat = () => {
     const { weeklyExpectations: { balance, hold } } = this.state
@@ -305,7 +305,7 @@ class App extends Component {
       )
     }
 
-    const content = routes.map((route, i) => <Route ref={route.component && route.component.name} key={i} {...route} />)
+    const content = routes.map((route, i) => <Route ref={route.component && route.component.name} key={i} {...route} />);
     // const { unreadMessages } = this.props.user
 
     const menu_lang = lang.list.map(item => {
