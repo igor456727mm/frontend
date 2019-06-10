@@ -274,7 +274,7 @@ class Advertiser extends Component {
   render() {
     const {iconLoading, isNew, paymentPeriod, paymentPeriodPay, data, wallets} = this.state;
     
-    const patternForPositiveFloatNumber = /^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/;
+    const patternForPositiveFloatNumber = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
     
     return (
       <div className="advertiser">
@@ -303,14 +303,14 @@ class Advertiser extends Component {
                 <div className="col-md-12">
                   <div className="row">
                     <div className="col-md-4">
-                      {this.validator('currencyId', 'ID валюты', <CurrencyId.Select currencyIdType="currencyId"
+                      {this.validator('currencyId', 'Валюта', <CurrencyId.Select currencyIdType="currencyId"
                                                                                     multiple={false} {...options} />)}
                     </div>
                     <div className="col-md-4">
-                      {this.validator('currencyRate', 'Курс валюты', <Input size="large"/>, [{ pattern: patternForPositiveFloatNumber, message: 'Должно быть цыфрой и больше нуля' }])}
+                      {this.validator('currencyRate', 'Курс валюты', <Input size="large"/>, [{ pattern: patternForPositiveFloatNumber, message: 'Должно быть положительным числом' }])}
                     </div>
                     <div className="col-md-4">
-                      {this.validator('currencyRateCoef', 'Коэффициент', <Input size="large"/>, [{ pattern: patternForPositiveFloatNumber, message: 'Должно быть цыфрой и больше нуля' }])}                  </div>
+                      {this.validator('currencyRateCoef', 'Коэффициент валюты', <Input size="large"/>, [{ pattern: patternForPositiveFloatNumber, message: 'Должно быть положительным числом' }])}                  </div>
                   </div>
                 </div>
                 <div className="col-md-4">
