@@ -1,13 +1,15 @@
-import React, { Component } from 'react'
-import { Form, Table, Select, Input, DatePicker, Button, message } from 'antd'
+import React, { Component, Fragment } from 'react'
+import { Form, Table, Button, message } from 'antd'
 import moment from 'moment'
 import qs from 'qs'
-import Cookies from 'js-cookie'
 import { Link } from 'react-router-dom'
-import Helpers, { Filters, Events, t, pick, clean, disabledDate } from '../../common/Helpers'
+import * as Feather from 'react-feather'
+
+import Helpers, { Filters, t, pick, clean } from '../../common/Helpers'
 import SearchSelect from '../../common/Helpers/SearchSelect'
 import api from '../../common/Api'
-import * as Feather from 'react-feather'
+import ApiClient from '../../infra/api/apiClient';
+
 
 const options = {
   size: 'large',
@@ -55,10 +57,26 @@ class _Filter extends Component {
 }
 const Filter = Form.create()(_Filter)
 
-class OfferRequests extends Component {
+const AccessButtons = ({
+  onConfirm,
+  onReject,
+}) => (
+  <Fragment>
+    <Button onClick={onConfirm} style={{ padding: '5px 10px'}}>
+      <Feather.CheckCircle />
+    </Button>
+    <Button onClick={onReject} style={{ padding: '5px 10px'}}>
+      <Feather.XCircle />
+    </Button>
+  </Fragment>
+);
 
+class OfferRequests extends Component {
   constructor(props) {
     super(props)
+
+    this.apiClient = new ApiClient({ transport: api });
+
     this.state = {
       isLoading: false,
       filters: Filters.parse(),
@@ -81,9 +99,9 @@ class OfferRequests extends Component {
           render: (text, row) => <Link to={`/offers/${text}`}>{text}</Link>,
         },
         {
-          title: 'Пользователь',
+          title: 'Пользователь (id)',
           dataIndex: 'user_id',
-          render: (text, row) => <Link to={`/users/${text}`}>{`${row.user.name}`}</Link>,
+          render: (text, row) => <Link to={`/users/${text}`}>{`${row.user_id}`}</Link>,
         },
         {
           title: 'Комментарий',
@@ -92,10 +110,15 @@ class OfferRequests extends Component {
         {
           title: 'Разрешить доступ',
           dataIndex: '',
-          render: (text, row) => <Button  onClick={this.onConfirm(row.offer_id, row.user_id, row.user.name)} style={{ padding: '5px 10px'}}><Feather.CheckCircle /></Button>,
+          render: (text, row) => <AccessButtons
+            onConfirm={this.onConfirm(row.offer_id, row.user_id, row.user.name)}
+            onReject={this.onReject(row.offer_id, row.user_id)}
+          />,
         },
       ]
     }
+
+    this.onReject = this.onReject.bind(this);
   }
 
   componentDidMount = () => {
@@ -119,6 +142,13 @@ class OfferRequests extends Component {
       this.fetch()
     })
     .catch(e => Helpers.errorHandler(e))
+  }
+
+  onReject(offer_id, user_id) {
+    const key = `${user_id},${offer_id}`;
+    return () => this.apiClient.deleteAccessRequest(key)
+      .then(() => this.fetch())
+      .catch(e => Helpers.errorHandler(e));
   }
 
   fetch = () => {
