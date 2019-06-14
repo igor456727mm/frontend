@@ -107,12 +107,16 @@ class Withdrawals extends Component {
           title: 'Комментарий вебмастеру',
           dataIndex: 'webmaster_comment',
         }, {
+          title: 'Комментарий',
+          dataIndex: 'comment',
+        }, {
           width: 280,
           render: (text, row) => {
             if(row.status !== 'pending') return null
             return (
               <div className="table__actions">
-                <span><Button onClick={() => this._onConfirmed(row.id)}>Подтвердить</Button></span>
+                <span><Button onClick={() => this._onConfirmed(row.id, 1)} title={row.sum_calc}>Подтвердить</Button></span>
+                <span><Button onClick={() => this._onConfirmed(row.id, 0)}>Без выплаты</Button></span>
                 <span><Button type="danger" onClick={() => this._onRejected(row.id)}>X</Button></span>
               </div>
             )
@@ -152,7 +156,7 @@ class Withdrawals extends Component {
     api.get('/v1/withdrawals', {
       params: {
         page: page,
-        expand: 'wallet,user',
+        expand: 'wallet,user,sum_calc',
         ...filters,
         ...options
       }
@@ -190,11 +194,11 @@ class Withdrawals extends Component {
     this.setState({ filters: filters}, this.fetch)
   }
 
-  _onConfirmed = (id) => {
-    api.patch(`/v1/withdrawals/${id}`, qs.stringify({ status: 'confirmed', currency_id: 1 }))
+  _onConfirmed = (id, payment) => {
+    api.patch(`/v1/withdrawals/${id}`, qs.stringify({ status: 'confirmed', currency_id: 1, payment: payment }))
     .then(response => {
       message.success(`Выплата подтверждена`)
-      this.fetch()
+      this.fetch(this.state.pagination.current)
     })
     .catch(Helpers.errorHandler)
   }
@@ -202,7 +206,7 @@ class Withdrawals extends Component {
   _onRejected = (id) => {
     api.patch(`/v1/withdrawals/${id}`, qs.stringify({ status: 'rejected', currency_id: 1 }))
     .then(response => {
-      this.fetch()
+      this.fetch(this.state.pagination.current)
     })
     .catch(Helpers.errorHandler)
   }
