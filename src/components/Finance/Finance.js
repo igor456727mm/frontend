@@ -107,13 +107,16 @@ class Withdrawals extends Component {
           title: 'Комментарий вебмастеру',
           dataIndex: 'webmaster_comment',
         }, {
+          title: 'Комментарий',
+          dataIndex: 'comment',
+        }, {
           width: 280,
           render: (text, row) => {
             if(row.status !== 'pending') return null
             return (
               <div className="table__actions">
-                <span><Button onClick={() => this._onConfirmed(row.id, true)} title={row.sum_calc}>Подтвердить</Button></span>
-                <span><Button onClick={() => this._onConfirmed(row.id, false)}>Без выплаты</Button></span>
+                <span><Button onClick={() => this._onConfirmed(row.id, 1)} title={row.sum_calc}>Подтвердить</Button></span>
+                <span><Button onClick={() => this._onConfirmed(row.id, 0)}>Без выплаты</Button></span>
                 <span><Button type="danger" onClick={() => this._onRejected(row.id)}>X</Button></span>
               </div>
             )
