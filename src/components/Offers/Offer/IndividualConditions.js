@@ -1,10 +1,12 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Form, Table, Select, Input, InputNumber, DatePicker, Button, message, Upload, Icon, Checkbox, Modal, Popconfirm } from 'antd'
 import moment from 'moment'
 import Cookies from 'js-cookie'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { Route, Redirect, Switch, NavLink, Link } from 'react-router-dom'
+import omit from 'lodash/omit';
+
 import Helpers, { Events, Filters, t, pick, clean, disabledDate, flatten } from '../../../common/Helpers'
 import api from '../../../common/Api'
 import * as Feather from 'react-feather'
@@ -27,7 +29,7 @@ class _Action extends Component {
 
   validator = (name, label, input, rules = [], initialValue) => {
     const { data, actions, action_id } = this.props
-    const { getFieldDecorator, getFieldsValue } = this.props.form
+    const { getFieldDecorator, getFieldsValue, getFieldValue } = this.props.form
     const options = { rules: rules }
     if(data && data[name]) {
       options.initialValue = data[name]
@@ -57,6 +59,17 @@ class _Action extends Component {
       options.initialValue = parseFloat(options.initialValue) * 100
     }
 
+    if (['pay_conditions.fields.delayed_date'].includes(name)) {
+      options.initialValue = options.initialValue ? moment(options.initialValue) : null;
+    }
+    if (['pay_conditions.fields.delayed_price', 'pay_conditions.fields.delayed_commission'].includes(name)) {
+      if (getFieldValue('pay_conditions.fields.delayed_date')) {
+        options.rules = [{ required: true, message: t('validation.required') }];
+      } else {
+        options.rules = [{ len: 0, message: t('validation.should_be_empty') }];
+      }
+    }
+
     if(typeof options.initialValue === 'boolean') options.valuePropName = 'checked'
     return (
       <Form.Item className={`form__item-${name}`}>
@@ -75,6 +88,9 @@ class _Action extends Component {
       if(values.pay_conditions.fields.commission_percent) values.pay_conditions.fields.commission_percent = values.pay_conditions.fields.commission_percent / 100
       if(values.pay_conditions.fields.revshare_percent) values.pay_conditions.fields.revshare_percent = values.pay_conditions.fields.revshare_percent / 100
       if(values.pay_conditions.fields.site_revshare_percent) values.pay_conditions.fields.site_revshare_percent = values.pay_conditions.fields.site_revshare_percent / 100
+      if (values.pay_conditions.fields.delayed_date) {
+        values.pay_conditions.fields.delayed_date = moment(values.pay_conditions.fields.delayed_date).valueOf();
+      }
 
       this.setState({ iconLoading: true })
 
@@ -200,14 +216,24 @@ class _Action extends Component {
       switch (pay_conditions.pay_type) {
         case 'fix':
           fields = (
-            <div className="row">
-              <div className="col-md-6">
-                {this.validator('pay_conditions.fields.price', `Стоимость в ${currency}`, <InputNumber min={0} size="large" /> )}
+            <Fragment>
+              <div className="row">
+                <div className="col-md-6">
+                  {this.validator('pay_conditions.fields.delayed_price', `Отложенная стоимость в ${currency}`, <InputNumber min={0} size="large" /> )}
+                </div>
+                <div className="col-md-6">
+                  {this.validator('pay_conditions.fields.delayed_commission', `Отложенная комиссия в ${currency}`, <InputNumber min={0} size="large" /> )}
+                </div>
               </div>
-              <div className="col-md-6">
-                {this.validator('pay_conditions.fields.commission', `Комиссия в ${currency}`, <InputNumber min={0} size="large" /> )}
+              <div className="row">
+                <div className="col-md-6">
+                  {this.validator('pay_conditions.fields.price', `Стоимость в ${currency}`, <InputNumber min={0} size="large" /> )}
+                </div>
+                <div className="col-md-6">
+                  {this.validator('pay_conditions.fields.commission', `Комиссия в ${currency}`, <InputNumber min={0} size="large" /> )}
+                </div>
               </div>
-            </div>
+            </Fragment>
           )
           break;
         case 'flex':
@@ -283,7 +309,7 @@ class _Action extends Component {
                 </Select>
               ))}
 
-              {this.validator('active_from', 'Дата отложенной ставки', <DatePicker showTime format="YYYY-MM-DD HH:mm" showTime={{ format: 'HH:mm' }} size="large" /> )}
+              {this.validator('pay_conditions.fields.delayed_date', 'Дата отложенной ставки', <DatePicker showTime format="YYYY-MM-DD HH:mm" showTime={{ format: 'HH:mm' }} size="large" /> )}
 
               {fields}
 
@@ -387,13 +413,14 @@ class IndividualConditions extends Component {
                   />
               )
             }
-            return Object.keys(row.pay_conditions).map((k, i) => {
-              const name = row.pay_conditions[k] && row.pay_conditions[k].name || this.actionFieldById(k, 'name')
+            const pay_conditions = omit(row.pay_conditions, ['delayed_date']);
+            return Object.keys(pay_conditions).map((k, i) => {
+              const name = pay_conditions[k] && pay_conditions[k].name || this.actionFieldById(k, 'name')
               return (
                 <div className="flex" key={`${i}_0`}>
                   <strong className="table__actions-name">{name}</strong>
                   <Action
-                    data={{ pay_conditions: row.pay_conditions[k], action_id: k, ...pick(row, 'user_id', 'visible') }}
+                    data={{ pay_conditions: pay_conditions[k], action_id: k, ...pick(row, 'user_id', 'visible') }}
                     offer_id={id}
                     actions={this.props.actions}
                     />
@@ -429,11 +456,12 @@ class IndividualConditions extends Component {
           title: 'Холд',
           dataIndex: '',
           render: (text, row) => {
-            if(!row.pay_conditions) return
-            return Object.keys(row.pay_conditions).map((k, i) => {
-              const { fields } = row.pay_conditions[k]
-              return (<div key={`${i}_2`}>до {fields.hold} дней</div>)
-            })
+            if (!row.pay_conditions) return;
+            const pay_conditions = omit(row.pay_conditions, ['delayed_date']);
+            return Object.keys(pay_conditions).map((k, i) => {
+              const { fields } = pay_conditions[k];
+              return (<div key={`${i}_2`}>до {fields.hold} дней</div>);
+            });
           }
         }, {
           title: <Action offer_id={id} actions={this.props.actions} />,
