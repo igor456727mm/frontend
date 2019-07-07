@@ -8,6 +8,7 @@ import RcTreeSelect, { TreeNode } from 'but1head-rc-tree-select'
 import store from '../reducers'
 import * as Feather from 'react-feather'
 import additionalTranslationsRu from './translations/ru.json'
+import { toPlainDotNotationObject } from './object';
 
 const Helpers = {
 
@@ -291,6 +292,8 @@ export const Filters = {
   },
 
   prepare: (values, custom = {}) => {
+    values = toPlainDotNotationObject(values);
+
     const skip = ['group']
     const filters = {}
     const keys = Object.keys(values)

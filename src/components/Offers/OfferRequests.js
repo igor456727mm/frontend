@@ -9,7 +9,16 @@ import Helpers, { Filters, t, pick, clean } from '../../common/Helpers'
 import SearchSelect from '../../common/Helpers/SearchSelect'
 import api from '../../common/Api'
 import ApiClient from '../../infra/api/apiClient';
+import PersonalManagerSelect from './components/PersonalManagerSelect';
 
+const isTelegramLink = (text = '') => text.includes('://t.me');
+
+const getTelegramUrl = (text = '') => {
+  if (isTelegramLink(text) || text.length <= 0) {
+    return text;
+  }
+  return `tg://resolve?domain=${text.replace('@', '')}`;
+};
 
 const options = {
   size: 'large',
@@ -46,6 +55,7 @@ class _Filter extends Component {
       <div className="filter">
         <Form>
           {this.validator('user_id', 'Пользователь', <SearchSelect target="users" {...options} /> )}
+          {this.validator('user_data.personal_manager_id', 'Менеджер', <PersonalManagerSelect />)}
           <Form.Item>
             <h4>&nbsp;</h4>
             <Button onClick={this.handleSubmit} type="primary" htmlType="submit" size="large">{t('button.show')}</Button>
@@ -108,6 +118,11 @@ class OfferRequests extends Component {
           dataIndex: 'comment',
         },
         {
+          title: 'Telegram',
+          dataIndex: 'userData.contacts.telegram',
+          render: text => <a href={getTelegramUrl(text)}>{text}</a>
+        },
+        {
           title: 'Разрешить доступ',
           dataIndex: '',
           render: (text, row) => <AccessButtons
@@ -159,7 +174,7 @@ class OfferRequests extends Component {
         sort: pagination.sort || '-created_at',
         page: pagination.current || 1,
         ...filters,
-        expand: 'user',
+        expand: 'user,userData',
       }
     })
     .then(response => {
