@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Table, Select, Input, DatePicker, Button } from 'antd';
+import { Form, Table, Select, Input, DatePicker, Tabs, Button } from 'antd';
 import moment from 'moment';
 import * as Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,7 @@ import api from '../../common/Api';
 import { domain, scheme } from '../../config';
 import ChangingManager from '../../common/ChangingManager';
 import * as Manager from '../../common/Helpers/ManagerSelect';
-
+import UserLogEvents from './UserLogEvents';
 export class Login extends Component {
   constructor(props) {
     super(props);
@@ -106,7 +106,7 @@ class _Filter extends Component {
   }
 }
 const Filter = Form.create()(_Filter);
-
+const {TabPane} = Tabs;
 class Users extends Component {
 
   constructor(props) {
@@ -299,14 +299,22 @@ class Users extends Component {
     const props = pick(this.state, 'data:dataSource', 'columns', 'pagination', 'isLoading:loading')
     return (
       <div>
-        <Filter onSubmit={this.onFilter} dataSource={props.dataSource} statuses={statuses} />
-        <Table
-          className="app__table"
-          rowKey={item => item.id}
-          locale={{ emptyText: Helpers.emptyText }}
-          onChange={this.handleTableChange}
-          {...props}
-          />
+        <Tabs type="card">
+          <TabPane tab="Пользователи" key="1">
+          <Filter onSubmit={this.onFilter} dataSource={props.dataSource} statuses={statuses} />
+          <Table
+            className="app__table"
+            rowKey={item => item.id}
+            locale={{ emptyText: Helpers.emptyText }}
+            onChange={this.handleTableChange}
+            {...props}
+            />
+          </TabPane>
+          <TabPane tab="Лог" key="2">
+            <UserLogEvents advertiser_id= "1" />
+
+          </TabPane>
+        </Tabs>
       </div>
     )
   }
