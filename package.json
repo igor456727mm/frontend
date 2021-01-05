@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "antd": "^3.5.2",
-    "axios": "^0.17.1",
+    "axios": "^0.21.1",
     "but1head-rc-tree-select": "^1.12.13",
     "copy-to-clipboard": "^3.0.8",
     "file-saver": "^2.0.0",
